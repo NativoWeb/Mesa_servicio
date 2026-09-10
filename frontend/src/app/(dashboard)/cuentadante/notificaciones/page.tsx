@@ -1,13 +1,35 @@
 'use client';
 
-const notificaciones = [
-  { icon: '\uD83D\uDD27', title: 'Mantenimiento programado', desc: 'Tu equipo Laptop Dell Vostro requiere mantenimiento preventivo el 20/06/2025', time: 'Hace 2 horas', unread: true },
-  { icon: '\uD83D\uDD04', title: 'Cambio de responsable aprobado', desc: 'Se aprobo el traslado del equipo PC HP al area de Contabilidad', time: 'Hace 1 dia', unread: true },
-  { icon: '\u2705', title: 'Mantenimiento completado', desc: 'La impresora Kyocera fue revisada exitosamente por el tecnico Carlos Ruiz', time: 'Hace 3 dias', unread: false },
-  { icon: '\u26A0\uFE0F', title: 'Garantia proxima a vencer', desc: 'La garantia de tu MacBook Air M2 vence en 30 dias', time: 'Hace 5 dias', unread: false },
-];
+import { useState } from 'react';
+import { useNotifications, Notification } from '@/hooks/use-notifications';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+function subjectIcon(subjectType: string) {
+  if (subjectType.includes('Asset')) return 'A';
+  if (subjectType.includes('Maintenance')) return 'M';
+  if (subjectType.includes('Ticket')) return 'T';
+  return 'N';
+}
+
+function subjectColor(subjectType: string) {
+  if (subjectType.includes('Asset')) return 'bg-green-100 text-green-700';
+  if (subjectType.includes('Maintenance')) return 'bg-orange-100 text-orange-700';
+  if (subjectType.includes('Ticket')) return 'bg-blue-100 text-blue-700';
+  return 'bg-gray-100 text-gray-700';
+}
+
+function subjectLabel(subjectType: string) {
+  if (subjectType.includes('Asset')) return 'Activo';
+  if (subjectType.includes('Maintenance')) return 'Mantenimiento';
+  if (subjectType.includes('Ticket')) return 'Ticket';
+  return 'Actividad';
+}
 
 export default function CuentadanteNotificacionesPage() {
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useNotifications({ page, per_page: 20 });
+
   return (
     <div>
       <p className="text-xs text-gray-500 uppercase tracking-wider">Centro de Alertas</p>
@@ -15,34 +37,70 @@ export default function CuentadanteNotificacionesPage() {
       <p className="text-gray-500 mb-6">Alertas sobre tus equipos asignados</p>
 
       <div className="space-y-3">
-        {notificaciones.map((n, i) => (
-          <div
-            key={i}
-            className={`bg-white rounded-xl border p-5 flex items-start gap-4 transition-colors ${
-              n.unread ? 'border-l-4 border-l-green-600' : ''
-            }`}
-          >
-            {/* Icono */}
-            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-lg shrink-0">
-              {n.icon}
+        {isLoading ? (
+          Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-xl border p-5">
+              <div className="h-4 bg-gray-100 rounded animate-pulse w-3/4" />
+              <div className="h-3 bg-gray-100 rounded animate-pulse w-1/2 mt-2" />
             </div>
-
-            {/* Contenido */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <p className={`text-sm font-semibold text-gray-900 ${n.unread ? '' : 'font-medium'}`}>
-                  {n.title}
-                </p>
-                {n.unread && (
-                  <span className="w-2 h-2 bg-green-600 rounded-full shrink-0" />
-                )}
-              </div>
-              <p className="text-sm text-gray-600 mt-1">{n.desc}</p>
-              <p className="text-xs text-gray-400 mt-2">{n.time}</p>
-            </div>
+          ))
+        ) : !data?.data.length ? (
+          <div className="bg-white rounded-xl border p-6">
+            <div className="text-center py-12 text-gray-400">No tienes alertas por el momento</div>
           </div>
-        ))}
+        ) : (
+          data.data.map((n: Notification) => (
+            <div
+              key={n.id}
+              className="bg-white rounded-xl border border-l-4 border-l-green-600 p-5 flex items-start gap-4 hover:shadow-sm transition-shadow"
+            >
+              {/* Icono */}
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${subjectColor(n.subject_type)}`}>
+                {subjectIcon(n.subject_type)}
+              </div>
+
+              {/* Contenido */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+                    {subjectLabel(n.subject_type)}
+                  </span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900 mt-1">{n.description}</p>
+                {n.causer && (
+                  <p className="text-xs text-gray-500 mt-1">Realizado por: {n.causer.name}</p>
+                )}
+                <p className="text-xs text-gray-400 mt-2">
+                  {formatDistanceToNow(new Date(n.created_at), { locale: es, addSuffix: true })}
+                </p>
+              </div>
+            </div>
+          ))
+        )}
       </div>
+
+      {/* Paginacion */}
+      {data && data.last_page > 1 && (
+        <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+          <span>Pagina {data.current_page} de {data.last_page} ({data.total} alertas)</span>
+          <div className="flex gap-1">
+            <button
+              disabled={data.current_page <= 1}
+              onClick={() => setPage(p => p - 1)}
+              className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50"
+            >
+              Anterior
+            </button>
+            <button
+              disabled={data.current_page >= data.last_page}
+              onClick={() => setPage(p => p + 1)}
+              className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

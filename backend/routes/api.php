@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\MaintenanceController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\ShiftController;
 use App\Http\Controllers\Api\SlaConfigController;
@@ -85,6 +86,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [AttachmentController::class, 'store']);
     });
     Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy']);
+
+    // Notificaciones (actividad relevante por rol)
+    Route::get('notifications', [NotificationController::class, 'index']);
 
     // Logs de auditoría
     Route::get('audit-logs', [AuditLogController::class, 'index']);
