@@ -1,26 +1,135 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSlaConfigs, useUpdateSlaConfig, SlaConfig } from '@/hooks/use-sla-configs';
 
-const slaDefaults = [
-  { priority: 'Crítica', response: 15, resolution: 60, escalation: 30 },
-  { priority: 'Alta', response: 30, resolution: 240, escalation: 60 },
-  { priority: 'Media', response: 60, resolution: 480, escalation: 120 },
-  { priority: 'Baja', response: 120, resolution: 1440, escalation: 240 },
-];
+const priorityLabels: Record<string, string> = {
+  critical: 'Critica',
+  high: 'Alta',
+  medium: 'Media',
+  low: 'Baja',
+};
+
+const priorityColors: Record<string, string> = {
+  critical: 'bg-red-100 text-red-700',
+  high: 'bg-orange-100 text-orange-700',
+  medium: 'bg-yellow-100 text-yellow-700',
+  low: 'bg-gray-100 text-gray-700',
+};
+
+interface EditableRow {
+  id: number;
+  priority: string;
+  response_time_hours: number;
+  resolution_time_hours: number;
+}
 
 export default function AdminSlaPage() {
   const [editing, setEditing] = useState(false);
+  const [editableRows, setEditableRows] = useState<EditableRow[]>([]);
+  const [saving, setSaving] = useState(false);
+
+  const { data: configs, isLoading, error } = useSlaConfigs();
+  const updateMutation = useUpdateSlaConfig();
+
+  // Sincronizar datos del API con el estado editable
+  useEffect(() => {
+    if (configs) {
+      setEditableRows(
+        configs.map((c) => ({
+          id: c.id,
+          priority: c.priority,
+          response_time_hours: c.response_time_hours,
+          resolution_time_hours: c.resolution_time_hours,
+        }))
+      );
+    }
+  }, [configs]);
+
+  const handleFieldChange = (index: number, field: 'response_time_hours' | 'resolution_time_hours', value: number) => {
+    setEditableRows((prev) => prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)));
+  };
+
+  const handleSave = async () => {
+    if (!configs) return;
+    setSaving(true);
+    try {
+      // Solo actualizar las filas que cambiaron
+      const promises = editableRows
+        .filter((row) => {
+          const original = configs.find((c) => c.id === row.id);
+          return (
+            original &&
+            (original.response_time_hours !== row.response_time_hours ||
+              original.resolution_time_hours !== row.resolution_time_hours)
+          );
+        })
+        .map((row) =>
+          updateMutation.mutateAsync({
+            id: row.id,
+            response_time_hours: row.response_time_hours,
+            resolution_time_hours: row.resolution_time_hours,
+          })
+        );
+
+      await Promise.all(promises);
+      setEditing(false);
+    } catch {
+      // Error manejado por react-query
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleToggleEdit = () => {
+    if (editing) {
+      handleSave();
+    } else {
+      setEditing(true);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Configuracion de Tiempos SLA</h1>
+            <p className="text-gray-500 text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl border p-8 text-center text-gray-500">Cargando configuracion SLA...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Configuracion de Tiempos SLA</h1>
+            <p className="text-gray-500 text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl border p-8 text-center text-red-500">Error al cargar la configuracion SLA.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Configuración de Tiempos SLA</h1>
-          <p className="text-gray-500 text-sm">Define los tiempos de respuesta y resolución por prioridad</p>
+          <h1 className="text-2xl font-bold text-gray-900">Configuracion de Tiempos SLA</h1>
+          <p className="text-gray-500 text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
         </div>
-        <button onClick={() => setEditing(!editing)} className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium">
-          {editing ? 'Guardar cambios' : 'Editar parámetros SLA'}
+        <button
+          onClick={handleToggleEdit}
+          disabled={saving}
+          className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50"
+        >
+          {saving ? 'Guardando...' : editing ? 'Guardar cambios' : 'Editar parametros SLA'}
         </button>
       </div>
 
@@ -29,43 +138,53 @@ export default function AdminSlaPage() {
           <thead>
             <tr className="border-b bg-gray-50/50">
               <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Prioridad del Ticket</th>
-              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Respuesta (min)</th>
-              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Resolución (min)</th>
-              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Umbral Alerta (min)</th>
-              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">% Cumplimiento</th>
+              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Respuesta (hrs)</th>
+              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Resolucion (hrs)</th>
             </tr>
           </thead>
           <tbody>
-            {slaDefaults.map((sla) => {
-              const compliance = sla.priority === 'Crítica' ? 87 : sla.priority === 'Alta' ? 92 : sla.priority === 'Media' ? 96 : 99;
-              const compColor = compliance >= 95 ? 'text-green-700 bg-green-100' : compliance >= 90 ? 'text-yellow-700 bg-yellow-100' : 'text-red-700 bg-red-100';
-              return (
-                <tr key={sla.priority} className="border-b hover:bg-gray-50/50">
-                  <td className="p-4">
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      sla.priority === 'Crítica' ? 'bg-red-100 text-red-700' :
-                      sla.priority === 'Alta' ? 'bg-orange-100 text-orange-700' :
-                      sla.priority === 'Media' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
-                      {sla.priority}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    {editing ? <input type="number" defaultValue={sla.response} className="w-20 px-2 py-1 border rounded-lg text-sm" /> : <span>{sla.response} min</span>}
-                  </td>
-                  <td className="p-4">
-                    {editing ? <input type="number" defaultValue={sla.resolution} className="w-20 px-2 py-1 border rounded-lg text-sm" /> : <span>{sla.resolution} min</span>}
-                  </td>
-                  <td className="p-4">
-                    {editing ? <input type="number" defaultValue={sla.escalation} className="w-20 px-2 py-1 border rounded-lg text-sm" /> : <span>{sla.escalation} min</span>}
-                  </td>
-                  <td className="p-4">
-                    <span className={`text-xs px-2 py-1 rounded-full font-bold ${compColor}`}>{compliance}%</span>
-                  </td>
-                </tr>
-              );
-            })}
+            {editableRows.map((row, index) => (
+              <tr key={row.id} className="border-b hover:bg-gray-50/50">
+                <td className="p-4">
+                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${priorityColors[row.priority] || 'bg-gray-100 text-gray-700'}`}>
+                    {priorityLabels[row.priority] || row.priority}
+                  </span>
+                </td>
+                <td className="p-4">
+                  {editing ? (
+                    <input
+                      type="number"
+                      min={1}
+                      value={row.response_time_hours}
+                      onChange={(e) => handleFieldChange(index, 'response_time_hours', parseInt(e.target.value) || 1)}
+                      className="w-20 px-2 py-1 border rounded-lg text-sm"
+                    />
+                  ) : (
+                    <span>{row.response_time_hours} hrs</span>
+                  )}
+                </td>
+                <td className="p-4">
+                  {editing ? (
+                    <input
+                      type="number"
+                      min={1}
+                      value={row.resolution_time_hours}
+                      onChange={(e) => handleFieldChange(index, 'resolution_time_hours', parseInt(e.target.value) || 1)}
+                      className="w-20 px-2 py-1 border rounded-lg text-sm"
+                    />
+                  ) : (
+                    <span>{row.resolution_time_hours} hrs</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {editableRows.length === 0 && (
+              <tr>
+                <td colSpan={3} className="p-8 text-center text-gray-400">
+                  No hay configuraciones SLA definidas.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

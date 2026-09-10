@@ -4,11 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
+use App\Services\SlaService;
+use App\Services\TicketAssignmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+    public function __construct(
+        private readonly SlaService $slaService,
+        private readonly TicketAssignmentService $assignmentService,
+    ) {}
+
     public function index(Request $request): JsonResponse
     {
         $tickets = Ticket::with(['requester', 'assignedUser'])
@@ -38,7 +45,16 @@ class TicketController extends Controller
 
         $ticket = Ticket::create($validated);
 
-        return response()->json($ticket->load('requester'), 201);
+        // Calcular deadline SLA según la prioridad del ticket
+        $this->slaService->calculateDeadline($ticket);
+
+        // Intentar asignación automática a un técnico disponible
+        $assignedTechnician = $this->assignmentService->autoAssign($ticket);
+        if ($assignedTechnician) {
+            $ticket->update(['status' => 'in_progress']);
+        }
+
+        return response()->json($ticket->fresh(['requester', 'assignedUser']), 201);
     }
 
     public function show(Ticket $ticket): JsonResponse
