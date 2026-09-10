@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\MaintenanceController;
 use App\Http\Controllers\Api\MessageController;
@@ -65,6 +67,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('{shift}', [ShiftController::class, 'update']);
         Route::delete('{shift}', [ShiftController::class, 'destroy']);
     });
+
+    // Comments (polymorphic)
+    Route::prefix('{type}/{id}/comments')->where(['type' => 'tickets|assets|maintenances'])->group(function () {
+        Route::get('/', [CommentController::class, 'index']);
+        Route::post('/', [CommentController::class, 'store']);
+    });
+
+    // Attachments (polymorphic)
+    Route::prefix('{type}/{id}/attachments')->where(['type' => 'tickets|assets|maintenances'])->group(function () {
+        Route::get('/', [AttachmentController::class, 'index']);
+        Route::post('/', [AttachmentController::class, 'store']);
+    });
+    Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy']);
 
     // Mensajes masivos
     Route::prefix('messages')->group(function () {

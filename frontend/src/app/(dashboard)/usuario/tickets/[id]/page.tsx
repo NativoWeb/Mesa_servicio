@@ -4,6 +4,8 @@ import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth-store';
+import { useComments, useCreateComment } from '@/hooks/use-comments';
+import { toast as sonnerToast } from 'sonner';
 
 const statusLabelMap: Record<string, string> = {
   open: 'Abierto',
@@ -77,6 +79,10 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
   const [toast, setToast] = useState<string | null>(null);
   const { user } = useAuthStore();
 
+  const ticketId = Number(id);
+  const { data: commentsData } = useComments('tickets', ticketId);
+  const createComment = useCreateComment('tickets', ticketId);
+
   useEffect(() => {
     const fetchTicket = async () => {
       try {
@@ -92,11 +98,15 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
     fetchTicket();
   }, [id]);
 
-  const handleSendComment = () => {
+  const handleSendComment = async () => {
     if (!comment.trim()) return;
-    setToast('Funcionalidad proximamente');
-    setComment('');
-    setTimeout(() => setToast(null), 3000);
+    try {
+      await createComment.mutateAsync({ body: comment, is_internal: false });
+      setComment('');
+      sonnerToast.success('Comentario enviado');
+    } catch {
+      sonnerToast.error('Error al enviar comentario');
+    }
   };
 
   if (loading) {
@@ -111,7 +121,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
   const displayId = `#${ticket.ticket_number || `T-${String(ticket.id).padStart(4, '0')}`}`;
   const assigneeName = ticket.assigned_user?.name || 'Sin asignar';
   const dateStr = new Date(ticket.created_at).toLocaleDateString('es-CO');
-  const comments = ticket.comments || [];
+  const comments = commentsData?.data || ticket.comments || [];
   const attachments = ticket.attachments || [];
   const events = ticket.events || [];
 
@@ -213,8 +223,12 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
                 placeholder="Escribe un comentario o actualizacion..."
                 className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600"
               />
-              <button onClick={handleSendComment} className="bg-green-700 hover:bg-green-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap">
-                Enviar comentario →
+              <button
+                onClick={handleSendComment}
+                disabled={createComment.isPending || !comment.trim()}
+                className="bg-green-700 hover:bg-green-600 disabled:bg-gray-300 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
+              >
+                {createComment.isPending ? 'Enviando...' : 'Enviar comentario'}
               </button>
             </div>
           </div>

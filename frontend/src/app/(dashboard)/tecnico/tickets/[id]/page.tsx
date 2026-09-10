@@ -3,6 +3,7 @@
 import { useState, use } from 'react';
 import Link from 'next/link';
 import { useTicket, useUpdateTicket } from '@/hooks/use-tickets';
+import { useComments, useCreateComment } from '@/hooks/use-comments';
 import { STATUS_CONFIG, PRIORITY_CONFIG } from '@/lib/constants';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -13,6 +14,8 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
   const ticketId = Number(id);
   const { data: ticket, isLoading } = useTicket(ticketId);
   const updateTicket = useUpdateTicket();
+  const { data: commentsData } = useComments('tickets', ticketId);
+  const createComment = useCreateComment('tickets', ticketId);
 
   const [selectedStatus, setSelectedStatus] = useState('');
   const [comment, setComment] = useState('');
@@ -172,40 +175,56 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
           )}
 
           {/* Comments */}
-          {ticket.comments && ticket.comments.length > 0 && (
-            <div className="bg-white rounded-xl border p-6">
-              <h2 className="font-semibold text-gray-900 mb-4">Seguimiento</h2>
-              <div className="space-y-4 mb-4">
-                {ticket.comments.map((m) => (
-                  <div key={m.id} className={`flex ${m.is_internal ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${m.is_internal ? 'bg-green-50 border border-green-200' : 'bg-gray-100'}`}>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-semibold text-gray-900">{m.user?.name || 'N/A'}</span>
-                        <span className="text-[10px] text-gray-400">{format(new Date(m.created_at), 'dd/MM HH:mm')}</span>
-                      </div>
-                      <p className="text-sm text-gray-700">{m.body}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Comment input placeholder */}
           <div className="bg-white rounded-xl border p-6">
-            <h2 className="font-semibold text-gray-900 mb-3">Agregar nota</h2>
+            <h2 className="font-semibold text-gray-900 mb-4">Seguimiento</h2>
+            {(() => {
+              const allComments = commentsData?.data || ticket.comments || [];
+              return allComments.length > 0 ? (
+                <div className="space-y-4 mb-4">
+                  {allComments.map((m: { id: number; is_internal: boolean; user?: { name: string }; created_at: string; body: string }) => (
+                    <div key={m.id} className={`flex ${m.is_internal ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${m.is_internal ? 'bg-green-50 border border-green-200' : 'bg-gray-100'}`}>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-semibold text-gray-900">{m.user?.name || 'N/A'}</span>
+                          <span className="text-[10px] text-gray-400">{format(new Date(m.created_at), 'dd/MM HH:mm')}</span>
+                        </div>
+                        <p className="text-sm text-gray-700">{m.body}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400 mb-4">No hay comentarios aun.</p>
+              );
+            })()}
+
+            {/* Comment input */}
+            <h3 className="font-semibold text-gray-900 text-sm mb-3">Agregar nota</h3>
             <div className="flex gap-2">
               <input
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && comment.trim()) {
+                    createComment.mutateAsync({ body: comment, is_internal: true })
+                      .then(() => { setComment(''); toast.success('Comentario enviado'); })
+                      .catch(() => toast.error('Error al enviar comentario'));
+                  }
+                }}
                 placeholder="Escribe una respuesta o nota tecnica..."
                 className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20"
               />
               <button
-                onClick={() => toast.info('Endpoint de comentarios proximamente')}
-                className="bg-green-700 hover:bg-green-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
+                onClick={() => {
+                  if (!comment.trim()) return;
+                  createComment.mutateAsync({ body: comment, is_internal: true })
+                    .then(() => { setComment(''); toast.success('Comentario enviado'); })
+                    .catch(() => toast.error('Error al enviar comentario'));
+                }}
+                disabled={createComment.isPending || !comment.trim()}
+                className="bg-green-700 hover:bg-green-600 disabled:bg-gray-300 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
               >
-                Enviar
+                {createComment.isPending ? 'Enviando...' : 'Enviar'}
               </button>
             </div>
           </div>
