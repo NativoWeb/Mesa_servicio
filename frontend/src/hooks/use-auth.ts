@@ -1,23 +1,43 @@
 'use client';
 
-import { useAuthStore } from '@/stores/auth-store';
+import { useRouter } from 'next/navigation';
+import { useAuthStore, getRoleRoute } from '@/stores/auth-store';
 import api from '@/lib/api';
 import { LoginRequest, LoginResponse } from '@/types/api';
+import { User } from '@/types/user';
 
 export function useAuth() {
-  const { user, isAuthenticated, setAuth, logout } = useAuthStore();
+  const router = useRouter();
+  const { user, isAuthenticated, setAuth, logout: clearAuth } = useAuthStore();
 
   const login = async (credentials: LoginRequest) => {
     const { data } = await api.post<LoginResponse>('/auth/login', credentials);
     setAuth(data.user, data.token);
+    const route = getRoleRoute(data.user.role);
+    router.push(route);
     return data.user;
   };
 
-  const fetchUser = async () => {
-    const { data } = await api.get('/auth/me');
-    const token = localStorage.getItem('token');
-    if (token) setAuth(data.data, token);
-    return data.data;
+  const fetchUser = async (): Promise<User | null> => {
+    try {
+      const { data } = await api.get<User>('/auth/me');
+      const token = useAuthStore.getState().token;
+      if (token) setAuth(data, token);
+      return data;
+    } catch {
+      clearAuth();
+      return null;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch {
+      // Token ya expiró, no importa
+    }
+    clearAuth();
+    router.push('/login');
   };
 
   return { user, isAuthenticated, login, logout, fetchUser };

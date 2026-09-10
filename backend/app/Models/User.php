@@ -82,4 +82,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(MassMessage::class, 'sender_id');
     }
+
+    /** Agrega el rol principal y estado al JSON */
+    protected $appends = ['role', 'is_active'];
+
+    public function getRoleAttribute(): ?string
+    {
+        return $this->roles->first()?->name;
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        return true;
+    }
 }
