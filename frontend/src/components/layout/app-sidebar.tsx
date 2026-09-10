@@ -1,0 +1,196 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const liderNav = [
+  { group: "Principal", items: [{ label: "Principal", href: "/lider", icon: "📊" }] },
+  { group: "Gestión", items: [
+    { label: "Todos los tickets", href: "/lider/tickets", icon: "🎫" },
+    { label: "Sin asignar", href: "/lider/tickets?filter=unassigned", icon: "⚠️" },
+    { label: "Escalonados", href: "/lider/tickets?filter=escalated", icon: "🔺" },
+    { label: "Por sede", href: "/lider/tickets?filter=campus", icon: "🏢" },
+  ]},
+  { group: "Asignación", items: [
+    { label: "Asignar / Reasignar", href: "/lider/asignacion", icon: "👥" },
+    { label: "Calendario de turnos", href: "/lider/asignacion?tab=calendar", icon: "📅" },
+    { label: "Carga por técnico", href: "/lider/asignacion?tab=workload", icon: "📈" },
+  ]},
+  { group: "Inventario", items: [
+    { label: "Lista de activos", href: "/lider/inventario", icon: "💻" },
+    { label: "Mantenimiento", href: "/lider/inventario?tab=maintenance", icon: "🔧" },
+  ]},
+  { group: "Comunicación", items: [
+    { label: "Mensajería masiva", href: "/lider/mensajeria", icon: "📨" },
+    { label: "Plantillas", href: "/lider/mensajeria?tab=templates", icon: "📝" },
+  ]},
+  { group: "Analítica", items: [
+    { label: "Reportes", href: "/lider/reportes", icon: "📊" },
+    { label: "Usuarios y roles", href: "/lider/usuarios", icon: "👤" },
+  ]},
+];
+
+const tecnicoNav = [
+  { group: "Principal", items: [{ label: "Mi panel", href: "/tecnico", icon: "📊" }] },
+  { group: "Mis Tickets", items: [
+    { label: "Abiertos", href: "/tecnico/tickets?status=open", icon: "📂" },
+    { label: "En progreso", href: "/tecnico/tickets?status=in_progress", icon: "⏳" },
+    { label: "Pendientes", href: "/tecnico/tickets?status=pending", icon: "⏸️" },
+    { label: "Cerrados", href: "/tecnico/tickets?status=closed", icon: "✅" },
+  ]},
+  { group: "Inventario", items: [
+    { label: "Equipos relacionados", href: "/tecnico/equipos", icon: "💻" },
+  ]},
+  { group: "Mi Cuenta", items: [
+    { label: "Mi turno", href: "/tecnico/turno", icon: "📅" },
+    { label: "Notificaciones", href: "/tecnico/notificaciones", icon: "🔔" },
+  ]},
+];
+
+const usuarioNav = [
+  { group: "Principal", items: [
+    { label: "Inicio", href: "/usuario", icon: "🏠" },
+    { label: "Crear ticket", href: "/usuario/tickets/nuevo", icon: "➕" },
+  ]},
+  { group: "Mis Solicitudes", items: [
+    { label: "Abiertos", href: "/usuario/tickets?status=open", icon: "📂" },
+    { label: "En progreso", href: "/usuario/tickets?status=in_progress", icon: "⏳" },
+    { label: "Cerrados", href: "/usuario/tickets?status=closed", icon: "✅" },
+  ]},
+  { group: "Cuenta", items: [
+    { label: "Notificaciones", href: "/usuario/notificaciones", icon: "🔔" },
+  ]},
+];
+
+const cuentadanteNav = [
+  { group: "Mis Equipos", items: [
+    { label: "Mis equipos", href: "/cuentadante", icon: "💻" },
+    { label: "Hoja de vida", href: "/cuentadante/equipos", icon: "📋" },
+  ]},
+  { group: "Alertas", items: [
+    { label: "Mantenimientos próximos", href: "/cuentadante?tab=maintenance", icon: "🔧" },
+    { label: "Cambios de responsable", href: "/cuentadante?tab=changes", icon: "🔄" },
+  ]},
+  { group: "Cuenta", items: [
+    { label: "Notificaciones", href: "/cuentadante/notificaciones", icon: "🔔" },
+  ]},
+];
+
+const inventarioNav = [
+  { group: "Principal", items: [
+    { label: "Dashboard inventario", href: "/inventario", icon: "📊" },
+  ]},
+  { group: "Activos TI", items: [
+    { label: "Lista de activos", href: "/inventario", icon: "💻" },
+    { label: "Registrar nuevo equipo", href: "/inventario/nuevo", icon: "➕" },
+    { label: "Dar de baja activo", href: "/inventario?action=decommission", icon: "❌" },
+  ]},
+  { group: "Mantenimiento", items: [
+    { label: "Registrar mantenimiento", href: "/inventario/mantenimiento/nuevo", icon: "🔧" },
+    { label: "Calendario", href: "/inventario/mantenimiento", icon: "📅" },
+  ]},
+  { group: "Alertas", items: [
+    { label: "Alertas de activos", href: "/inventario?tab=alerts", icon: "⚠️" },
+  ]},
+  { group: "Responsables", items: [
+    { label: "Cuentadantes", href: "/inventario?tab=holders", icon: "👤" },
+  ]},
+  { group: "Analítica", items: [
+    { label: "Activos por sede", href: "/inventario?tab=by-campus", icon: "🏢" },
+    { label: "Historial mantenimientos", href: "/inventario/mantenimiento", icon: "📜" },
+  ]},
+];
+
+const adminNav = [
+  { group: "Principal", items: [
+    { label: "Dashboard global", href: "/admin", icon: "📊" },
+  ]},
+  { group: "Acceso y Roles", items: [
+    { label: "Usuarios", href: "/admin/usuarios", icon: "👤" },
+    { label: "Roles", href: "/admin/roles", icon: "🔑" },
+    { label: "LDAP", href: "/admin/configuracion?tab=ldap", icon: "🔗" },
+  ]},
+  { group: "Sistema", items: [
+    { label: "SLA", href: "/admin/sla", icon: "⏱️" },
+    { label: "SMTP", href: "/admin/configuracion?tab=smtp", icon: "📧" },
+    { label: "Plantillas", href: "/admin/configuracion?tab=templates", icon: "📝" },
+  ]},
+  { group: "Seguridad", items: [
+    { label: "Logs", href: "/admin/logs", icon: "📜" },
+    { label: "Backup", href: "/admin/configuracion?tab=backup", icon: "💾" },
+  ]},
+  { group: "Todo el Sistema", items: [
+    { label: "Tickets", href: "/lider/tickets", icon: "🎫" },
+    { label: "Inventario", href: "/lider/inventario", icon: "💻" },
+    { label: "Reportes", href: "/admin/reportes", icon: "📊" },
+  ]},
+];
+
+const navByRole: Record<string, typeof liderNav> = {
+  lider: liderNav,
+  tecnico: tecnicoNav,
+  usuario: usuarioNav,
+  cuentadante: cuentadanteNav,
+  inventario: inventarioNav,
+  admin: adminNav,
+};
+
+export function AppSidebar() {
+  const pathname = usePathname();
+  const role = pathname.split("/")[1] || "usuario";
+  const nav = navByRole[role] || usuarioNav;
+
+  return (
+    <aside className="w-64 min-h-screen bg-gradient-to-b from-green-950 to-green-900 text-white flex flex-col">
+      <div className="p-4 border-b border-green-800/50">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-sm font-bold">UTS</div>
+          <div>
+            <p className="text-sm font-semibold leading-tight">Mesa de Servicio</p>
+            <p className="text-[10px] text-green-300 uppercase tracking-wider">Unidades Tecnológicas</p>
+          </div>
+        </div>
+        <div className="mt-3 px-2 py-1 bg-green-800/50 rounded text-xs text-green-200 inline-block uppercase">
+          {role === "lider" ? "Líder TIC" : role}
+        </div>
+      </div>
+
+      <nav className="flex-1 p-3 space-y-4 overflow-y-auto text-sm">
+        {nav.map((group) => (
+          <div key={group.group}>
+            <p className="text-[10px] uppercase tracking-wider text-green-400/70 mb-1 px-2">{group.group}</p>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                return (
+                  <Link
+                    key={item.href + item.label}
+                    href={item.href}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors ${
+                      isActive
+                        ? "bg-green-700/50 text-white"
+                        : "text-green-200/80 hover:bg-green-800/40 hover:text-white"
+                    }`}
+                  >
+                    <span className="text-xs">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      <div className="p-3 border-t border-green-800/50">
+        <div className="flex items-center gap-2 px-2">
+          <div className="w-8 h-8 rounded-full bg-green-700 flex items-center justify-center text-xs font-bold">CM</div>
+          <div>
+            <p className="text-xs font-medium">Carlos Mejía</p>
+            <p className="text-[10px] text-green-300">Líder TIC</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
