@@ -10,17 +10,15 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Crear roles
         $roles = ['admin', 'it_leader', 'technician', 'inventory_manager', 'end_user', 'asset_holder'];
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role]);
         }
 
-        // Usuarios de prueba (uno por rol)
         $users = [
             [
                 'name' => 'Admin Sistema',
-                'email' => 'admin@uts.edu.co',
+                'email' => 'admin@demo.servicedesk.com',
                 'password' => 'password',
                 'campus' => 'Global',
                 'department' => 'TI Central',
@@ -28,41 +26,41 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Carlos Mejía',
-                'email' => 'lider@uts.edu.co',
+                'email' => 'lider@demo.servicedesk.com',
                 'password' => 'password',
-                'campus' => 'Bucaramanga (Principal)',
+                'campus' => 'Sede Central',
                 'department' => 'Dirección TI',
                 'role' => 'it_leader',
             ],
             [
                 'name' => 'Andrés Gómez',
-                'email' => 'tecnico@uts.edu.co',
+                'email' => 'tecnico@demo.servicedesk.com',
                 'password' => 'password',
-                'campus' => 'Bucaramanga (Principal)',
+                'campus' => 'Sede Central',
                 'department' => 'Soporte TI',
                 'role' => 'technician',
             ],
             [
                 'name' => 'Martha Rueda',
-                'email' => 'inventario@uts.edu.co',
+                'email' => 'inventario@demo.servicedesk.com',
                 'password' => 'password',
-                'campus' => 'Bucaramanga (Principal)',
+                'campus' => 'Sede Central',
                 'department' => 'Gestión de Activos',
                 'role' => 'inventory_manager',
             ],
             [
                 'name' => 'Juan Pérez',
-                'email' => 'usuario@uts.edu.co',
+                'email' => 'usuario@demo.servicedesk.com',
                 'password' => 'password',
-                'campus' => 'Bucaramanga (Principal)',
-                'department' => 'Facultad de Ingeniería',
+                'campus' => 'Sede Central',
+                'department' => 'Recursos Humanos',
                 'role' => 'end_user',
             ],
             [
                 'name' => 'Laura Pineda',
-                'email' => 'cuentadante@uts.edu.co',
+                'email' => 'cuentadante@demo.servicedesk.com',
                 'password' => 'password',
-                'campus' => 'Piedecuesta',
+                'campus' => 'Sede Norte',
                 'department' => 'Coordinación Académica',
                 'role' => 'asset_holder',
             ],
