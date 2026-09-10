@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCreateAsset } from '@/hooks/use-assets';
 import { useUsers } from '@/hooks/use-users';
 import { CAMPUSES } from '@/lib/constants';
 import { toast } from 'sonner';
+import api from '@/lib/api';
 
 export default function NuevoEquipoPage() {
   const router = useRouter();
@@ -14,6 +15,8 @@ export default function NuevoEquipoPage() {
   const { data: holdersData } = useUsers({ role: 'asset_holder', per_page: 100 });
 
   const [openSection, setOpenSection] = useState(1);
+  const [files, setFiles] = useState<File[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     name: '',
     category: '',
@@ -39,10 +42,28 @@ export default function NuevoEquipoPage() {
       return;
     }
     try {
-      await createAsset.mutateAsync({
+      const newAsset = await createAsset.mutateAsync({
         ...form,
         holder_id: form.holder_id ? Number(form.holder_id) : 0,
       });
+
+      // Subir archivos adjuntos si hay
+      if (files.length > 0) {
+        const assetId = newAsset.id;
+        for (let i = 0; i < files.length; i++) {
+          toast.info(`Subiendo archivo ${i + 1} de ${files.length}: ${files[i].name}`);
+          const formData = new FormData();
+          formData.append('file', files[i]);
+          try {
+            await api.post(`/assets/${assetId}/attachments`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            });
+          } catch {
+            toast.error(`Error al subir: ${files[i].name}`);
+          }
+        }
+      }
+
       toast.success('Activo registrado correctamente');
       router.push('/inventario');
     } catch {
@@ -173,6 +194,29 @@ export default function NuevoEquipoPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Notas</label>
             <textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={3} placeholder="Observaciones adicionales..." className={inputClass + ' resize-none'} />
           </div>
+        </div>
+      </Section>
+
+      <Section num={6} title="Adjuntos" desc="Fotos, facturas, actas de entrega">
+        <div className="space-y-4 mt-4">
+          <div
+            onClick={() => fileRef.current?.click()}
+            className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-green-500 hover:bg-green-50/30 transition-all"
+          >
+            <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar archivos</p>
+            <p className="text-xs text-gray-400 mt-1">PNG, JPG, PDF (Max. 10 MB por archivo)</p>
+          </div>
+          <input ref={fileRef} type="file" multiple accept="image/*,.pdf" onChange={e => { if (e.target.files) setFiles(prev => [...prev, ...Array.from(e.target.files!)]); }} className="hidden" />
+          {files.length > 0 && (
+            <div className="space-y-2">
+              {files.map((f, i) => (
+                <div key={i} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                  <span className="text-gray-700 truncate">{f.name}</span>
+                  <button onClick={() => setFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 text-xs ml-2">Eliminar</button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </Section>
 

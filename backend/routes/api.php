@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Route;
 // --- Autenticacion (publicas) ---
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('reset-password', [AuthController::class, 'resetPassword']);
 });
 
 // --- Rutas protegidas con Sanctum ---
