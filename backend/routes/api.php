@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\MaintenanceController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\ShiftController;
+use App\Http\Controllers\Api\SlaConfigController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('export/excel', [ReportController::class, 'exportExcel']);
         Route::get('export/pdf', [ReportController::class, 'exportPdf']);
     });
+
+    // Configuracion SLA
+    Route::apiResource('sla-configs', SlaConfigController::class)->only(['index', 'store', 'update']);
 
     // Turnos
     Route::prefix('shifts')->group(function () {
