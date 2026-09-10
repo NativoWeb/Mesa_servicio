@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
+use App\Services\NotificationService;
 use App\Services\SlaService;
 use App\Services\TicketAssignmentService;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +15,7 @@ class TicketController extends Controller
     public function __construct(
         private readonly SlaService $slaService,
         private readonly TicketAssignmentService $assignmentService,
+        private readonly NotificationService $notificationService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -52,6 +54,7 @@ class TicketController extends Controller
         $assignedTechnician = $this->assignmentService->autoAssign($ticket);
         if ($assignedTechnician) {
             $ticket->update(['status' => 'in_progress']);
+            $this->notificationService->notifyTicketAssignment($ticket->fresh('assignedUser'));
         }
 
         return response()->json($ticket->fresh(['requester', 'assignedUser']), 201);
@@ -79,9 +82,27 @@ class TicketController extends Controller
             'escalation_reason' => 'nullable|string',
         ]);
 
-        $ticket->update($validated);
+        $oldStatus = $ticket->status->value;
 
-        return response()->json($ticket->fresh(['requester', 'assignedUser']));
+        $ticket->update($validated);
+        $ticket = $ticket->fresh(['requester', 'assignedUser']);
+
+        // Notificar cambio de estado
+        if (isset($validated['status']) && $validated['status'] !== $oldStatus) {
+            $this->notificationService->notifyTicketStatusChange($ticket, $oldStatus);
+
+            // Si fue escalado, notificar a lideres TI
+            if ($validated['status'] === 'escalated') {
+                $this->notificationService->notifyTicketEscalation($ticket);
+            }
+        }
+
+        // Notificar asignacion si cambio el tecnico
+        if (isset($validated['assigned_to']) && $ticket->assigned_to) {
+            $this->notificationService->notifyTicketAssignment($ticket);
+        }
+
+        return response()->json($ticket);
     }
 
     public function destroy(Ticket $ticket): JsonResponse

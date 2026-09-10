@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCreateMaintenance } from '@/hooks/use-maintenances';
 import { useAsset } from '@/hooks/use-assets';
 import { useAuthStore } from '@/stores/auth-store';
 import { toast } from 'sonner';
+import api from '@/lib/api';
 import type { MaintenanceType } from '@/types/maintenance';
 
 const typeConfig: Record<string, { label: string; icon: string }> = {
@@ -33,6 +34,8 @@ export default function NuevoMantenimientoPage() {
   const [finalStatus, setFinalStatus] = useState('operational');
   const [nextMaintDate, setNextMaintDate] = useState('');
   const [observations, setObservations] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async () => {
     if (!type || !assetIdParam) {
@@ -40,7 +43,7 @@ export default function NuevoMantenimientoPage() {
       return;
     }
     try {
-      await createMaintenance.mutateAsync({
+      const newMaintenance = await createMaintenance.mutateAsync({
         asset_id: Number(assetIdParam),
         technician_id: user?.id ?? 0,
         type: type as MaintenanceType,
@@ -52,6 +55,24 @@ export default function NuevoMantenimientoPage() {
         next_maintenance_date: nextMaintDate || null,
         observations,
       });
+
+      // Subir archivos adjuntos si hay
+      if (files.length > 0) {
+        const maintenanceId = newMaintenance.id;
+        for (let i = 0; i < files.length; i++) {
+          toast.info(`Subiendo archivo ${i + 1} de ${files.length}: ${files[i].name}`);
+          const formData = new FormData();
+          formData.append('file', files[i]);
+          try {
+            await api.post(`/maintenances/${maintenanceId}/attachments`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            });
+          } catch {
+            toast.error(`Error al subir: ${files[i].name}`);
+          }
+        }
+      }
+
       toast.success('Mantenimiento registrado correctamente');
       router.push('/inventario/mantenimiento');
     } catch {
@@ -160,6 +181,29 @@ export default function NuevoMantenimientoPage() {
                 <textarea value={observations} onChange={e => setObservations(e.target.value)} rows={3} placeholder="Notas adicionales..." className={inputClass + ' resize-none'} />
               </div>
             </div>
+          </div>
+
+          {/* Attachments */}
+          <div className="bg-white rounded-xl border p-6">
+            <h2 className="font-semibold text-gray-900 mb-4">Adjuntos y Evidencia</h2>
+            <div
+              onClick={() => fileRef.current?.click()}
+              className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-green-500 hover:bg-green-50/30 transition-all"
+            >
+              <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar archivos</p>
+              <p className="text-xs text-gray-400 mt-1">PNG, JPG, PDF (Max. 10 MB por archivo)</p>
+            </div>
+            <input ref={fileRef} type="file" multiple accept="image/*,.pdf" onChange={e => { if (e.target.files) setFiles(prev => [...prev, ...Array.from(e.target.files!)]); }} className="hidden" />
+            {files.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {files.map((f, i) => (
+                  <div key={i} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                    <span className="text-gray-700 truncate">{f.name}</span>
+                    <button onClick={() => setFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 text-xs ml-2">Eliminar</button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

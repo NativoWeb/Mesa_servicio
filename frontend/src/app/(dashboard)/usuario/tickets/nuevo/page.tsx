@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { CAMPUSES } from '@/lib/constants';
 import api from '@/lib/api';
+import { toast } from 'sonner';
 
 type TicketType = 'incident' | 'request' | 'requirement' | null;
 type Priority = 'low' | 'medium' | 'high' | 'critical';
@@ -36,6 +37,7 @@ export default function NuevoTicketPage() {
   const [location, setLocation] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -46,8 +48,9 @@ export default function NuevoTicketPage() {
     if (!isValid) return;
     setSubmitting(true);
     setError(null);
+    setUploadProgress(null);
     try {
-      await api.post('/tickets', {
+      const { data: newTicket } = await api.post('/tickets', {
         title: subject,
         description,
         category,
@@ -56,9 +59,28 @@ export default function NuevoTicketPage() {
         location,
         type,
       });
+
+      // Subir archivos adjuntos si hay
+      if (files.length > 0) {
+        const ticketId = newTicket.id;
+        for (let i = 0; i < files.length; i++) {
+          setUploadProgress(`Subiendo archivo ${i + 1} de ${files.length}: ${files[i].name}`);
+          const formData = new FormData();
+          formData.append('file', files[i]);
+          try {
+            await api.post(`/tickets/${ticketId}/attachments`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            });
+          } catch {
+            toast.error(`Error al subir: ${files[i].name}`);
+          }
+        }
+        setUploadProgress(null);
+      }
+
       setSuccess(true);
     } catch (err: any) {
-      const msg = err.response?.data?.message || err.response?.data?.error || 'Ocurrió un error al enviar el ticket. Intenta de nuevo.';
+      const msg = err.response?.data?.message || err.response?.data?.error || 'Ocurrio un error al enviar el ticket. Intenta de nuevo.';
       setError(msg);
     } finally {
       setSubmitting(false);
@@ -230,6 +252,14 @@ export default function NuevoTicketPage() {
             )}
           </div>
         </div>
+
+        {/* Upload progress */}
+        {uploadProgress && (
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700 flex items-center gap-2">
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+            {uploadProgress}
+          </div>
+        )}
 
         {/* Error message */}
         {error && (

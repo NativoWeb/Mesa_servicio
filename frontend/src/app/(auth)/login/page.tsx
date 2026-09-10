@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { useAuthStore, getRoleRoute } from '@/stores/auth-store';
@@ -131,9 +132,9 @@ export default function LoginPage() {
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                     Contraseña
                   </label>
-                  <button type="button" className="text-xs text-green-700 hover:text-green-800 font-medium">
-                    Olvidé mi contraseña
-                  </button>
+                  <Link href="/forgot-password" className="text-xs text-green-700 hover:text-green-800 font-medium">
+                    Olvide mi contrasena
+                  </Link>
                 </div>
                 <input
                   id="password"
