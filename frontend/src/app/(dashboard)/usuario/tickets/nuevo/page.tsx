@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { CAMPUSES } from '@/lib/constants';
+import api from '@/lib/api';
 
 type TicketType = 'incident' | 'request' | 'requirement' | null;
 type Priority = 'low' | 'medium' | 'high' | 'critical';
@@ -36,6 +37,7 @@ export default function NuevoTicketPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const isValid = type && category && subject.trim().length > 5 && campus;
@@ -43,10 +45,24 @@ export default function NuevoTicketPage() {
   const handleSubmit = async () => {
     if (!isValid) return;
     setSubmitting(true);
-    // Simula envío
-    await new Promise((r) => setTimeout(r, 1500));
-    setSuccess(true);
-    setSubmitting(false);
+    setError(null);
+    try {
+      await api.post('/tickets', {
+        title: subject,
+        description,
+        category,
+        priority,
+        campus,
+        location,
+        type,
+      });
+      setSuccess(true);
+    } catch (err: any) {
+      const msg = err.response?.data?.message || err.response?.data?.error || 'Ocurrió un error al enviar el ticket. Intenta de nuevo.';
+      setError(msg);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -214,6 +230,13 @@ export default function NuevoTicketPage() {
             )}
           </div>
         </div>
+
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">
+            {error}
+          </div>
+        )}
 
         {/* Disclaimer + Actions */}
         <div className="text-xs text-gray-400 leading-relaxed">
