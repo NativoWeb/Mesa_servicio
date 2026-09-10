@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Shield, Wrench, Package, Sparkles, Monitor } from 'lucide-react';
 import { useCreateMaintenance } from '@/hooks/use-maintenances';
 import { useAsset } from '@/hooks/use-assets';
 import { useAuthStore } from '@/stores/auth-store';
@@ -10,11 +11,11 @@ import { toast } from 'sonner';
 import api from '@/lib/api';
 import type { MaintenanceType } from '@/types/maintenance';
 
-const typeConfig: Record<string, { label: string; icon: string }> = {
-  preventive: { label: 'Preventivo', icon: '🛡' },
-  corrective: { label: 'Correctivo', icon: '🔧' },
-  update: { label: 'Actualizacion', icon: '📦' },
-  cleaning: { label: 'Limpieza', icon: '🧹' },
+const typeConfig: Record<string, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
+  preventive: { label: 'Preventivo', icon: Shield },
+  corrective: { label: 'Correctivo', icon: Wrench },
+  update: { label: 'Actualizacion', icon: Package },
+  cleaning: { label: 'Limpieza', icon: Sparkles },
 };
 
 export default function NuevoMantenimientoPage() {
@@ -98,7 +99,9 @@ export default function NuevoMantenimientoPage() {
       {/* Asset Info */}
       {asset && (
         <div className="bg-white rounded-xl border p-4 flex items-center gap-4">
-          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-lg">💻</div>
+          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+            <Monitor className="w-5 h-5 text-green-700" />
+          </div>
           <div className="flex-1">
             <p className="font-semibold text-gray-900">{asset.name}</p>
             <p className="text-xs text-gray-500">Serial: {asset.serial}</p>
@@ -118,7 +121,7 @@ export default function NuevoMantenimientoPage() {
             <div className="grid grid-cols-2 gap-2">
               {Object.entries(typeConfig).map(([key, cfg]) => (
                 <button key={key} onClick={() => setType(key as MaintenanceType)} className={`p-3 rounded-xl border-2 text-center transition-all ${type === key ? 'border-green-600 bg-green-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                  <span className="text-xl">{cfg.icon}</span>
+                  <cfg.icon className="w-5 h-5 text-green-700" />
                   <p className="text-sm font-medium text-gray-900 mt-1">{cfg.label}</p>
                 </button>
               ))}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
+import { FileText, MapPin, Building2, Tag, User, Paperclip } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth-store';
 import { useComments, useCreateComment } from '@/hooks/use-comments';
@@ -163,7 +164,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
           {/* Description */}
           <div className="bg-white rounded-xl border p-6">
             <h2 className="font-semibold text-gray-900 flex items-center gap-2 mb-3">
-              <span className="text-base">📝</span> Tu Descripción
+              <FileText className="w-4 h-4 text-gray-500" /> Tu Descripción
             </h2>
             <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{ticket.description}</p>
           </div>
@@ -241,13 +242,13 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
             <h3 className="font-semibold text-gray-900 text-sm mb-3">Detalles de Ubicación</h3>
             <div className="space-y-3 text-sm">
               {[
-                { icon: '📍', label: 'Sede', value: ticket.campus },
-                { icon: '🏢', label: 'Ubicación', value: ticket.location },
-                { icon: '🏷️', label: 'Categoría', value: ticket.category },
-                { icon: '👤', label: 'Solicitante', value: ticket.requester?.name || 'N/A' },
+                { icon: MapPin, label: 'Sede', value: ticket.campus },
+                { icon: Building2, label: 'Ubicación', value: ticket.location },
+                { icon: Tag, label: 'Categoría', value: ticket.category },
+                { icon: User, label: 'Solicitante', value: ticket.requester?.name || 'N/A' },
               ].map((d) => (
                 <div key={d.label} className="flex items-start gap-2">
-                  <span className="text-xs mt-0.5">{d.icon}</span>
+                  <d.icon className="w-3.5 h-3.5 text-gray-400 mt-0.5 shrink-0" />
                   <div>
                     <p className="text-[11px] text-gray-400 uppercase">{d.label}</p>
                     <p className="text-gray-700">{d.value}</p>
@@ -266,7 +267,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
               <div className="space-y-2">
                 {attachments.map((a) => (
                   <div key={a.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer transition-colors">
-                    <span className="text-red-500 text-xs">📎</span>
+                    <Paperclip className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                     <span className="text-gray-700 truncate flex-1">{a.file_name}</span>
                     {a.file_size && <span className="text-[11px] text-gray-400">{Math.round(a.file_size / 1024)} KB</span>}
                   </div>

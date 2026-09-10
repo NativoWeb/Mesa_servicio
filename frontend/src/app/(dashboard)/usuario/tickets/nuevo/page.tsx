@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import { AlertTriangle, ClipboardList, Settings, CheckCircle, Paperclip } from 'lucide-react';
 import { CAMPUSES } from '@/lib/constants';
 import api from '@/lib/api';
 import { toast } from 'sonner';
@@ -10,9 +11,9 @@ type TicketType = 'incident' | 'request' | 'requirement' | null;
 type Priority = 'low' | 'medium' | 'high' | 'critical';
 
 const typeConfig = {
-  incident: { label: 'Incidente', icon: '⚠️', desc: 'Algo dejó de funcionar correctamente o requiere arreglo.' , color: 'border-red-300 bg-red-50' },
-  request: { label: 'Solicitud', icon: '📋', desc: 'Necesitas acceso a un servicio o una acción administrativa.' , color: 'border-blue-300 bg-blue-50' },
-  requirement: { label: 'Requerimiento', icon: '⚙️', desc: 'Una mejora, instalación nueva o disponibilidad de recursos.' , color: 'border-purple-300 bg-purple-50' },
+  incident: { label: 'Incidente', icon: AlertTriangle, desc: 'Algo dejó de funcionar correctamente o requiere arreglo.' , color: 'border-red-300 bg-red-50', iconColor: 'text-red-600' },
+  request: { label: 'Solicitud', icon: ClipboardList, desc: 'Necesitas acceso a un servicio o una acción administrativa.' , color: 'border-blue-300 bg-blue-50', iconColor: 'text-blue-600' },
+  requirement: { label: 'Requerimiento', icon: Settings, desc: 'Una mejora, instalación nueva o disponibilidad de recursos.' , color: 'border-purple-300 bg-purple-50', iconColor: 'text-purple-600' },
 };
 
 const categories = [
@@ -96,7 +97,9 @@ export default function NuevoTicketPage() {
   if (success) {
     return (
       <div className="max-w-lg mx-auto text-center py-20">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✅</div>
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <CheckCircle className="w-8 h-8 text-green-600" />
+        </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Solicitud enviada exitosamente</h1>
         <p className="text-gray-500 mb-6">Tu ticket ha sido registrado y será asignado a un técnico. Recibirás notificaciones sobre su estado.</p>
         <div className="flex justify-center gap-3">
@@ -135,7 +138,7 @@ export default function NuevoTicketPage() {
                 onClick={() => setType(key as TicketType)}
                 className={`p-4 rounded-xl border-2 text-left transition-all ${type === key ? cfg.color + ' ring-2 ring-offset-1 ring-green-500' : 'border-gray-200 hover:border-gray-300'}`}
               >
-                <span className="text-xl">{cfg.icon}</span>
+                <cfg.icon className={`w-5 h-5 ${cfg.iconColor}`} />
                 <p className="font-medium text-gray-900 mt-2">{cfg.label}</p>
                 <p className="text-xs text-gray-500 mt-0.5">{cfg.desc}</p>
               </button>
@@ -235,7 +238,9 @@ export default function NuevoTicketPage() {
               onClick={() => fileRef.current?.click()}
               className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-green-500 hover:bg-green-50/30 transition-all"
             >
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">📎</div>
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Paperclip className="w-5 h-5 text-green-700" />
+              </div>
               <p className="text-sm font-medium text-gray-700">Arrastra archivos aquí o haz clic</p>
               <p className="text-xs text-gray-400 mt-1">PNG, JPG, PDF (Máx. 10 MB por archivo)</p>
             </div>

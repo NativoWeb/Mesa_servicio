@@ -2,6 +2,7 @@
 
 import { use } from 'react';
 import Link from 'next/link';
+import { Laptop, Monitor, Printer } from 'lucide-react';
 import { useAsset } from '@/hooks/use-assets';
 import { useMaintenances } from '@/hooks/use-maintenances';
 import { ASSET_STATUS_CONFIG } from '@/lib/constants';
@@ -48,8 +49,8 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
       {/* Header Card */}
       <div className="bg-white rounded-xl border p-6 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-2xl">
-            {asset.category === 'laptop' ? '💻' : asset.category === 'server' ? '🖥' : asset.category === 'printer' ? '🖨' : '💻'}
+          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            {asset.category === 'laptop' ? <Laptop className="w-6 h-6 text-green-700" /> : asset.category === 'server' ? <Monitor className="w-6 h-6 text-green-700" /> : asset.category === 'printer' ? <Printer className="w-6 h-6 text-green-700" /> : <Laptop className="w-6 h-6 text-green-700" />}
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900">{asset.name}</h1>
