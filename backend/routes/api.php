@@ -1,0 +1,78 @@
+<?php
+
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\MaintenanceController;
+use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\ShiftController;
+use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\UserController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Rutas API — Mesa de Ayuda UTS
+|--------------------------------------------------------------------------
+*/
+
+// --- Autenticacion (publicas) ---
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+});
+
+// --- Rutas protegidas con Sanctum ---
+Route::middleware('auth:sanctum')->group(function () {
+
+    // Auth (requiere token)
+    Route::prefix('auth')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('me', [AuthController::class, 'me']);
+    });
+
+    // Dashboard
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'index']);
+    });
+
+    // Tickets
+    Route::apiResource('tickets', TicketController::class);
+
+    // Activos
+    Route::apiResource('assets', AssetController::class);
+
+    // Mantenimientos
+    Route::apiResource('maintenances', MaintenanceController::class);
+
+    // Usuarios
+    Route::apiResource('users', UserController::class);
+
+    // Reportes
+    Route::prefix('reports')->group(function () {
+        Route::get('tickets', [ReportController::class, 'ticketsSummary']);
+        Route::get('assets', [ReportController::class, 'assetsSummary']);
+        Route::get('maintenances', [ReportController::class, 'maintenancesSummary']);
+        Route::get('export/excel', [ReportController::class, 'exportExcel']);
+        Route::get('export/pdf', [ReportController::class, 'exportPdf']);
+    });
+
+    // Turnos
+    Route::prefix('shifts')->group(function () {
+        Route::get('/', [ShiftController::class, 'index']);
+        Route::post('/', [ShiftController::class, 'store']);
+        Route::get('{shift}', [ShiftController::class, 'show']);
+        Route::put('{shift}', [ShiftController::class, 'update']);
+        Route::delete('{shift}', [ShiftController::class, 'destroy']);
+    });
+
+    // Mensajes masivos
+    Route::prefix('messages')->group(function () {
+        Route::get('/', [MessageController::class, 'index']);
+        Route::post('/', [MessageController::class, 'store']);
+        Route::get('{message}', [MessageController::class, 'show']);
+        Route::put('{message}', [MessageController::class, 'update']);
+        Route::delete('{message}', [MessageController::class, 'destroy']);
+        Route::post('{message}/send', [MessageController::class, 'send']);
+    });
+});
