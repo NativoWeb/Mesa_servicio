@@ -1,0 +1,38 @@
+# Dependencies
+backend/vendor/
+frontend/node_modules/
+frontend/.next/
+
+# Environment files
+.env
+.env.local
+.env.production
+backend/.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build
+frontend/out/
+
+# PHP
+backend/storage/*.key
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/bootstrap/cache/*
+
+# Testing
+backend/.phpunit.result.cache
+frontend/coverage/
