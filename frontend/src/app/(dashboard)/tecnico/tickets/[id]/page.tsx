@@ -11,12 +11,12 @@ const ticket = {
   priority: 'high',
   priorityLabel: 'Alta',
   category: 'Hardware - Equipos de Computo',
-  campus: 'Sede Bucaramanga',
+  campus: 'Sede Central',
   location: 'Lab. Informatica 3 - Aula 203',
-  requester: { name: 'Carlos Mendez', role: 'Docente', email: 'cmendez@uts.edu.co' },
+  requester: { name: 'Carlos Mendez', role: 'Docente', email: 'cmendez@ejemplo.com' },
   assignee: { name: 'Andres Gomez', role: 'Tecnico de Soporte' },
   createdAt: '09/04/2025 14:30',
-  asset: { name: 'Portatil UTS-001', serial: 'SN-2024-00412', type: 'Portatil Dell Latitude 5540' },
+  asset: { name: 'Portatil SD-001', serial: 'SN-2024-00412', type: 'Portatil Dell Latitude 5540' },
   description: 'Al intentar encender el equipo del docente en el aula 203, este emite una serie de pitidos cortos y la pantalla permanece en negro. El ventilador parece girar a maxima velocidad pero no hay senal de video ni carga del sistema operativo.\n\nSe probo cambiando el cable de poder pero el problema persiste. Es urgente ya que hay clases programadas para toda la semana en ese salon.',
 };
 

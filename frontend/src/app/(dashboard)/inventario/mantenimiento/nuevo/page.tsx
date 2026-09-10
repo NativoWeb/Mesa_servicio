@@ -35,11 +35,11 @@ export default function NuevoMantenimientoPage() {
       <div className="bg-white rounded-xl border p-4 flex items-center gap-4">
         <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-lg">💻</div>
         <div className="flex-1">
-          <p className="font-semibold text-gray-900">Laptop UTS-001</p>
+          <p className="font-semibold text-gray-900">Laptop SD-001</p>
           <p className="text-xs text-gray-500">Serial: DL-V1236765</p>
         </div>
         <div className="text-right text-xs text-gray-500">
-          <p><strong>Sede:</strong> Bucaramanga</p>
+          <p><strong>Sede:</strong> Sede Central</p>
           <p><strong>Cuentadante:</strong> Andrés Mendoza</p>
         </div>
         <div className="text-right text-xs text-gray-500">

@@ -32,9 +32,9 @@ const slaAlerts = [
 ];
 
 const unassignedTickets = [
-  { id: '#5012', user: 'Diana Pineda', subject: 'Falla en acceso a sistema académico', priority: 'Alta' as const, time: '42 min', campus: 'Bucaramanga' },
-  { id: '#5011', user: 'Óscar Ruiz', subject: 'Video Beam no proyecta imagen', priority: 'Media' as const, time: '3h', campus: 'Piedecuesta' },
-  { id: '#5010', user: 'Marta Gómez', subject: 'Configuración de correo institucional', priority: 'Baja' as const, time: '15 min', campus: 'Bucaramanga' },
+  { id: '#5012', user: 'Diana Pineda', subject: 'Falla en acceso a sistema académico', priority: 'Alta' as const, time: '42 min', campus: 'Sede Central' },
+  { id: '#5011', user: 'Óscar Ruiz', subject: 'Video Beam no proyecta imagen', priority: 'Media' as const, time: '3h', campus: 'Sede Norte' },
+  { id: '#5010', user: 'Marta Gómez', subject: 'Configuración de correo institucional', priority: 'Baja' as const, time: '15 min', campus: 'Sede Central' },
 ];
 
 const priorityColors = { Alta: 'bg-red-100 text-red-700', Media: 'bg-yellow-100 text-yellow-700', Baja: 'bg-green-100 text-green-700' };
@@ -47,7 +47,7 @@ export default function LiderDashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Panel de Control — Mesa de Servicio TI</h1>
-        <p className="text-gray-500 text-sm">Sede: Bucaramanga &middot; Semana Actual</p>
+        <p className="text-gray-500 text-sm">Sede: Central &middot; Semana Actual</p>
       </div>
 
       {/* KPI Cards */}

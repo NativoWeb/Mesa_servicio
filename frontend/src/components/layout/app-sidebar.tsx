@@ -149,12 +149,12 @@ export function AppSidebar() {
       <div className="p-4 border-b border-green-800/50">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-sm font-bold">
-            UTS
+            SD
           </div>
           <div>
-            <p className="text-sm font-semibold leading-tight">Mesa de Servicio</p>
+            <p className="text-sm font-semibold leading-tight">Service Desk</p>
             <p className="text-[10px] text-green-300 uppercase tracking-wider">
-              Unidades Tecnológicas
+              Mesa de Servicio TI
             </p>
           </div>
         </div>

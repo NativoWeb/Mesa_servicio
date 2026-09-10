@@ -76,7 +76,7 @@ export default function NuevoEquipoPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Serial*</label>
             <div className="relative">
-              <input value={serial} onChange={(e) => checkSerial(e.target.value)} placeholder="UTS-2024-LAP-0014" className={inputClass} />
+              <input value={serial} onChange={(e) => checkSerial(e.target.value)} placeholder="SD-2024-LAP-0014" className={inputClass} />
               {serialAvailable !== null && (
                 <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium ${serialAvailable ? 'text-green-600' : 'text-red-600'}`}>
                   {serialAvailable ? '✓ Serial disponible' : '✕ Serial duplicado'}

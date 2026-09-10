@@ -6,7 +6,7 @@ import Link from 'next/link';
 const timeline = [
   { date: '12/01/2024', title: 'Cambio de Cuentadante', desc: 'Asignacion formal al area de Coordinacion Academica', color: 'bg-blue-500' },
   { date: '03/09/2023', title: 'Mantenimiento Correctivo', desc: 'Limpieza fisica y optimizacion de software', color: 'bg-yellow-500' },
-  { date: '07/03/2023', title: 'Cambio de Ubicacion', desc: 'Traslado de Sede Bucaramanga a Sede Piedecuesta', color: 'bg-purple-500' },
+  { date: '07/03/2023', title: 'Cambio de Ubicacion', desc: 'Traslado de Sede Central a Sede Norte', color: 'bg-purple-500' },
   { date: '10/01/2022', title: 'Ingreso a Inventario', desc: 'Compra inicial y registro en el sistema', color: 'bg-green-500' },
 ];
 
@@ -51,7 +51,7 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
             💻
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Portatil UTS-001</h1>
+            <h1 className="text-xl font-bold text-gray-900">Portatil SD-001</h1>
             <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
               Operativo
             </span>
@@ -77,9 +77,9 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
               {[
                 { label: 'Categoria', value: 'Portatiles' },
                 { label: 'Modelo', value: 'Dell Vostro 3520' },
-                { label: 'Serial', value: 'UTS-2024-091' },
+                { label: 'Serial', value: 'SD-2024-091' },
                 { label: 'Fecha Compra', value: '10/01/2022' },
-                { label: 'Ubicacion', value: 'Sede Bucaramanga, Bloque A, Of. 301' },
+                { label: 'Ubicacion', value: 'Sede Central, Bloque A, Of. 301' },
                 { label: 'Proveedor', value: 'Dell Technologies' },
               ].map((item) => (
                 <div key={item.label}>
@@ -124,7 +124,7 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
                 <p className="text-sm font-medium text-gray-900 mt-1">15/05/2025</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide">Garantia UTS</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wide">Garantia Institucional</p>
                 <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   Vigente
                 </span>

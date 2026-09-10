@@ -8,7 +8,7 @@ const logs = [
   { timestamp: '09/09/2026 12:40:22', user: 'admin_central', action: 'backup_manual', target: 'Backup completo BD mesa_ayuda', ip: '192.168.1.50', status: 'success' as const },
   { timestamp: '09/09/2026 11:05:18', user: 'j_perez_user', action: 'login_failed', target: 'Intento acceso módulo admin', ip: '10.0.0.34', status: 'blocked' as const },
   { timestamp: '09/09/2026 10:30:00', user: 'admin_central', action: 'create_user', target: 'Nuevo usuario: Sandra Rodríguez (Técnico)', ip: '192.168.1.50', status: 'success' as const },
-  { timestamp: '09/09/2026 09:12:33', user: 'm_rueda_inv', action: 'delete_asset', target: 'Activo UTS-DSK-0088 dado de baja', ip: '192.168.1.78', status: 'success' as const },
+  { timestamp: '09/09/2026 09:12:33', user: 'm_rueda_inv', action: 'delete_asset', target: 'Activo SD-DSK-0088 dado de baja', ip: '192.168.1.78', status: 'success' as const },
 ];
 
 const statusConfig = {

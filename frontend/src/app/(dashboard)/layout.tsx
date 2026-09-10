@@ -46,7 +46,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Header />
           <div className="flex-1 p-6">{children}</div>
           <footer className="px-6 py-3 border-t bg-white text-xs text-gray-400 flex items-center justify-between">
-            <span>&copy; 2026 Mesa de Servicio TI &middot; UTS Bucaramanga</span>
+            <span>&copy; 2026 Mesa de Servicio TI</span>
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               Sistema Operativo

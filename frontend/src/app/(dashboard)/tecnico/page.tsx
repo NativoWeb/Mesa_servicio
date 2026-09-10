@@ -19,14 +19,14 @@ interface Ticket {
 }
 
 const tickets: Ticket[] = [
-  { id: '#TI-4592', subject: 'Falla conexion fibra optica', category: 'Redes e Infra', priority: 'critical', status: 'open', campus: 'Bucaramanga', time: 'Hace 45m', sla: 89, slaRisk: true },
-  { id: '#TI-4588', subject: 'Instalacion software Lab', category: 'Software', priority: 'medium', status: 'in_progress', campus: 'Floridablanca', time: 'Hace 3h', sla: 65 },
-  { id: '#TI-4581', subject: 'Error acceso plataforma notas', category: 'Soporte Web', priority: 'high', status: 'pending', campus: 'Bucaramanga', time: 'Hace 5h', sla: 45 },
-  { id: '#TI-4575', subject: 'Teclado defectuoso sala 204', category: 'Hardware', priority: 'low', status: 'closed', campus: 'Barrancabermeja', time: 'Hace 8h', sla: 100 },
-  { id: '#TI-4570', subject: 'Proyector sin imagen aula 101', category: 'Hardware', priority: 'high', status: 'open', campus: 'Bucaramanga', time: 'Hace 1h', sla: 82, slaRisk: true },
-  { id: '#TI-4565', subject: 'VPN no conecta desde casa', category: 'Redes e Infra', priority: 'medium', status: 'in_progress', campus: 'Piedecuesta', time: 'Hace 4h', sla: 55 },
-  { id: '#TI-4560', subject: 'Impresora atasca papel piso 3', category: 'Hardware', priority: 'low', status: 'pending', campus: 'Bucaramanga', time: 'Hace 6h', sla: 30 },
-  { id: '#TI-4555', subject: 'Actualizacion Office licencias', category: 'Software', priority: 'critical', status: 'open', campus: 'Floridablanca', time: 'Hace 2h', sla: 91, slaRisk: true },
+  { id: '#TI-4592', subject: 'Falla conexion fibra optica', category: 'Redes e Infra', priority: 'critical', status: 'open', campus: 'Sede Central', time: 'Hace 45m', sla: 89, slaRisk: true },
+  { id: '#TI-4588', subject: 'Instalacion software Lab', category: 'Software', priority: 'medium', status: 'in_progress', campus: 'Sede Norte', time: 'Hace 3h', sla: 65 },
+  { id: '#TI-4581', subject: 'Error acceso plataforma notas', category: 'Soporte Web', priority: 'high', status: 'pending', campus: 'Sede Central', time: 'Hace 5h', sla: 45 },
+  { id: '#TI-4575', subject: 'Teclado defectuoso sala 204', category: 'Hardware', priority: 'low', status: 'closed', campus: 'Sede Sur', time: 'Hace 8h', sla: 100 },
+  { id: '#TI-4570', subject: 'Proyector sin imagen aula 101', category: 'Hardware', priority: 'high', status: 'open', campus: 'Sede Central', time: 'Hace 1h', sla: 82, slaRisk: true },
+  { id: '#TI-4565', subject: 'VPN no conecta desde casa', category: 'Redes e Infra', priority: 'medium', status: 'in_progress', campus: 'Sede Norte', time: 'Hace 4h', sla: 55 },
+  { id: '#TI-4560', subject: 'Impresora atasca papel piso 3', category: 'Hardware', priority: 'low', status: 'pending', campus: 'Sede Central', time: 'Hace 6h', sla: 30 },
+  { id: '#TI-4555', subject: 'Actualizacion Office licencias', category: 'Software', priority: 'critical', status: 'open', campus: 'Sede Norte', time: 'Hace 2h', sla: 91, slaRisk: true },
 ];
 
 const statusLabels: Record<string, string> = {

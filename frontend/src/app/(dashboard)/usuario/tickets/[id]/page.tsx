@@ -12,7 +12,7 @@ const ticket = {
   priorityLabel: 'Alta',
   assignee: { name: 'Andrés Gómez', role: 'Técnico de Soporte' },
   createdAt: '15/04/2025',
-  campus: 'Sede Bucaramanga',
+  campus: 'Sede Central',
   location: 'Lab. Informática 3 - Aula 203',
   category: 'Hardware - Equipos de Cómputo',
   requesterType: 'Usuario Docente',

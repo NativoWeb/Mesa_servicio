@@ -9,8 +9,8 @@ export function ReportFilters() {
         <label className="block text-xs text-gray-500 mb-1">Sede</label>
         <select className="px-3 py-1.5 border rounded-lg text-sm">
           <option>Todas</option>
-          <option>Bucaramanga</option>
-          <option>Piedecuesta</option>
+          <option>Sede Central</option>
+          <option>Sede Norte</option>
         </select>
       </div>
       <div>

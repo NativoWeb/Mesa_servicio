@@ -4,12 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 const assets = [
-  { id: 'UTS-LPT-0442', name: 'MacBook Pro 14"', category: 'Laptops', serial: 'C02FM0Q02N', campus: 'Bucaramanga', location: 'Lab 302', status: 'operational' as const, nextMaint: '02 Nov 2023', holder: 'Julián Ortega' },
-  { id: 'UTS-DSK-1299', name: 'Dell OptiPlex 7090', category: 'Desktops', serial: '3S-SMR2-Q98', campus: 'Bucaramanga', location: 'Admin', status: 'new' as const, nextMaint: '05 Ene 2024', holder: 'Ana Torres' },
-  { id: 'UTS-SRV-0060', name: 'HP ProLiant DL380', category: 'Servidores', serial: 'CZ22034JN', campus: 'Bucaramanga', location: 'Datacenter Principal', status: 'damaged' as const, nextMaint: '20 Oct 2023', holder: 'Soporte TIC Central' },
-  { id: 'UTS-IMP-0188', name: 'Xerox VersaLink C405', category: 'Impresoras', serial: 'XRK-0012-PNT', campus: 'Piedecuesta', location: 'Sala Profesores', status: 'operational' as const, nextMaint: '15 Dic 2023', holder: 'Laura Pineda' },
-  { id: 'UTS-MON-0321', name: 'LG UltraWide 34"', category: 'Monitores', serial: 'LG-2024-UW34', campus: 'Barrancabermeja', location: 'Of. Decano', status: 'operational' as const, nextMaint: '10 Mar 2024', holder: 'Carlos Mejía' },
-  { id: 'UTS-RTR-0015', name: 'Cisco Catalyst 9300', category: 'Redes', serial: 'FCW2345L0P8', campus: 'Bucaramanga', location: 'Rack 2 Piso 3', status: 'maintenance' as const, nextMaint: '01 Nov 2023', holder: 'Soporte TIC Central' },
+  { id: 'SD-LPT-0442', name: 'MacBook Pro 14"', category: 'Laptops', serial: 'C02FM0Q02N', campus: 'Sede Central', location: 'Lab 302', status: 'operational' as const, nextMaint: '02 Nov 2023', holder: 'Julián Ortega' },
+  { id: 'SD-DSK-1299', name: 'Dell OptiPlex 7090', category: 'Desktops', serial: '3S-SMR2-Q98', campus: 'Sede Central', location: 'Admin', status: 'new' as const, nextMaint: '05 Ene 2024', holder: 'Ana Torres' },
+  { id: 'SD-SRV-0060', name: 'HP ProLiant DL380', category: 'Servidores', serial: 'CZ22034JN', campus: 'Sede Central', location: 'Datacenter Principal', status: 'damaged' as const, nextMaint: '20 Oct 2023', holder: 'Soporte TIC Central' },
+  { id: 'SD-IMP-0188', name: 'Xerox VersaLink C405', category: 'Impresoras', serial: 'XRK-0012-PNT', campus: 'Sede Norte', location: 'Sala Profesores', status: 'operational' as const, nextMaint: '15 Dic 2023', holder: 'Laura Pineda' },
+  { id: 'SD-MON-0321', name: 'LG UltraWide 34"', category: 'Monitores', serial: 'LG-2024-UW34', campus: 'Sede Sur', location: 'Of. Decano', status: 'operational' as const, nextMaint: '10 Mar 2024', holder: 'Carlos Mejía' },
+  { id: 'SD-RTR-0015', name: 'Cisco Catalyst 9300', category: 'Redes', serial: 'FCW2345L0P8', campus: 'Sede Central', location: 'Rack 2 Piso 3', status: 'maintenance' as const, nextMaint: '01 Nov 2023', holder: 'Soporte TIC Central' },
 ];
 
 const statusConfig = {
@@ -42,7 +42,7 @@ export default function InventarioDashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Inventario de Activos TI</h1>
-          <p className="text-gray-500 text-sm">Gestión del parque tecnológico institucional de las UTS</p>
+          <p className="text-gray-500 text-sm">Gestión del parque tecnológico institucional</p>
         </div>
         <div className="flex items-center gap-2">
           <button className="border px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50">Importar CSV</button>
@@ -79,7 +79,7 @@ export default function InventarioDashboardPage() {
         </select>
         <select value={campusFilter} onChange={(e) => setCampusFilter(e.target.value)} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
           <option value="">Todas las sedes</option>
-          {['Bucaramanga', 'Piedecuesta', 'Barrancabermeja', 'Yopal', 'Vélez'].map((c) => <option key={c} value={c}>{c}</option>)}
+          {['Sede Central', 'Sede Norte', 'Sede Sur', 'Sede Este', 'Sede Oeste'].map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
           <option value="">Cualquier estado</option>

@@ -13,11 +13,11 @@ interface DaySchedule {
 }
 
 const weekDays: DaySchedule[] = [
-  { day: 'Lun', number: 14, startTime: '8:00', endTime: '17:00', campus: 'Bucaramanga', building: 'Edificio A', active: true },
-  { day: 'Mar', number: 15, startTime: '8:00', endTime: '17:00', campus: 'Bucaramanga', building: 'Edificio A', active: true },
-  { day: 'Mie', number: 16, startTime: '8:00', endTime: '17:00', campus: 'Bucaramanga', building: 'Edificio B', active: true },
-  { day: 'Jue', number: 17, startTime: '8:00', endTime: '17:00', campus: 'Floridablanca', building: 'Edificio Principal', active: true },
-  { day: 'Vie', number: 18, startTime: '8:00', endTime: '17:00', campus: 'Bucaramanga', building: 'Edificio A', active: true },
+  { day: 'Lun', number: 14, startTime: '8:00', endTime: '17:00', campus: 'Sede Central', building: 'Edificio A', active: true },
+  { day: 'Mar', number: 15, startTime: '8:00', endTime: '17:00', campus: 'Sede Central', building: 'Edificio A', active: true },
+  { day: 'Mie', number: 16, startTime: '8:00', endTime: '17:00', campus: 'Sede Central', building: 'Edificio B', active: true },
+  { day: 'Jue', number: 17, startTime: '8:00', endTime: '17:00', campus: 'Sede Norte', building: 'Edificio Principal', active: true },
+  { day: 'Vie', number: 18, startTime: '8:00', endTime: '17:00', campus: 'Sede Central', building: 'Edificio A', active: true },
   { day: 'Sab', number: 19, startTime: '', endTime: '', campus: '', building: '', active: false },
   { day: 'Dom', number: 20, startTime: '', endTime: '', campus: '', building: '', active: false },
 ];
@@ -52,7 +52,7 @@ export default function MiTurnoPage() {
                 <span className="text-xs font-bold text-green-700 uppercase tracking-wider bg-green-100 px-2 py-0.5 rounded">Turno Activo Ahora</span>
               </div>
               <p className="text-lg font-bold text-gray-900">Hoy, Lunes &middot; 8:00 AM - 5:00 PM</p>
-              <p className="text-sm text-gray-500">Sede Bucaramanga &middot; Edificio A</p>
+              <p className="text-sm text-gray-500">Sede Sede Central &middot; Edificio A</p>
             </div>
           </div>
           <div className="text-right md:border-l md:pl-6">
@@ -94,7 +94,7 @@ export default function MiTurnoPage() {
           },
           {
             label: 'Sede Principal',
-            value: 'Bucaramanga',
+            value: 'Sede Central',
             sub: 'Edificio A',
             icon: (
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -206,7 +206,7 @@ export default function MiTurnoPage() {
                 <div className="px-4 pb-4 border-t bg-gray-50/50">
                   <p className="text-sm text-gray-500 py-3">
                     {week.status === 'Programado'
-                      ? 'Turno de Lunes a Viernes, 8:00 AM a 5:00 PM. Sede Bucaramanga - Edificio A.'
+                      ? 'Turno de Lunes a Viernes, 8:00 AM a 5:00 PM. Sede Sede Central - Edificio A.'
                       : 'La programacion de esta semana aun no ha sido publicada por la Direccion de TI.'
                     }
                   </p>

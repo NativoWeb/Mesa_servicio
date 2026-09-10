@@ -217,7 +217,7 @@ export default function NuevoTicketPage() {
 
         {/* Disclaimer + Actions */}
         <div className="text-xs text-gray-400 leading-relaxed">
-          Al enviar esta solicitud, usted acepta que el personal de TI UTS acceda a la información técnica necesaria para la resolución de su caso bajo las directivas de la institución.
+          Al enviar esta solicitud, usted acepta que el personal de TI acceda a la información técnica necesaria para la resolución de su caso bajo las directivas de la institución.
         </div>
         <div className="flex justify-end gap-3 pb-4">
           <Link href="/usuario/tickets" className="px-5 py-2.5 border border-gray-300 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">

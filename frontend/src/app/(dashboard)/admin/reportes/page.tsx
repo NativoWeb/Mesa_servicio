@@ -16,8 +16,8 @@ const sampleData = [
 ];
 
 const scheduled = [
-  { name: 'Resumen Mensual de Tickets', freq: 'Cada Lunes 08:00 AM', dest: 'coord.ti@uts.edu.co, lider.tic@uts.edu.co', next: '01 Dic 2025, 08:00', status: 'active' },
-  { name: 'Alerta de Inventario Crítico', freq: 'Día 1 de cada mes', dest: 'rectoria@uts.edu.co, admin.activos@uts.edu.co', next: '01 Nov 2025, 08:15', status: 'paused' },
+  { name: 'Resumen Mensual de Tickets', freq: 'Cada Lunes 08:00 AM', dest: 'coord.ti@ejemplo.com, lider.tic@ejemplo.com', next: '01 Dic 2025, 08:00', status: 'active' },
+  { name: 'Alerta de Inventario Crítico', freq: 'Día 1 de cada mes', dest: 'direccion@ejemplo.com, admin.activos@ejemplo.com', next: '01 Nov 2025, 08:15', status: 'paused' },
 ];
 
 export default function AdminReportesPage() {
@@ -64,9 +64,9 @@ export default function AdminReportesPage() {
           <div>
             <label className="block text-xs text-gray-500 mb-1">Sede</label>
             <select className="px-3 py-1.5 border rounded-lg text-sm">
-              <option>Bucaramanga - Campus Principal</option>
-              <option>Piedecuesta</option>
-              <option>Barrancabermeja</option>
+              <option>Sede Central - Campus Principal</option>
+              <option>Sede Norte</option>
+              <option>Sede Sur</option>
             </select>
           </div>
           <div>

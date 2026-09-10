@@ -22,10 +22,10 @@ export const ASSET_STATUS_CONFIG = {
 } as const;
 
 export const CAMPUSES = [
-  'Bucaramanga (Principal)',
-  'Piedecuesta',
-  'Barrancabermeja',
-  'Yopal',
-  'Velez',
-  'Charala',
+  'Sede Central',
+  'Sede Norte',
+  'Sede Sur',
+  'Sede Este',
+  'Sede Oeste',
+  'Sede Regional',
 ] as const;

@@ -3,11 +3,11 @@
 import Link from 'next/link';
 
 const equipos = [
-  { equipo: 'Laptop Dell Vostro', category: 'Portatiles', serial: 'UTS-2024-091', campus: 'Bucaramanga', status: 'operational', nextMaint: '20/06/2025', statusLabel: 'Operativo' },
-  { equipo: 'PC de Escritorio HP', category: 'Sobremesas', serial: 'UTS-2024-042', campus: 'Piedecuesta', status: 'damaged', nextMaint: '01/05/2025', statusLabel: 'Averiado' },
-  { equipo: 'Impresora Kyocera', category: 'Perifericos', serial: 'UTS-2023-098', campus: 'Bucaramanga', status: 'maintenance', nextMaint: '18/05/2025', statusLabel: 'Mantenimiento' },
-  { equipo: 'MacBook Air M2', category: 'Portatiles', serial: 'UTS-2023-122', campus: 'Bucaramanga', status: 'operational', nextMaint: '07/08/2025', statusLabel: 'Operativo' },
-  { equipo: 'Camara Web Logitech', category: 'Perifericos', serial: 'UTS-2024-099', campus: 'Velez', status: 'operational', nextMaint: '05/05/2026', statusLabel: 'Operativo' },
+  { equipo: 'Laptop Dell Vostro', category: 'Portatiles', serial: 'SD-2024-091', campus: 'Sede Central', status: 'operational', nextMaint: '20/06/2025', statusLabel: 'Operativo' },
+  { equipo: 'PC de Escritorio HP', category: 'Sobremesas', serial: 'SD-2024-042', campus: 'Sede Norte', status: 'damaged', nextMaint: '01/05/2025', statusLabel: 'Averiado' },
+  { equipo: 'Impresora Kyocera', category: 'Perifericos', serial: 'SD-2023-098', campus: 'Sede Central', status: 'maintenance', nextMaint: '18/05/2025', statusLabel: 'Mantenimiento' },
+  { equipo: 'MacBook Air M2', category: 'Portatiles', serial: 'SD-2023-122', campus: 'Sede Central', status: 'operational', nextMaint: '07/08/2025', statusLabel: 'Operativo' },
+  { equipo: 'Camara Web Logitech', category: 'Perifericos', serial: 'SD-2024-099', campus: 'Sede Oeste', status: 'operational', nextMaint: '05/05/2026', statusLabel: 'Operativo' },
 ];
 
 const statusColors: Record<string, string> = {
@@ -20,7 +20,7 @@ export default function CuentadanteDashboardPage() {
   return (
     <div>
       <p className="text-xs text-gray-500 uppercase tracking-wider">Dashboard Cuentadante</p>
-      <h1 className="text-2xl font-bold text-gray-900">Hola, Cuentadante UTS.</h1>
+      <h1 className="text-2xl font-bold text-gray-900">Hola, Cuentadante.</h1>
       <p className="text-gray-500 mb-6">Estos son los equipos bajo tu responsabilidad.</p>
 
       {/* KPI Cards */}

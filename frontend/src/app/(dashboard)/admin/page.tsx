@@ -41,7 +41,7 @@ export default function AdminDashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Panel de Administración del Sistema</h1>
-        <p className="text-gray-500 text-sm">Gestión centralizada de infraestructura, usuarios y parámetros críticos de la Mesa de Servicio TI de las Unidades Tecnológicas de Santander.</p>
+        <p className="text-gray-500 text-sm">Gestión centralizada de infraestructura, usuarios y parámetros críticos de la Mesa de Servicio TI.</p>
       </div>
 
       {/* System KPIs */}

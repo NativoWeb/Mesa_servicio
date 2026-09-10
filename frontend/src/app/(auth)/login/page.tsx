@@ -54,11 +54,11 @@ export default function LoginPage() {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">UTS</span>
+                <span className="text-white font-bold text-lg">SD</span>
               </div>
               <div>
-                <h2 className="text-white font-semibold text-lg leading-tight">Unidades Tecnológicas</h2>
-                <p className="text-green-300 text-sm">de Santander</p>
+                <h2 className="text-white font-semibold text-lg leading-tight">Service Desk</h2>
+                <p className="text-green-300 text-sm">Mesa de Servicio TI</p>
               </div>
             </div>
           </div>
@@ -85,7 +85,7 @@ export default function LoginPage() {
           </div>
 
           <p className="text-green-400/60 text-xs">
-            &copy; 2026 Mesa de Servicio TI &middot; UTS Bucaramanga
+            &copy; 2026 Mesa de Servicio TI
           </p>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function LoginPage() {
           <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-green-900 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-sm">UTS</span>
+                <span className="text-white font-bold text-sm">SD</span>
               </div>
               <span className="text-xl font-bold text-gray-900">Mesa de Servicio TI</span>
             </div>
@@ -119,7 +119,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="usuario@uts.edu.co"
+                  placeholder="usuario@ejemplo.com"
                   required
                   autoComplete="email"
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all placeholder:text-gray-400"
@@ -178,12 +178,12 @@ export default function LoginPage() {
                 <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">Accesos rápidos (dev)</p>
                 <div className="grid grid-cols-3 gap-1.5">
                   {[
-                    { label: 'Admin', email: 'admin@uts.edu.co' },
-                    { label: 'Líder', email: 'lider@uts.edu.co' },
-                    { label: 'Técnico', email: 'tecnico@uts.edu.co' },
-                    { label: 'Inventario', email: 'inventario@uts.edu.co' },
-                    { label: 'Usuario', email: 'usuario@uts.edu.co' },
-                    { label: 'Cuentadante', email: 'cuentadante@uts.edu.co' },
+                    { label: 'Admin', email: 'admin@demo.servicedesk.com' },
+                    { label: 'Líder', email: 'lider@demo.servicedesk.com' },
+                    { label: 'Técnico', email: 'tecnico@demo.servicedesk.com' },
+                    { label: 'Inventario', email: 'inventario@demo.servicedesk.com' },
+                    { label: 'Usuario', email: 'usuario@demo.servicedesk.com' },
+                    { label: 'Cuentadante', email: 'cuentadante@demo.servicedesk.com' },
                   ].map((acc) => (
                     <button
                       key={acc.email}
@@ -203,7 +203,7 @@ export default function LoginPage() {
           </div>
 
           <p className="text-center text-xs text-gray-400 mt-6">
-            Mesa de Servicio TI &middot; Unidades Tecnológicas de Santander
+            Mesa de Servicio TI
           </p>
         </div>
       </div>
