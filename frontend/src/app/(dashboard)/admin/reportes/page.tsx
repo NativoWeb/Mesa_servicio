@@ -1,8 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTicketsReport, useAssetsReport, useMaintenancesReport } from '@/hooks/use-reports';
 import { STATUS_CONFIG, PRIORITY_CONFIG, ASSET_STATUS_CONFIG } from '@/lib/constants';
+import api from '@/lib/api';
+import { toast } from 'sonner';
 
 type ReportType = 'tickets' | 'assets' | 'maintenances';
 
@@ -106,6 +109,141 @@ export default function AdminReportesPage() {
           </div>
         ) : null
       )}
+
+      {/* Reportes Programados */}
+      <ScheduledReportsSection />
+    </div>
+  );
+}
+
+// ---------- Scheduled Reports Section ----------
+
+interface ScheduledReportConfig {
+  enabled: boolean;
+  email: string;
+}
+
+const REPORT_TYPES = [
+  { key: 'tickets', label: 'Tickets', description: 'Resumen diario de tickets por estado y prioridad' },
+  { key: 'assets', label: 'Activos', description: 'Resumen diario de activos por estado y categoria' },
+  { key: 'maintenances', label: 'Mantenimientos', description: 'Resumen diario de mantenimientos por tipo' },
+] as const;
+
+function ScheduledReportsSection() {
+  const queryClient = useQueryClient();
+  const [configs, setConfigs] = useState<Record<string, ScheduledReportConfig>>({
+    tickets: { enabled: false, email: '' },
+    assets: { enabled: false, email: '' },
+    maintenances: { enabled: false, email: '' },
+  });
+
+  const { data: systemConfigs } = useQuery({
+    queryKey: ['system-configs'],
+    queryFn: async () => {
+      const { data } = await api.get<{ data: Record<string, string> }>('/system-configs');
+      return data.data;
+    },
+  });
+
+  useEffect(() => {
+    if (systemConfigs) {
+      const updated: Record<string, ScheduledReportConfig> = { ...configs };
+      for (const type of REPORT_TYPES) {
+        const raw = systemConfigs[`scheduled_report_${type.key}`];
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            updated[type.key] = { enabled: !!parsed.enabled, email: parsed.email || '' };
+          } catch {
+            // ignore parse errors
+          }
+        }
+      }
+      setConfigs(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [systemConfigs]);
+
+  const mutation = useMutation({
+    mutationFn: async (payload: Record<string, string>) => {
+      await api.put('/system-configs', { configs: payload });
+    },
+    onSuccess: () => {
+      toast.success('Reportes programados actualizados.');
+      queryClient.invalidateQueries({ queryKey: ['system-configs'] });
+    },
+    onError: () => {
+      toast.error('Error al guardar los reportes programados.');
+    },
+  });
+
+  const handleSave = () => {
+    const payload: Record<string, string> = {};
+    for (const type of REPORT_TYPES) {
+      payload[`scheduled_report_${type.key}`] = JSON.stringify(configs[type.key]);
+    }
+    mutation.mutate(payload);
+  };
+
+  const updateConfig = (key: string, field: keyof ScheduledReportConfig, value: string | boolean) => {
+    setConfigs((prev) => ({
+      ...prev,
+      [key]: { ...prev[key], [field]: value },
+    }));
+  };
+
+  return (
+    <div className="space-y-4 mt-8">
+      <div>
+        <h2 className="text-xl font-bold text-gray-900">Reportes Programados</h2>
+        <p className="text-gray-500 text-sm">Configure el envio automatico de reportes por correo electronico (diario a las 08:00).</p>
+      </div>
+
+      <div className="space-y-4">
+        {REPORT_TYPES.map(({ key, label, description }) => (
+          <div key={key} className="bg-white rounded-xl border p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={configs[key]?.enabled || false}
+                      onChange={(e) => updateConfig(key, 'enabled', e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600" />
+                  </label>
+                  <span className="font-medium text-gray-900">Reporte de {label}</span>
+                </div>
+                <p className="text-sm text-gray-500 ml-12">{description}</p>
+              </div>
+            </div>
+            {configs[key]?.enabled && (
+              <div className="mt-3 ml-12">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Correo destino</label>
+                <input
+                  type="email"
+                  value={configs[key]?.email || ''}
+                  onChange={(e) => updateConfig(key, 'email', e.target.value)}
+                  placeholder="admin@uts.edu.co"
+                  className="w-full max-w-md border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={mutation.isPending}
+          className="px-6 py-2 bg-green-700 text-white text-sm font-medium rounded-lg hover:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {mutation.isPending ? 'Guardando...' : 'Guardar reportes programados'}
+        </button>
+      </div>
     </div>
   );
 }

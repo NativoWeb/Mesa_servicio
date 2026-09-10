@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\TicketUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Services\NotificationService;
@@ -57,7 +58,11 @@ class TicketController extends Controller
             $this->notificationService->notifyTicketAssignment($ticket->fresh('assignedUser'));
         }
 
-        return response()->json($ticket->fresh(['requester', 'assignedUser']), 201);
+        $ticket = $ticket->fresh(['requester', 'assignedUser']);
+
+        TicketUpdated::dispatch($ticket, 'created');
+
+        return response()->json($ticket, 201);
     }
 
     public function show(Ticket $ticket): JsonResponse
@@ -101,6 +106,8 @@ class TicketController extends Controller
         if (isset($validated['assigned_to']) && $ticket->assigned_to) {
             $this->notificationService->notifyTicketAssignment($ticket);
         }
+
+        TicketUpdated::dispatch($ticket, 'updated');
 
         return response()->json($ticket);
     }
