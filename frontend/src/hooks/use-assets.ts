@@ -36,3 +36,24 @@ export function useCreateAsset() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['assets'] }),
   });
 }
+
+export function useUpdateAsset() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...asset }: Partial<Asset> & { id: number }) => {
+      const { data } = await api.put(`/assets/${id}`, asset);
+      return data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['assets'] }),
+  });
+}
+
+export function useDeleteAsset() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await api.delete(`/assets/${id}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['assets'] }),
+  });
+}

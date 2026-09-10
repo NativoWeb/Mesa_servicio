@@ -1,14 +1,16 @@
 import { User } from './user';
 
-export type ShiftType = 'morning' | 'afternoon' | 'night';
+export type ShiftStatus = 'scheduled' | 'active' | 'completed';
 
 export interface Shift {
   id: number;
   technician_id: number;
   date: string;
-  shift_type: ShiftType;
+  start_time: string;
+  end_time: string;
   campus: string;
-  is_active: boolean;
+  building: string | null;
+  status: ShiftStatus;
   created_at: string;
   updated_at: string;
   technician?: User;

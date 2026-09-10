@@ -1,139 +1,189 @@
-# Mesa de Servicio TI — SaaS Multitenant
+# CLAUDE.md
 
-## Proyecto
-Sistema de Mesa de Servicio (Service Desk) e Inventario TI para instituciones educativas.
-Cliente inicial: Unidades Tecnologicas de Santander (UTS).
-Arquitectura SaaS multitenant — cada institucion es un tenant con schema propio en PostgreSQL.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project
+
+SaaS multi-tenant Service Desk & IT Inventory system for educational institutions.
+Monorepo: Laravel 12 API backend + Next.js 16 SPA frontend.
+Initial client: Unidades Tecnologicas de Santander (UTS).
 
 ## Stack
 
-| Capa | Tecnologia | Version |
-|------|-----------|---------|
-| Backend | Laravel | 11.x |
-| PHP | PHP | 8.2+ |
-| Frontend | Next.js + React | 15.x / 19.x |
-| UI Components | shadcn/ui + Tailwind CSS | latest |
-| Base de datos | PostgreSQL | 16+ |
-| Multitenancy | stancl/tenancy | 3.x |
-| RBAC | spatie/laravel-permission | 6.x |
-| Auth API | Laravel Sanctum | built-in |
-| Audit | spatie/laravel-activitylog | 4.x |
-| Reportes | maatwebsite/excel + barryvdh/laravel-dompdf | latest |
-| State management | Zustand | 5.x |
-| Data fetching | TanStack React Query | 5.x |
-| Graficas | Recharts | 2.x |
-| Iconos | Lucide React | latest |
+| Layer | Technology |
+|-------|-----------|
+| Backend | Laravel 12 / PHP 8.2+ |
+| Frontend | Next.js 16 / React 19 / TypeScript |
+| UI | shadcn/ui + Tailwind CSS 4 |
+| Database | PostgreSQL 16+ |
+| Auth | Laravel Sanctum (Bearer token) |
+| RBAC | spatie/laravel-permission 6.x |
+| Multitenancy | stancl/tenancy 3.x (installed, not yet active on API routes) |
+| State | Zustand 5 (persisted to localStorage) |
+| Data fetching | TanStack React Query 5 |
+| Charts | Recharts 3 |
 
-## Estructura del monorepo
-
-```
-mesa-de-ayuda-uts/
-├── backend/          # Laravel API (PHP)
-├── frontend/         # Next.js SPA (TypeScript)
-├── docs/             # Documentacion del proyecto
-└── CLAUDE.md         # Este archivo
-```
-
-## Modulos del sistema
-
-1. **Dashboard** — KPIs, graficas, alertas SLA, carga por tecnico (vistas por rol)
-2. **Tickets** — CRUD, asignacion, escalamiento, conversacion, timeline de eventos
-3. **Inventario de Activos** — CRUD equipos, hoja de vida, specs, garantia
-4. **Mantenimientos** — Registro preventivo/correctivo, calendario, alertas
-5. **Asignacion y Turnos** — Asignacion manual/auto, calendario semanal, carga
-6. **Mensajeria Masiva** — Email/SMS, plantillas, segmentacion, historial
-7. **Reportes** — Tickets por tecnico, activos por sede, SLA, mantenimientos, actividad
-8. **Administracion** — Usuarios/Roles (RBAC), config SLA, SMTP/SMS, backup, logs auditoria
-
-## Roles (RBAC)
-
-| Rol | Slug | Acceso |
-|-----|------|--------|
-| Administrador del Sistema | `admin` | Acceso total, config sistema |
-| Lider TIC | `it_leader` | Dashboard global, reasignar/escalar, reportes, mensajeria |
-| Tecnico de Soporte | `technician` | Tickets asignados, equipos vinculados, turnos |
-| Gestor de Inventario | `inventory_manager` | CRUD activos, mantenimientos, cuentadantes |
-| Usuario Final | `end_user` | Crear/ver tickets propios, notificaciones |
-| Cuentadante | `asset_holder` | Ver equipos a cargo, hoja de vida, alertas |
-
-## Sedes (campuses)
-
-Bucaramanga (Principal), Piedecuesta, Barrancabermeja, Yopal, Velez, Charala
-
-## Multitenancy
-
-- Estrategia: **Schema por tenant** en PostgreSQL
-- Package: `stancl/tenancy`
-- Cada institucion tiene su propio schema con tablas de tickets, assets, users, etc.
-- Tablas centrales (tenants, domains, plans) viven en el schema `public`
-- Identificacion de tenant por dominio/subdominio
-
-## Convenciones de codigo
-
-### Backend (Laravel/PHP)
-- Nombres de clases, metodos, variables: **ingles**
-- Comentarios: espanol donde sea necesario para logica de negocio
-- Controllers: `App\Http\Controllers\Api\{Resource}Controller`
-- Models: `App\Models\{Resource}`
-- Enums: `App\Enums\{Name}` (PHP 8.1 backed enums)
-- Migraciones tenant: `database/migrations/tenant/`
-- Form Requests para validacion
-- API Resources para respuestas JSON
-
-### Frontend (Next.js/TypeScript)
-- Rutas por rol: `/lider/`, `/tecnico/`, `/usuario/`, `/cuentadante/`, `/inventario/`, `/admin/`
-- Componentes: PascalCase, archivos kebab-case
-- Tipos: `src/types/{resource}.ts`
-- Hooks: `src/hooks/use-{resource}.ts`
-- Store: Zustand en `src/stores/`
-- API client: Axios en `src/lib/api.ts`
-- UI labels y textos: **espanol** (es la interfaz para usuario final)
-
-## Comandos
+## Commands
 
 ### Backend
 ```bash
 cd backend
-php artisan serve                    # Servidor dev
-php artisan migrate                  # Migraciones centrales
-php artisan tenants:migrate          # Migraciones por tenant
-php artisan tenants:seed             # Seeders por tenant
-composer test                        # Tests
+composer install
+cp .env.example .env               # First time: configure DB_* for PostgreSQL
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+php artisan serve --port=8000       # Dev server
+
+php artisan tenants:migrate         # Tenant schema migrations (not active yet)
+php artisan tenants:seed
+
+./vendor/bin/pint                   # Code formatting (Laravel Pint)
+php artisan test                    # PHPUnit (uses SQLite in-memory)
+php artisan test --filter=TestName  # Single test
+php artisan optimize:clear          # Clear all caches
 ```
 
 ### Frontend
 ```bash
 cd frontend
-npm run dev                          # Servidor dev (localhost:3000)
-npm run build                        # Build produccion
-npm run lint                         # Linter
+npm install
+npm run dev                         # Dev server (localhost:3000)
+npm run build                       # Production build
+npm run lint                        # ESLint
 ```
 
-## Paleta de colores (del mockup UTS)
+### Environment Variables
 
-- Verde institucional UTS: `#1B5E20` (dark), `#4CAF50` (medium), `#C8E6C9` (light)
-- Amarillo/dorado acentos: `#F9A825`, `#CDDC39`
-- Fondo: `#FAFAFA` (light), `#FFFFFF` (cards)
-- Texto: `#1A1A1A` (primary), `#6B7280` (secondary)
-- Estados: Rojo critico `#D32F2F`, Naranja alto `#F57C00`, Amarillo medio `#FBC02D`, Verde ok `#388E3C`
-- Sidebar: gradiente verde oscuro `#1B3A1B` → `#2E5A2E`
+Backend `.env`: `DB_CONNECTION=pgsql`, `DB_DATABASE=mesa_ayuda_uts`
+Frontend `.env.local`: `NEXT_PUBLIC_API_URL=http://localhost:8000/api`
 
-## API Base URL
+### Test Users (all password: `password`)
 
-- Dev: `http://localhost:8000/api`
-- Frontend dev: `http://localhost:3000`
+| Role | Email | Route prefix |
+|------|-------|-------------|
+| admin | admin@demo.servicedesk.com | /admin |
+| it_leader | lider@demo.servicedesk.com | /lider |
+| technician | tecnico@demo.servicedesk.com | /tecnico |
+| inventory_manager | inventario@demo.servicedesk.com | /inventario |
+| end_user | usuario@demo.servicedesk.com | /usuario |
+| asset_holder | cuentadante@demo.servicedesk.com | /cuentadante |
 
-## Variables de entorno
+## Architecture
 
-### Backend (.env)
+### Backend Structure
+
 ```
-DB_CONNECTION=pgsql
-DB_DATABASE=mesa_ayuda_uts
-TENANCY_DATABASE_AUTO_CREATE=true
+backend/
+  routes/api.php              # All API endpoints (auth:sanctum)
+  routes/tenant.php           # Tenant routes (placeholder, not active)
+  app/Http/Controllers/Api/   # AuthController, TicketController, AssetController,
+                              # MaintenanceController, UserController, DashboardController,
+                              # ShiftController, MessageController, ReportController
+  app/Models/                 # User, Ticket, Asset, Maintenance, Shift, MassMessage,
+                              # Comment, Attachment, TicketEvent, SlaConfig, AuditLog
+  app/Enums/                  # TicketStatus, TicketPriority, UserRole, AssetStatus,
+                              # AssetCategory, MaintenanceType (PHP 8.1 backed enums)
+  app/Services/               # SlaService, TicketAssignmentService, ReportService,
+                              # NotificationService (exist but NOT injected into controllers)
+  database/migrations/        # Central migrations
+  database/migrations/tenant/ # Tenant mirrors (ready for activation)
 ```
 
-### Frontend (.env.local)
+**API routes** (`routes/api.php`): All under `auth:sanctum` except `POST /api/auth/login`.
+Resources: `tickets`, `assets`, `maintenances`, `users`, `shifts`, `messages`, `reports`, `dashboard`.
+
+**Auth flow**: `POST /api/auth/login` validates credentials, returns `{ user, token }` via Sanctum `createToken()`. Token never expires. No CSRF cookie needed — pure Bearer token auth.
+
+**Models use polymorphic relations**: `comments` and `attachments` are morphable to Ticket, Asset, and Maintenance. Ticket and Asset use `SoftDeletes`.
+
+**Validation**: Inline `$request->validate()` in controllers (no Form Request classes yet).
+
+### Frontend Structure
+
 ```
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
-NEXT_PUBLIC_APP_NAME=Mesa de Servicio TI
+frontend/src/
+  app/(auth)/login/           # Login page
+  app/(dashboard)/layout.tsx  # Auth guard (client-side), sidebar, header
+  app/(dashboard)/admin/      # Admin screens
+  app/(dashboard)/lider/      # IT Leader screens
+  app/(dashboard)/tecnico/    # Technician screens
+  app/(dashboard)/usuario/    # End user screens
+  app/(dashboard)/inventario/ # Inventory manager screens
+  app/(dashboard)/cuentadante/# Asset holder screens
+  components/layout/          # AppSidebar (role-aware nav), Header, Breadcrumbs
+  components/tickets/         # TicketForm, TicketTable, TicketDetail, TicketTimeline
+  components/assets/          # AssetForm, AssetTable, AssetDetail, AssetLifecycle
+  components/dashboard/       # KpiCards, PriorityDonut, TicketsChart, SlaAlerts
+  components/ui/              # shadcn/ui library
+  hooks/                      # use-auth, use-tickets, use-assets, use-dashboard, use-mobile
+  stores/                     # auth-store (persisted), ui-store
+  types/                      # user, ticket, asset, maintenance, shift, api
+  lib/api.ts                  # Axios instance with Bearer token interceptor
+  lib/constants.ts            # Status/priority configs with colors, CAMPUSES list
 ```
+
+**Auth guard**: Client-side only in `(dashboard)/layout.tsx` — checks Zustand `isAuthenticated` after hydration. No Next.js `middleware.ts` exists.
+
+**API client** (`src/lib/api.ts`): Axios reads token from `localStorage['auth-storage']` (Zustand persist). 401 response interceptor clears storage and redirects to `/login`.
+
+**Role routing**: `getRoleRoute()` in auth-store maps role slug to route prefix. Sidebar navigation defined per role in `app-sidebar.tsx` via `navByRole` record.
+
+### Multitenancy (not yet active)
+
+- Strategy: separate PostgreSQL database per tenant (prefix `tenant_`)
+- Identification: domain-based (`InitializeTenancyByDomain`)
+- Central domains: `localhost`, `127.0.0.1`
+- `TenancyServiceProvider` auto-creates/migrates DB on `TenantCreated`
+- `EnsureTenantAccess` middleware exists but is not applied to any route group
+- All current API routes operate in central context
+
+### CORS & Sanctum Config
+
+- `config/cors.php`: allows `localhost:3000`, `supports_credentials: true`, paths `['api/*', 'sanctum/csrf-cookie']`
+- `config/sanctum.php`: stateful domains include `localhost:3000`, token expiration `null`
+
+## Conventions
+
+### Backend (Laravel/PHP)
+- Class/method/variable names: **English**
+- Comments: Spanish where needed for business logic
+- Enums: PHP 8.1 backed string enums with `label()` method in `app/Enums/`
+- Asset codes auto-generated as `UTS-{CAT}-{XXXX}` in AssetController
+- Filters use `ilike` (PostgreSQL) — test suite uses SQLite which doesn't support `ilike`
+- JSONB columns: `Asset.specs`
+
+### Frontend (Next.js/TypeScript)
+- UI labels and text: **Spanish** (end-user facing)
+- Components: PascalCase, files kebab-case
+- Hooks pattern: TanStack Query wrapping Axios calls
+- Types in `src/types/`, one file per domain entity
+- Stores in `src/stores/`, Zustand with `persist` middleware for auth
+
+## Color Palette (UTS Institutional)
+
+- Green: `#1B5E20` (dark), `#4CAF50` (medium), `#C8E6C9` (light)
+- Accent: `#F9A825`, `#CDDC39`
+- Background: `#FAFAFA` (light), `#FFFFFF` (cards)
+- Text: `#1A1A1A` (primary), `#6B7280` (secondary)
+- States: Red `#D32F2F`, Orange `#F57C00`, Yellow `#FBC02D`, Green `#388E3C`
+- Sidebar: gradient `#1B3A1B` to `#2E5A2E`
+
+## Campuses
+
+Bucaramanga (Principal), Piedecuesta, Barrancabermeja, Yopal, Velez, Charala
+
+## Known Gaps
+
+- Services (`SlaService`, `TicketAssignmentService`, `ReportService`) exist but are not called from controllers
+- No Form Request validation classes — validation is inline
+- No tests written yet (empty `tests/Unit/` and `tests/Feature/`)
+- DashboardController returns global counts with no role/campus scoping
+- No Next.js middleware for server-side route protection
+- `spatie/laravel-activitylog` imported in User model but trait not applied
+- Root layout metadata still says "Create Next App"
+
+## Reference Docs
+
+- `SYSTEM.md` — Full system documentation: roles, screens, API endpoints, DB schema, QA flows
+- `frontend/AGENTS.md` — Next.js 16 breaking changes warning (auto-generated by `next dev`)

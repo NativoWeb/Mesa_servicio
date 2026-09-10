@@ -2,70 +2,51 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-
-const assets = [
-  { id: 'SD-LPT-0442', name: 'MacBook Pro 14"', category: 'Laptops', serial: 'C02FM0Q02N', campus: 'Sede Central', location: 'Lab 302', status: 'operational' as const, nextMaint: '02 Nov 2023', holder: 'Julián Ortega' },
-  { id: 'SD-DSK-1299', name: 'Dell OptiPlex 7090', category: 'Desktops', serial: '3S-SMR2-Q98', campus: 'Sede Central', location: 'Admin', status: 'new' as const, nextMaint: '05 Ene 2024', holder: 'Ana Torres' },
-  { id: 'SD-SRV-0060', name: 'HP ProLiant DL380', category: 'Servidores', serial: 'CZ22034JN', campus: 'Sede Central', location: 'Datacenter Principal', status: 'damaged' as const, nextMaint: '20 Oct 2023', holder: 'Soporte TIC Central' },
-  { id: 'SD-IMP-0188', name: 'Xerox VersaLink C405', category: 'Impresoras', serial: 'XRK-0012-PNT', campus: 'Sede Norte', location: 'Sala Profesores', status: 'operational' as const, nextMaint: '15 Dic 2023', holder: 'Laura Pineda' },
-  { id: 'SD-MON-0321', name: 'LG UltraWide 34"', category: 'Monitores', serial: 'LG-2024-UW34', campus: 'Sede Sur', location: 'Of. Decano', status: 'operational' as const, nextMaint: '10 Mar 2024', holder: 'Carlos Mejía' },
-  { id: 'SD-RTR-0015', name: 'Cisco Catalyst 9300', category: 'Redes', serial: 'FCW2345L0P8', campus: 'Sede Central', location: 'Rack 2 Piso 3', status: 'maintenance' as const, nextMaint: '01 Nov 2023', holder: 'Soporte TIC Central' },
-];
-
-const statusConfig = {
-  new: { label: 'Nuevo', color: 'bg-blue-100 text-blue-700' },
-  operational: { label: 'Operativo', color: 'bg-green-100 text-green-700' },
-  damaged: { label: 'Averiado', color: 'bg-red-100 text-red-700' },
-  maintenance: { label: 'Mantenimiento', color: 'bg-yellow-100 text-yellow-800' },
-  decommissioned: { label: 'Dado de Baja', color: 'bg-gray-100 text-gray-600' },
-};
+import { useAssets } from '@/hooks/use-assets';
+import { useDashboard } from '@/hooks/use-dashboard';
+import { ASSET_STATUS_CONFIG, CAMPUSES } from '@/lib/constants';
 
 export default function InventarioDashboardPage() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [campusFilter, setCampusFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [selected, setSelected] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
 
-  const filtered = assets.filter((a) => {
-    if (search && !a.name.toLowerCase().includes(search.toLowerCase()) && !a.serial.toLowerCase().includes(search.toLowerCase()) && !a.holder.toLowerCase().includes(search.toLowerCase())) return false;
-    if (categoryFilter && a.category !== categoryFilter) return false;
-    if (campusFilter && a.campus !== campusFilter) return false;
-    if (statusFilter && a.status !== statusFilter) return false;
-    return true;
+  const { data: dashboard } = useDashboard();
+  const { data, isLoading } = useAssets({
+    page,
+    per_page: 25,
+    ...(search && { search }),
+    ...(categoryFilter && { category: categoryFilter }),
+    ...(campusFilter && { campus: campusFilter }),
+    ...(statusFilter && { status: statusFilter }),
   });
 
-  const toggleSelect = (id: string) => setSelected((prev) => prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]);
+  const categories = ['pc', 'laptop', 'printer', 'server', 'router', 'switch', 'monitor', 'projector', 'other'];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Inventario de Activos TI</h1>
-          <p className="text-gray-500 text-sm">Gestión del parque tecnológico institucional</p>
+          <p className="text-gray-500 text-sm">Gestion del parque tecnologico institucional</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="border px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50">Importar CSV</button>
-          <button className="border px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50">Exportar</button>
-          <Link href="/inventario/nuevo" className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">
-            Registrar nuevo equipo
-          </Link>
-        </div>
+        <Link href="/inventario/nuevo" className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">
+          Registrar nuevo equipo
+        </Link>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Activos', value: '1,248', icon: '💻', color: 'text-gray-900' },
-          { label: 'Operativos', value: '1,150', icon: '✅', color: 'text-green-700' },
-          { label: 'Averiados', value: '42', icon: '⚠️', color: 'text-red-600' },
-          { label: 'Mantenimiento', value: '56', icon: '🔧', color: 'text-yellow-600' },
+          { label: 'Total Activos', value: dashboard?.assets.total ?? '-', color: 'text-gray-900' },
+          { label: 'Operativos', value: dashboard?.assets.operational ?? '-', color: 'text-green-700' },
+          { label: 'Averiados', value: dashboard?.assets.damaged ?? '-', color: 'text-red-600' },
+          { label: 'Dados de Baja', value: dashboard?.assets.decommissioned ?? '-', color: 'text-yellow-600' },
         ].map((s) => (
           <div key={s.label} className="bg-white rounded-xl border p-4 hover:shadow-sm transition-shadow">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-gray-500 uppercase tracking-wider">{s.label}</p>
-              <span>{s.icon}</span>
-            </div>
+            <p className="text-xs text-gray-500 uppercase tracking-wider">{s.label}</p>
             <p className={`text-2xl font-bold mt-1 ${s.color}`}>{s.value}</p>
           </div>
         ))}
@@ -73,23 +54,19 @@ export default function InventarioDashboardPage() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
-        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
-          <option value="">Todas las categorías</option>
-          {['Laptops', 'Desktops', 'Servidores', 'Impresoras', 'Monitores', 'Redes'].map((c) => <option key={c} value={c}>{c}</option>)}
+        <select value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); setPage(1); }} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
+          <option value="">Todas las categorias</option>
+          {categories.map(c => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
         </select>
-        <select value={campusFilter} onChange={(e) => setCampusFilter(e.target.value)} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
+        <select value={campusFilter} onChange={e => { setCampusFilter(e.target.value); setPage(1); }} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
           <option value="">Todas las sedes</option>
-          {['Sede Central', 'Sede Norte', 'Sede Sur', 'Sede Este', 'Sede Oeste'].map((c) => <option key={c} value={c}>{c}</option>)}
+          {CAMPUSES.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
+        <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
           <option value="">Cualquier estado</option>
-          {Object.entries(statusConfig).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+          {Object.entries(ASSET_STATUS_CONFIG).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
         </select>
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Serial o Nombre del equipo..." className="flex-1 max-w-xs px-4 py-2 bg-white border rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20" />
-        <div className="ml-auto flex gap-1">
-          <button className="p-2 border rounded-lg hover:bg-gray-50 text-sm">☰</button>
-          <button className="p-2 border rounded-lg hover:bg-gray-50 text-sm">⊞</button>
-        </div>
+        <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Buscar por nombre o serial..." className="flex-1 max-w-xs px-4 py-2 bg-white border rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20" />
       </div>
 
       {/* Table */}
@@ -97,60 +74,57 @@ export default function InventarioDashboardPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-gray-50/50">
-              <th className="w-10 p-3"><input type="checkbox" className="rounded" /></th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">ID Activo</th>
+              <th className="text-left p-3 pl-6 font-medium text-gray-500 text-xs uppercase">Codigo</th>
               <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Equipo</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Categoría</th>
+              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Categoria</th>
               <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Serial</th>
               <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Sede</th>
               <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Estado</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Próx. Mant.</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Acciones</th>
+              <th className="text-left p-3 pr-6 font-medium text-gray-500 text-xs uppercase">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((a) => (
-              <tr key={a.id} className="border-b hover:bg-gray-50/50 transition-colors">
-                <td className="p-3"><input type="checkbox" checked={selected.includes(a.id)} onChange={() => toggleSelect(a.id)} className="rounded" /></td>
-                <td className="p-3 font-mono text-xs text-gray-500">{a.id}</td>
-                <td className="p-3">
-                  <p className="font-medium text-gray-900">{a.name}</p>
-                  <p className="text-xs text-gray-500">{a.holder}</p>
-                </td>
-                <td className="p-3 text-gray-600">{a.category}</td>
-                <td className="p-3 font-mono text-xs text-gray-600">{a.serial}</td>
-                <td className="p-3 text-gray-600">{a.campus}</td>
-                <td className="p-3">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusConfig[a.status].color}`}>
-                    {statusConfig[a.status].label}
-                  </span>
-                </td>
-                <td className="p-3 text-gray-600 text-xs">{a.nextMaint}</td>
-                <td className="p-3">
-                  <Link href={`/inventario/${a.id}`} className="text-green-700 hover:underline text-xs font-medium">
-                    Ver hoja de vida
-                  </Link>
-                </td>
-              </tr>
-            ))}
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i} className="border-b"><td colSpan={7} className="p-3"><div className="h-4 bg-gray-100 rounded animate-pulse" /></td></tr>
+              ))
+            ) : !data?.data.length ? (
+              <tr><td colSpan={7} className="text-center py-12 text-gray-400">No se encontraron activos</td></tr>
+            ) : (
+              data.data.map(a => {
+                const sCfg = ASSET_STATUS_CONFIG[a.status as keyof typeof ASSET_STATUS_CONFIG];
+                return (
+                  <tr key={a.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                    <td className="p-3 pl-6 font-mono text-xs text-gray-500">{a.asset_code}</td>
+                    <td className="p-3">
+                      <p className="font-medium text-gray-900">{a.name}</p>
+                      <p className="text-xs text-gray-500">{a.holder?.name || '-'}</p>
+                    </td>
+                    <td className="p-3 text-gray-600 capitalize">{a.category}</td>
+                    <td className="p-3 font-mono text-xs text-gray-600">{a.serial}</td>
+                    <td className="p-3 text-gray-600">{a.campus}</td>
+                    <td className="p-3">
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${sCfg?.color || ''}`}>{sCfg?.label || a.status}</span>
+                    </td>
+                    <td className="p-3 pr-6">
+                      <Link href={`/inventario/${a.id}`} className="text-green-700 hover:underline text-xs font-medium">Ver hoja de vida</Link>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
-        <div className="p-3 border-t flex items-center justify-between text-xs text-gray-500">
-          <span>Mostrando 1-{filtered.length} de 1248 activos</span>
-          <span>25 por página</span>
-        </div>
+        {data && data.last_page > 1 && (
+          <div className="p-3 border-t flex items-center justify-between text-xs text-gray-500">
+            <span>Pagina {data.current_page} de {data.last_page} ({data.total} activos)</span>
+            <div className="flex gap-1">
+              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50">Anterior</button>
+              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50">Siguiente</button>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Bulk Actions Bar */}
-      {selected.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-xl border px-6 py-3 flex items-center gap-4 z-30">
-          <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">{selected.length} Seleccionados</span>
-          <button className="text-sm text-gray-700 hover:text-gray-900">Cambiar estado masivo</button>
-          <button className="text-sm text-gray-700 hover:text-gray-900">Cambiar sede masiva</button>
-          <button className="bg-green-700 hover:bg-green-600 text-white text-sm px-4 py-1.5 rounded-lg font-medium">Exportar seleccionados</button>
-          <button onClick={() => setSelected([])} className="text-gray-400 hover:text-gray-600">✕</button>
-        </div>
-      )}
     </div>
   );
 }

@@ -15,6 +15,7 @@ class AssetController extends Controller
             ->when($request->category, fn ($q, $cat) => $q->where('category', $cat))
             ->when($request->status, fn ($q, $status) => $q->where('status', $status))
             ->when($request->campus, fn ($q, $campus) => $q->where('campus', $campus))
+            ->when($request->holder_id, fn ($q, $id) => $q->where('holder_id', $id))
             ->when($request->search, fn ($q, $s) => $q->where('name', 'ilike', "%{$s}%")
                 ->orWhere('asset_code', 'ilike', "%{$s}%")
                 ->orWhere('serial', 'ilike', "%{$s}%"))
