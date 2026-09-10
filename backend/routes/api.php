@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ShiftController;
 use App\Http\Controllers\Api\SlaConfigController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -94,6 +95,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Logs de auditoría
     Route::get('audit-logs', [AuditLogController::class, 'index']);
+
+    // Tenants (admin only)
+    Route::apiResource('tenants', TenantController::class)->only(['index', 'store', 'show', 'destroy']);
 
     // Mensajes masivos
     Route::prefix('messages')->group(function () {

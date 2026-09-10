@@ -116,6 +116,9 @@ const navByRole: Record<string, NavGroup[]> = {
       { label: "Roles", href: "/admin/roles", icon: "🔑" },
       { label: "LDAP", href: "/admin/configuracion?tab=ldap", icon: "🔗" },
     ]},
+    { group: "Multitenancy", items: [
+      { label: "Tenants", href: "/admin/tenants", icon: "🏛️" },
+    ]},
     { group: "Sistema", items: [
       { label: "SLA", href: "/admin/sla", icon: "⏱️" },
       { label: "SMTP", href: "/admin/configuracion?tab=smtp", icon: "📧" },
