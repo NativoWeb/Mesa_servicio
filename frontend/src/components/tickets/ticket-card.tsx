@@ -1,3 +1,5 @@
+import { User } from "lucide-react";
+
 interface TicketCardProps {
   ticketNumber: string;
   title: string;
@@ -38,7 +40,7 @@ export function TicketCard({ ticketNumber, title, category, priority, status, da
         <span className="text-xs text-gray-400">{date}</span>
       </div>
       {assignee && (
-        <p className="text-xs text-gray-500 mt-2">👤 {assignee}</p>
+        <p className="text-xs text-gray-500 mt-2 flex items-center gap-1"><User className="w-3 h-3 inline" /> {assignee}</p>
       )}
     </div>
   );

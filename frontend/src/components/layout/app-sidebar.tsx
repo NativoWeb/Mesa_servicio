@@ -4,11 +4,45 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthStore, ROLE_LABELS, getRoleRoute } from "@/stores/auth-store";
 import { UserRole } from "@/types/user";
+import type { LucideIcon } from "lucide-react";
+import {
+  LayoutDashboard,
+  Ticket,
+  AlertTriangle,
+  ArrowUpFromLine,
+  Building2,
+  Users,
+  Calendar,
+  TrendingUp,
+  Monitor,
+  Wrench,
+  Send,
+  FileText,
+  User,
+  FolderOpen,
+  Clock,
+  PauseCircle,
+  CheckCircle,
+  Home,
+  PlusCircle,
+  Bell,
+  ClipboardList,
+  RefreshCw,
+  KeyRound,
+  Link as LinkIcon,
+  Landmark,
+  Timer,
+  Mail,
+  ScrollText,
+  HardDrive,
+  XCircle,
+  Settings,
+} from "lucide-react";
 
 interface NavItem {
   label: string;
   href: string;
-  icon: string;
+  icon: LucideIcon;
   badge?: number;
 }
 
@@ -19,119 +53,119 @@ interface NavGroup {
 
 const navByRole: Record<string, NavGroup[]> = {
   it_leader: [
-    { group: "Principal", items: [{ label: "Principal", href: "/lider", icon: "📊" }] },
+    { group: "Principal", items: [{ label: "Principal", href: "/lider", icon: LayoutDashboard }] },
     { group: "Gestión", items: [
-      { label: "Todos los tickets", href: "/lider/tickets", icon: "🎫" },
-      { label: "Sin asignar", href: "/lider/tickets?filter=unassigned", icon: "⚠️" },
-      { label: "Escalonados", href: "/lider/tickets?filter=escalated", icon: "🔺" },
-      { label: "Por sede", href: "/lider/tickets?filter=campus", icon: "🏢" },
+      { label: "Todos los tickets", href: "/lider/tickets", icon: Ticket },
+      { label: "Sin asignar", href: "/lider/tickets?filter=unassigned", icon: AlertTriangle },
+      { label: "Escalonados", href: "/lider/tickets?filter=escalated", icon: ArrowUpFromLine },
+      { label: "Por sede", href: "/lider/tickets?filter=campus", icon: Building2 },
     ]},
     { group: "Asignación", items: [
-      { label: "Asignar / Reasignar", href: "/lider/asignacion", icon: "👥" },
-      { label: "Calendario de turnos", href: "/lider/asignacion?tab=calendar", icon: "📅" },
-      { label: "Carga por técnico", href: "/lider/asignacion?tab=workload", icon: "📈" },
+      { label: "Asignar / Reasignar", href: "/lider/asignacion", icon: Users },
+      { label: "Calendario de turnos", href: "/lider/asignacion?tab=calendar", icon: Calendar },
+      { label: "Carga por técnico", href: "/lider/asignacion?tab=workload", icon: TrendingUp },
     ]},
     { group: "Inventario", items: [
-      { label: "Lista de activos", href: "/lider/inventario", icon: "💻" },
-      { label: "Mantenimiento", href: "/lider/inventario?tab=maintenance", icon: "🔧" },
+      { label: "Lista de activos", href: "/lider/inventario", icon: Monitor },
+      { label: "Mantenimiento", href: "/lider/inventario?tab=maintenance", icon: Wrench },
     ]},
     { group: "Comunicación", items: [
-      { label: "Mensajería masiva", href: "/lider/mensajeria", icon: "📨" },
-      { label: "Plantillas", href: "/lider/mensajeria?tab=templates", icon: "📝" },
+      { label: "Mensajería masiva", href: "/lider/mensajeria", icon: Send },
+      { label: "Plantillas", href: "/lider/mensajeria?tab=templates", icon: FileText },
     ]},
     { group: "Analítica", items: [
-      { label: "Reportes", href: "/lider/reportes", icon: "📊" },
-      { label: "Usuarios y roles", href: "/lider/usuarios", icon: "👤" },
+      { label: "Reportes", href: "/lider/reportes", icon: LayoutDashboard },
+      { label: "Usuarios y roles", href: "/lider/usuarios", icon: User },
     ]},
   ],
   technician: [
-    { group: "Principal", items: [{ label: "Mi panel", href: "/tecnico", icon: "📊" }] },
+    { group: "Principal", items: [{ label: "Mi panel", href: "/tecnico", icon: LayoutDashboard }] },
     { group: "Mis Tickets", items: [
-      { label: "Abiertos", href: "/tecnico/tickets?status=open", icon: "📂" },
-      { label: "En progreso", href: "/tecnico/tickets?status=in_progress", icon: "⏳" },
-      { label: "Pendientes", href: "/tecnico/tickets?status=pending", icon: "⏸️" },
-      { label: "Cerrados", href: "/tecnico/tickets?status=closed", icon: "✅" },
+      { label: "Abiertos", href: "/tecnico/tickets?status=open", icon: FolderOpen },
+      { label: "En progreso", href: "/tecnico/tickets?status=in_progress", icon: Clock },
+      { label: "Pendientes", href: "/tecnico/tickets?status=pending", icon: PauseCircle },
+      { label: "Cerrados", href: "/tecnico/tickets?status=closed", icon: CheckCircle },
     ]},
     { group: "Inventario", items: [
-      { label: "Equipos relacionados", href: "/tecnico/equipos", icon: "💻" },
+      { label: "Equipos relacionados", href: "/tecnico/equipos", icon: Monitor },
     ]},
     { group: "Mi Cuenta", items: [
-      { label: "Mi turno", href: "/tecnico/turno", icon: "📅" },
+      { label: "Mi turno", href: "/tecnico/turno", icon: Calendar },
     ]},
   ],
   end_user: [
     { group: "Principal", items: [
-      { label: "Inicio", href: "/usuario", icon: "🏠" },
-      { label: "Crear ticket", href: "/usuario/tickets/nuevo", icon: "➕" },
+      { label: "Inicio", href: "/usuario", icon: Home },
+      { label: "Crear ticket", href: "/usuario/tickets/nuevo", icon: PlusCircle },
     ]},
     { group: "Mis Solicitudes", items: [
-      { label: "Abiertos", href: "/usuario/tickets?status=open", icon: "📂" },
-      { label: "En progreso", href: "/usuario/tickets?status=in_progress", icon: "⏳" },
-      { label: "Cerrados", href: "/usuario/tickets?status=closed", icon: "✅" },
+      { label: "Abiertos", href: "/usuario/tickets?status=open", icon: FolderOpen },
+      { label: "En progreso", href: "/usuario/tickets?status=in_progress", icon: Clock },
+      { label: "Cerrados", href: "/usuario/tickets?status=closed", icon: CheckCircle },
     ]},
     { group: "Cuenta", items: [
-      { label: "Notificaciones", href: "/usuario/notificaciones", icon: "🔔" },
+      { label: "Notificaciones", href: "/usuario/notificaciones", icon: Bell },
     ]},
   ],
   asset_holder: [
     { group: "Mis Equipos", items: [
-      { label: "Mis equipos", href: "/cuentadante", icon: "💻" },
-      { label: "Hoja de vida", href: "/cuentadante/equipos", icon: "📋" },
+      { label: "Mis equipos", href: "/cuentadante", icon: Monitor },
+      { label: "Hoja de vida", href: "/cuentadante/equipos", icon: ClipboardList },
     ]},
     { group: "Alertas", items: [
-      { label: "Mantenimientos próximos", href: "/cuentadante?tab=maintenance", icon: "🔧" },
-      { label: "Cambios de responsable", href: "/cuentadante?tab=changes", icon: "🔄" },
+      { label: "Mantenimientos próximos", href: "/cuentadante?tab=maintenance", icon: Wrench },
+      { label: "Cambios de responsable", href: "/cuentadante?tab=changes", icon: RefreshCw },
     ]},
     { group: "Cuenta", items: [
-      { label: "Notificaciones", href: "/cuentadante/notificaciones", icon: "🔔" },
+      { label: "Notificaciones", href: "/cuentadante/notificaciones", icon: Bell },
     ]},
   ],
   inventory_manager: [
     { group: "Principal", items: [
-      { label: "Dashboard inventario", href: "/inventario", icon: "📊" },
+      { label: "Dashboard inventario", href: "/inventario", icon: LayoutDashboard },
     ]},
     { group: "Activos TI", items: [
-      { label: "Lista de activos", href: "/inventario", icon: "💻" },
-      { label: "Registrar nuevo equipo", href: "/inventario/nuevo", icon: "➕" },
-      { label: "Dar de baja activo", href: "/inventario?action=decommission", icon: "❌" },
+      { label: "Lista de activos", href: "/inventario", icon: Monitor },
+      { label: "Registrar nuevo equipo", href: "/inventario/nuevo", icon: PlusCircle },
+      { label: "Dar de baja activo", href: "/inventario?action=decommission", icon: XCircle },
     ]},
     { group: "Mantenimiento", items: [
-      { label: "Registrar mantenimiento", href: "/inventario/mantenimiento/nuevo", icon: "🔧" },
-      { label: "Calendario", href: "/inventario/mantenimiento", icon: "📅" },
+      { label: "Registrar mantenimiento", href: "/inventario/mantenimiento/nuevo", icon: Wrench },
+      { label: "Calendario", href: "/inventario/mantenimiento", icon: Calendar },
     ]},
     { group: "Responsables", items: [
-      { label: "Cuentadantes", href: "/inventario?tab=holders", icon: "👤" },
+      { label: "Cuentadantes", href: "/inventario?tab=holders", icon: User },
     ]},
     { group: "Analítica", items: [
-      { label: "Activos por sede", href: "/inventario?tab=by-campus", icon: "🏢" },
-      { label: "Historial mantenimientos", href: "/inventario/mantenimiento", icon: "📜" },
+      { label: "Activos por sede", href: "/inventario?tab=by-campus", icon: Building2 },
+      { label: "Historial mantenimientos", href: "/inventario/mantenimiento", icon: ScrollText },
     ]},
   ],
   admin: [
     { group: "Principal", items: [
-      { label: "Dashboard global", href: "/admin", icon: "📊" },
+      { label: "Dashboard global", href: "/admin", icon: LayoutDashboard },
     ]},
     { group: "Acceso y Roles", items: [
-      { label: "Usuarios", href: "/admin/usuarios", icon: "👤" },
-      { label: "Roles", href: "/admin/roles", icon: "🔑" },
-      { label: "LDAP", href: "/admin/configuracion?tab=ldap", icon: "🔗" },
+      { label: "Usuarios", href: "/admin/usuarios", icon: User },
+      { label: "Roles", href: "/admin/roles", icon: KeyRound },
+      { label: "LDAP", href: "/admin/configuracion?tab=ldap", icon: LinkIcon },
     ]},
     { group: "Multitenancy", items: [
-      { label: "Tenants", href: "/admin/tenants", icon: "🏛️" },
+      { label: "Tenants", href: "/admin/tenants", icon: Landmark },
     ]},
     { group: "Sistema", items: [
-      { label: "SLA", href: "/admin/sla", icon: "⏱️" },
-      { label: "SMTP", href: "/admin/configuracion?tab=smtp", icon: "📧" },
-      { label: "Plantillas", href: "/admin/configuracion?tab=templates", icon: "📝" },
+      { label: "SLA", href: "/admin/sla", icon: Timer },
+      { label: "SMTP", href: "/admin/configuracion?tab=smtp", icon: Mail },
+      { label: "Plantillas", href: "/admin/configuracion?tab=templates", icon: FileText },
     ]},
     { group: "Seguridad", items: [
-      { label: "Logs", href: "/admin/logs", icon: "📜" },
-      { label: "Backup", href: "/admin/configuracion?tab=backup", icon: "💾" },
+      { label: "Logs", href: "/admin/logs", icon: ScrollText },
+      { label: "Backup", href: "/admin/configuracion?tab=backup", icon: HardDrive },
     ]},
     { group: "Todo el Sistema", items: [
-      { label: "Tickets", href: "/lider/tickets", icon: "🎫" },
-      { label: "Inventario", href: "/lider/inventario", icon: "💻" },
-      { label: "Reportes", href: "/admin/reportes", icon: "📊" },
+      { label: "Tickets", href: "/lider/tickets", icon: Ticket },
+      { label: "Inventario", href: "/lider/inventario", icon: Monitor },
+      { label: "Reportes", href: "/admin/reportes", icon: LayoutDashboard },
     ]},
   ],
 };
@@ -188,7 +222,7 @@ export function AppSidebar() {
                         : "text-green-200/80 hover:bg-green-800/40 hover:text-white"
                     }`}
                   >
-                    <span className="text-xs">{item.icon}</span>
+                    <item.icon className="w-4 h-4 shrink-0" />
                     <span>{item.label}</span>
                     {item.badge && (
                       <span className="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
@@ -213,8 +247,8 @@ export function AppSidebar() {
             <p className="text-xs font-medium truncate">{user?.name}</p>
             <p className="text-[10px] text-green-300 truncate">{roleLabel}</p>
           </div>
-          <button className="text-green-400/60 hover:text-white transition-colors text-xs p-1">
-            ⚙️
+          <button className="text-green-400/60 hover:text-white transition-colors p-1">
+            <Settings className="w-4 h-4" />
           </button>
         </div>
       </div>
