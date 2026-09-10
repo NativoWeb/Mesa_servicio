@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ShiftController;
 use App\Http\Controllers\Api\SlaConfigController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\SystemConfigController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -94,6 +95,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Logs de auditoría
     Route::get('audit-logs', [AuditLogController::class, 'index']);
+
+    // Configuracion del sistema
+    Route::get('system-configs', [SystemConfigController::class, 'index']);
+    Route::put('system-configs', [SystemConfigController::class, 'update']);
 
     // Mensajes masivos
     Route::prefix('messages')->group(function () {
