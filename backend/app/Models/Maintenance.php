@@ -6,9 +6,12 @@ use App\Enums\MaintenanceType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Maintenance extends Model
 {
+    use LogsActivity;
     protected $fillable = [
         'asset_id',
         'type',
@@ -54,5 +57,12 @@ class Maintenance extends Model
     public function attachments(): MorphMany
     {
         return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['type', 'status', 'technician_id', 'asset_id', 'description'])
+            ->logOnlyDirty();
     }
 }
