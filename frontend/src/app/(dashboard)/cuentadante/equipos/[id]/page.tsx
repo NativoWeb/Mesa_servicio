@@ -2,6 +2,7 @@
 
 import { use } from 'react';
 import Link from 'next/link';
+import { Monitor } from 'lucide-react';
 import { useAsset } from '@/hooks/use-assets';
 import { useMaintenances } from '@/hooks/use-maintenances';
 import { ASSET_STATUS_CONFIG } from '@/lib/constants';
@@ -59,7 +60,9 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
       {/* Header Card */}
       <div className="bg-white rounded-xl border p-6 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-2xl">💻</div>
+          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <Monitor className="w-6 h-6 text-green-700" />
+          </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900">{asset.name}</h1>
             <div className="flex items-center gap-2 mt-1">

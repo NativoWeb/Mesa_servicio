@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { ClipboardList, Clock, CheckCircle } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import api from '@/lib/api';
 
@@ -89,13 +90,13 @@ export default function UsuarioDashboardPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: 'Tickets Abiertos', value: String(kpis.open).padStart(2, '0'), icon: '📋', bg: 'bg-blue-50', color: 'text-blue-700' },
-          { label: 'En Progreso', value: String(kpis.in_progress).padStart(2, '0'), icon: '⏳', bg: 'bg-yellow-50', color: 'text-yellow-700' },
-          { label: 'Cerrados', value: String(kpis.closed).padStart(2, '0'), icon: '✅', bg: 'bg-green-50', color: 'text-green-700' },
+          { label: 'Tickets Abiertos', value: String(kpis.open).padStart(2, '0'), icon: ClipboardList, bg: 'bg-blue-50', color: 'text-blue-700', iconColor: 'text-blue-700' },
+          { label: 'En Progreso', value: String(kpis.in_progress).padStart(2, '0'), icon: Clock, bg: 'bg-yellow-50', color: 'text-yellow-700', iconColor: 'text-yellow-700' },
+          { label: 'Cerrados', value: String(kpis.closed).padStart(2, '0'), icon: CheckCircle, bg: 'bg-green-50', color: 'text-green-700', iconColor: 'text-green-700' },
         ].map((s) => (
           <div key={s.label} className="bg-white rounded-xl border p-6 hover:shadow-sm transition-shadow">
-            <div className={`w-10 h-10 ${s.bg} rounded-lg flex items-center justify-center text-lg mb-3`}>
-              {s.icon}
+            <div className={`w-10 h-10 ${s.bg} rounded-lg flex items-center justify-center mb-3`}>
+              <s.icon className={`w-5 h-5 ${s.iconColor}`} />
             </div>
             <p className={`text-3xl font-bold ${s.color}`}>{loading ? '--' : s.value}</p>
             <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">{s.label}</p>
