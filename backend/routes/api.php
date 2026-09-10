@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\ShiftController;
 use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -65,6 +66,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('{shift}', [ShiftController::class, 'update']);
         Route::delete('{shift}', [ShiftController::class, 'destroy']);
     });
+
+    // Logs de auditoría
+    Route::get('audit-logs', [AuditLogController::class, 'index']);
 
     // Mensajes masivos
     Route::prefix('messages')->group(function () {

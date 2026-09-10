@@ -1,91 +1,180 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuditLogs } from '@/hooks/use-audit-logs';
 
-const logs = [
-  { timestamp: '09/09/2026 14:23:01', user: 'admin_central', action: 'update_SLA', target: 'Prioridad Alta: 240→180 min', ip: '192.168.1.50', status: 'success' as const },
-  { timestamp: '09/09/2026 13:15:44', user: 'm_gonzalez_ti', action: 'assign_ticket', target: 'Ticket #T-4592 → Técnico A. Gómez', ip: '192.168.1.102', status: 'success' as const },
-  { timestamp: '09/09/2026 12:40:22', user: 'admin_central', action: 'backup_manual', target: 'Backup completo BD mesa_ayuda', ip: '192.168.1.50', status: 'success' as const },
-  { timestamp: '09/09/2026 11:05:18', user: 'j_perez_user', action: 'login_failed', target: 'Intento acceso módulo admin', ip: '10.0.0.34', status: 'blocked' as const },
-  { timestamp: '09/09/2026 10:30:00', user: 'admin_central', action: 'create_user', target: 'Nuevo usuario: Sandra Rodríguez (Técnico)', ip: '192.168.1.50', status: 'success' as const },
-  { timestamp: '09/09/2026 09:12:33', user: 'm_rueda_inv', action: 'delete_asset', target: 'Activo SD-DSK-0088 dado de baja', ip: '192.168.1.78', status: 'success' as const },
-];
-
-const statusConfig = {
-  success: { label: 'Éxito', color: 'bg-green-100 text-green-700' },
-  blocked: { label: 'Bloqueado', color: 'bg-red-100 text-red-700' },
-  warning: { label: 'Advertencia', color: 'bg-yellow-100 text-yellow-700' },
+const SUBJECT_LABELS: Record<string, string> = {
+  'App\\Models\\User': 'Usuario',
+  'App\\Models\\Ticket': 'Ticket',
+  'App\\Models\\Asset': 'Activo',
+  'App\\Models\\Maintenance': 'Mantenimiento',
 };
+
+function formatSubjectType(type: string | null): string {
+  if (!type) return '-';
+  return SUBJECT_LABELS[type] || type.split('\\').pop() || type;
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleString('es-CO', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+}
+
+const DESCRIPTION_LABELS: Record<string, string> = {
+  created: 'Creado',
+  updated: 'Actualizado',
+  deleted: 'Eliminado',
+};
+
+function formatDescription(desc: string): string {
+  return DESCRIPTION_LABELS[desc] || desc;
+}
 
 export default function AdminLogsPage() {
   const [search, setSearch] = useState('');
-  const [actionFilter, setActionFilter] = useState('');
+  const [subjectFilter, setSubjectFilter] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [page, setPage] = useState(1);
 
-  const filtered = logs.filter((l) => {
-    if (search && !l.user.includes(search) && !l.target.toLowerCase().includes(search.toLowerCase())) return false;
-    if (actionFilter && l.action !== actionFilter) return false;
-    return true;
-  });
+  const params: Record<string, string | number> = { page };
+  if (search) params.search = search;
+  if (subjectFilter) params.subject_type = subjectFilter;
+  if (dateFrom) params.from = dateFrom;
+  if (dateTo) params.to = dateTo;
+
+  const { data, isLoading, isError } = useAuditLogs(params);
+
+  const handleReset = () => {
+    setSearch('');
+    setSubjectFilter('');
+    setDateFrom('');
+    setDateTo('');
+    setPage(1);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Logs de Auditoría</h1>
-          <p className="text-gray-500 text-sm">Registro detallado de todas las acciones administrativas críticas del sistema</p>
-        </div>
-        <div className="flex gap-2">
-          <button className="border px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50">CSV</button>
-          <button className="border px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50">PDF</button>
+          <h1 className="text-2xl font-bold text-gray-900">Logs de Auditoria</h1>
+          <p className="text-gray-500 text-sm">Registro detallado de todas las acciones del sistema</p>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filtrar por usuario..." className="flex-1 max-w-xs px-4 py-2 bg-white border rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20" />
-        <select value={actionFilter} onChange={(e) => setActionFilter(e.target.value)} className="px-3 py-2 bg-white border rounded-xl text-sm outline-none">
-          <option value="">Todas las acciones</option>
-          <option value="login_failed">Login fallido</option>
-          <option value="update_SLA">Actualización SLA</option>
-          <option value="assign_ticket">Asignación ticket</option>
-          <option value="backup_manual">Backup</option>
-          <option value="create_user">Crear usuario</option>
-          <option value="delete_asset">Eliminar activo</option>
+        <input
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+          placeholder="Buscar en descripcion..."
+          className="flex-1 max-w-xs px-4 py-2 bg-white border rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20"
+        />
+        <select
+          value={subjectFilter}
+          onChange={(e) => { setSubjectFilter(e.target.value); setPage(1); }}
+          className="px-3 py-2 bg-white border rounded-xl text-sm outline-none"
+        >
+          <option value="">Todos los tipos</option>
+          <option value="User">Usuario</option>
+          <option value="Ticket">Ticket</option>
+          <option value="Asset">Activo</option>
+          <option value="Maintenance">Mantenimiento</option>
         </select>
-        <input type="date" className="px-3 py-2 bg-white border rounded-xl text-sm outline-none" />
-        <button className="text-sm text-gray-500 hover:text-gray-700">Resetear ↺</button>
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
+          className="px-3 py-2 bg-white border rounded-xl text-sm outline-none"
+          placeholder="Desde"
+        />
+        <input
+          type="date"
+          value={dateTo}
+          onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
+          className="px-3 py-2 bg-white border rounded-xl text-sm outline-none"
+          placeholder="Hasta"
+        />
+        <button onClick={handleReset} className="text-sm text-gray-500 hover:text-gray-700">
+          Resetear
+        </button>
       </div>
 
       <div className="bg-white rounded-xl border overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b bg-gray-50/50">
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Timestamp</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Usuario</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Acción</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Detalle</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">IP</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((l, i) => (
-              <tr key={i} className="border-b hover:bg-gray-50/50 transition-colors">
-                <td className="p-3 font-mono text-xs text-gray-500">{l.timestamp}</td>
-                <td className="p-3 font-mono text-xs font-medium text-gray-900">{l.user}</td>
-                <td className="p-3">
-                  <span className="text-xs bg-gray-100 px-2 py-0.5 rounded font-medium text-gray-700">{l.action}</span>
-                </td>
-                <td className="p-3 text-gray-700 max-w-xs truncate">{l.target}</td>
-                <td className="p-3 font-mono text-xs text-gray-500">{l.ip}</td>
-                <td className="p-3">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusConfig[l.status].color}`}>
-                    {statusConfig[l.status].label}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {isLoading ? (
+          <div className="text-center py-12 text-gray-400">Cargando logs...</div>
+        ) : isError ? (
+          <div className="text-center py-12 text-red-500">Error al cargar los logs de auditoria</div>
+        ) : (
+          <>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b bg-gray-50/50">
+                  <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Fecha</th>
+                  <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Usuario</th>
+                  <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Accion</th>
+                  <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Tipo</th>
+                  <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Cambios</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.data && data.data.length > 0 ? (
+                  data.data.map((log) => (
+                    <tr key={log.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                      <td className="p-3 font-mono text-xs text-gray-500">{formatDate(log.created_at)}</td>
+                      <td className="p-3 text-xs font-medium text-gray-900">{log.causer?.name || 'Sistema'}</td>
+                      <td className="p-3">
+                        <span className="text-xs bg-gray-100 px-2 py-0.5 rounded font-medium text-gray-700">
+                          {formatDescription(log.description)}
+                        </span>
+                      </td>
+                      <td className="p-3 text-xs text-gray-600">{formatSubjectType(log.subject_type)}</td>
+                      <td className="p-3 text-xs text-gray-500 max-w-xs truncate">
+                        {log.properties && Object.keys(log.properties).length > 0
+                          ? JSON.stringify(log.properties.attributes || log.properties)
+                          : '-'}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="text-center py-12 text-gray-400">No se encontraron registros</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {data && data.last_page > 1 && (
+              <div className="flex items-center justify-between px-4 py-3 border-t">
+                <span className="text-xs text-gray-500">
+                  Pagina {data.current_page} de {data.last_page} ({data.total} registros)
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={data.current_page <= 1}
+                    className="px-3 py-1 border rounded text-xs disabled:opacity-50 hover:bg-gray-50"
+                  >
+                    Anterior
+                  </button>
+                  <button
+                    onClick={() => setPage((p) => Math.min(data.last_page, p + 1))}
+                    disabled={data.current_page >= data.last_page}
+                    className="px-3 py-1 border rounded text-xs disabled:opacity-50 hover:bg-gray-50"
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

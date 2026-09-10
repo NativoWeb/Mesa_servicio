@@ -15,7 +15,7 @@ use Spatie\Activitylog\LogOptions;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasRoles;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles, LogsActivity;
 
     /**
      * @var list<string>
@@ -94,5 +94,12 @@ class User extends Authenticatable
     public function getIsActiveAttribute(): bool
     {
         return true;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email', 'campus', 'department'])
+            ->logOnlyDirty();
     }
 }

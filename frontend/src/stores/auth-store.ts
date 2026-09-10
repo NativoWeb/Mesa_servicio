@@ -45,9 +45,15 @@ export const useAuthStore = create<AuthState>()(
       isHydrated: false,
       setAuth: (user, token) => {
         set({ user, token, isAuthenticated: true });
+        if (typeof document !== 'undefined') {
+          document.cookie = 'auth-token=1; path=/; max-age=31536000';
+        }
       },
       logout: () => {
         set({ user: null, token: null, isAuthenticated: false });
+        if (typeof document !== 'undefined') {
+          document.cookie = 'auth-token=; path=/; max-age=0';
+        }
       },
       setHydrated: () => {
         set({ isHydrated: true });
