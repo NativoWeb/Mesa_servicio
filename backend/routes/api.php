@@ -40,43 +40,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
     });
 
-    // Dashboard
+    // Dashboard — todos los roles autenticados (scoping por rol en el controller)
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'index']);
     });
 
-    // Tickets
+    // Tickets — todos los roles pueden ver/crear (scoping por rol en el controller)
     Route::apiResource('tickets', TicketController::class);
 
-    // Activos
-    Route::apiResource('assets', AssetController::class);
-
-    // Mantenimientos
-    Route::apiResource('maintenances', MaintenanceController::class);
-
-    // Usuarios
-    Route::apiResource('users', UserController::class);
-
-    // Reportes
-    Route::prefix('reports')->group(function () {
-        Route::get('tickets', [ReportController::class, 'ticketsSummary']);
-        Route::get('assets', [ReportController::class, 'assetsSummary']);
-        Route::get('maintenances', [ReportController::class, 'maintenancesSummary']);
-        Route::get('export/excel', [ReportController::class, 'exportExcel']);
-        Route::get('export/pdf', [ReportController::class, 'exportPdf']);
-    });
-
-    // Configuracion SLA
-    Route::apiResource('sla-configs', SlaConfigController::class)->only(['index', 'store', 'update']);
-
-    // Turnos
-    Route::prefix('shifts')->group(function () {
-        Route::get('/', [ShiftController::class, 'index']);
-        Route::post('/', [ShiftController::class, 'store']);
-        Route::get('{shift}', [ShiftController::class, 'show']);
-        Route::put('{shift}', [ShiftController::class, 'update']);
-        Route::delete('{shift}', [ShiftController::class, 'destroy']);
-    });
+    // Notificaciones (actividad relevante por rol)
+    Route::get('notifications', [NotificationController::class, 'index']);
 
     // Comments (polymorphic)
     Route::prefix('{type}/{id}/comments')->where(['type' => 'tickets|assets|maintenances'])->group(function () {
@@ -91,26 +64,68 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy']);
 
-    // Notificaciones (actividad relevante por rol)
-    Route::get('notifications', [NotificationController::class, 'index']);
+    // --- Solo admin ---
+    Route::middleware(['role:admin'])->group(function () {
+        Route::apiResource('users', UserController::class);
+        Route::apiResource('tenants', TenantController::class)->only(['index', 'store', 'show', 'destroy']);
+        Route::get('system-configs', [SystemConfigController::class, 'index']);
+        Route::put('system-configs', [SystemConfigController::class, 'update']);
+        Route::get('audit-logs', [AuditLogController::class, 'index']);
+        Route::apiResource('sla-configs', SlaConfigController::class)->only(['index', 'store', 'update']);
+    });
 
-    // Logs de auditoría
-    Route::get('audit-logs', [AuditLogController::class, 'index']);
+    // --- Admin + IT Leader ---
+    Route::middleware(['role:admin|it_leader'])->group(function () {
+        // Mensajes masivos
+        Route::prefix('messages')->group(function () {
+            Route::get('/', [MessageController::class, 'index']);
+            Route::post('/', [MessageController::class, 'store']);
+            Route::get('{message}', [MessageController::class, 'show']);
+            Route::put('{message}', [MessageController::class, 'update']);
+            Route::delete('{message}', [MessageController::class, 'destroy']);
+            Route::post('{message}/send', [MessageController::class, 'send']);
+        });
 
-    // Tenants (admin only)
-    Route::apiResource('tenants', TenantController::class)->only(['index', 'store', 'show', 'destroy']);
+        // Reportes
+        Route::prefix('reports')->group(function () {
+            Route::get('tickets', [ReportController::class, 'ticketsSummary']);
+            Route::get('assets', [ReportController::class, 'assetsSummary']);
+            Route::get('maintenances', [ReportController::class, 'maintenancesSummary']);
+            Route::get('export/excel', [ReportController::class, 'exportExcel']);
+            Route::get('export/pdf', [ReportController::class, 'exportPdf']);
+        });
 
-    // Configuracion del sistema
-    Route::get('system-configs', [SystemConfigController::class, 'index']);
-    Route::put('system-configs', [SystemConfigController::class, 'update']);
+        // Turnos: CRUD completo
+        Route::prefix('shifts')->group(function () {
+            Route::get('/', [ShiftController::class, 'index']);
+            Route::post('/', [ShiftController::class, 'store']);
+            Route::get('{shift}', [ShiftController::class, 'show']);
+            Route::put('{shift}', [ShiftController::class, 'update']);
+            Route::delete('{shift}', [ShiftController::class, 'destroy']);
+        });
+    });
 
-    // Mensajes masivos
-    Route::prefix('messages')->group(function () {
-        Route::get('/', [MessageController::class, 'index']);
-        Route::post('/', [MessageController::class, 'store']);
-        Route::get('{message}', [MessageController::class, 'show']);
-        Route::put('{message}', [MessageController::class, 'update']);
-        Route::delete('{message}', [MessageController::class, 'destroy']);
-        Route::post('{message}/send', [MessageController::class, 'send']);
+    // --- Admin + IT Leader + Technician ---
+    Route::middleware(['role:admin|it_leader|technician'])->group(function () {
+        Route::apiResource('maintenances', MaintenanceController::class);
+
+        // Turnos: lectura para técnicos (si no cubierto por el grupo anterior)
+    });
+
+    // Turnos: solo lectura para técnicos
+    Route::middleware(['role:technician'])->group(function () {
+        Route::get('shifts', [ShiftController::class, 'index']);
+        Route::get('shifts/{shift}', [ShiftController::class, 'show']);
+    });
+
+    // --- Admin + IT Leader + Inventory Manager ---
+    Route::middleware(['role:admin|it_leader|inventory_manager'])->group(function () {
+        Route::apiResource('assets', AssetController::class);
+    });
+
+    // --- Asset Holder: solo lectura de activos ---
+    Route::middleware(['role:asset_holder'])->group(function () {
+        Route::get('assets', [AssetController::class, 'index']);
+        Route::get('assets/{asset}', [AssetController::class, 'show']);
     });
 });

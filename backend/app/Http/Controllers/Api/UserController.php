@@ -6,16 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-
 class UserController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
         $users = User::with('roles')
             ->when($request->role, fn ($q, $role) => $q->role($role))
-            ->when($request->search, fn ($q, $s) => $q->where('name', 'ilike', "%{$s}%")
-                ->orWhere('email', 'ilike', "%{$s}%"))
+            ->when($request->search, fn ($q, $s) => $q->where(function ($sub) use ($s) {
+                $sub->where('name', 'ilike', "%{$s}%")
+                    ->orWhere('email', 'ilike', "%{$s}%");
+            }))
             ->orderBy('name')
             ->paginate($request->per_page ?? 15);
 
@@ -31,13 +31,13 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
             'campus' => 'nullable|string|max:100',
             'department' => 'nullable|string|max:100',
-            'role' => 'required|string',
+            'role' => 'required|string|in:admin,it_leader,technician,inventory_manager,end_user,asset_holder',
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'],
             'phone' => $validated['phone'] ?? null,
             'campus' => $validated['campus'] ?? null,
             'department' => $validated['department'] ?? null,
@@ -62,12 +62,8 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
             'campus' => 'nullable|string|max:100',
             'department' => 'nullable|string|max:100',
-            'role' => 'nullable|string',
+            'role' => 'nullable|string|in:admin,it_leader,technician,inventory_manager,end_user,asset_holder',
         ]);
-
-        if (isset($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-        }
 
         $role = $validated['role'] ?? null;
         unset($validated['role']);

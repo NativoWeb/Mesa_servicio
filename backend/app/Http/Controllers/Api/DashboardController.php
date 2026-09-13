@@ -71,9 +71,10 @@ class DashboardController extends Controller
                 ->whereNotIn('status', ['closed'])
                 ->whereNotNull('sla_deadline')
                 ->get()
-                ->filter(fn ($t) => $this->slaService->remainingMinutes($t) !== null
-                    && $this->slaService->remainingMinutes($t) <= 60
-                    && $this->slaService->remainingMinutes($t) > 0)
+                ->filter(function ($t) {
+                    $remaining = $this->slaService->remainingMinutes($t);
+                    return $remaining !== null && $remaining <= 60 && $remaining > 0;
+                })
                 ->count();
         }
 
@@ -90,7 +91,7 @@ class DashboardController extends Controller
                 'total' => Asset::count(),
                 'operational' => Asset::where('status', 'operational')->count(),
                 'damaged' => Asset::where('status', 'damaged')->count(),
-                'in_maintenance' => Asset::where('status', 'decommissioned')->count(),
+                'decommissioned' => Asset::where('status', 'decommissioned')->count(),
                 'pending_maintenance' => Asset::whereNotNull('next_maintenance')
                     ->where('next_maintenance', '<=', now()->addDays(7))
                     ->count(),
@@ -148,16 +149,20 @@ class DashboardController extends Controller
     /** Tasa de cumplimiento SLA */
     private function slaCompliance(): array
     {
-        $closedWithSla = Ticket::where('status', 'closed')
+        $total = Ticket::where('status', 'closed')
             ->whereNotNull('sla_deadline')
-            ->get();
+            ->count();
 
-        $total = $closedWithSla->count();
         if ($total === 0) {
             return ['rate' => 100, 'met' => 0, 'breached' => 0, 'total' => 0];
         }
 
-        $met = $closedWithSla->filter(fn ($t) => $t->closed_at && $t->closed_at->lte($t->sla_deadline))->count();
+        $met = Ticket::where('status', 'closed')
+            ->whereNotNull('sla_deadline')
+            ->whereNotNull('closed_at')
+            ->whereColumn('closed_at', '<=', 'sla_deadline')
+            ->count();
+
         $breached = $total - $met;
 
         return [

@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Events\TicketUpdated;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTicketRequest;
-use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
 use App\Services\NotificationService;
 use App\Services\SlaService;
@@ -23,7 +21,12 @@ class TicketController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
         $tickets = Ticket::with(['requester', 'assignedUser'])
+            ->when($role === 'end_user', fn ($q) => $q->where('requester_id', $user->id))
+            ->when($role === 'technician', fn ($q) => $q->where('assigned_to', $user->id))
             ->when($request->status, fn ($q, $status) => $q->where('status', $status))
             ->when($request->priority, fn ($q, $priority) => $q->where('priority', $priority))
             ->when($request->assigned_to, fn ($q, $id) => $q->where('assigned_to', $id))
@@ -34,9 +37,16 @@ class TicketController extends Controller
         return response()->json($tickets);
     }
 
-    public function store(StoreTicketRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category' => 'nullable|string|max:100',
+            'priority' => 'required|string|in:low,medium,high,critical',
+            'campus' => 'nullable|string|max:100',
+            'location' => 'nullable|string|max:255',
+        ]);
 
         $validated['requester_id'] = $request->user()->id;
         $validated['status'] = 'open';
@@ -67,9 +77,20 @@ class TicketController extends Controller
         );
     }
 
-    public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
+    public function update(Request $request, Ticket $ticket): JsonResponse
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'title' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'category' => 'nullable|string|max:100',
+            'priority' => 'sometimes|string|in:low,medium,high,critical',
+            'status' => 'sometimes|string|in:open,in_progress,pending,escalated,closed',
+            'assigned_to' => 'nullable|exists:users,id',
+            'campus' => 'nullable|string|max:100',
+            'location' => 'nullable|string|max:255',
+            'escalated_to' => 'nullable|exists:users,id',
+            'escalation_reason' => 'nullable|string',
+        ]);
 
         $oldStatus = $ticket->status->value;
 

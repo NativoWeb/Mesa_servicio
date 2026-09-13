@@ -17,6 +17,7 @@ class Asset extends Model
     use SoftDeletes, LogsActivity;
 
     protected $fillable = [
+        'asset_code',
         'name',
         'category',
         'brand',
@@ -51,11 +52,10 @@ class Asset extends Model
      */
     protected static function booted(): void
     {
-        static::creating(function (Asset $asset) {
+        static::created(function (Asset $asset) {
             if (empty($asset->asset_code)) {
                 $prefix = strtoupper(substr($asset->category?->value ?? 'OTH', 0, 3));
-                $lastNumber = static::withTrashed()->max('id') ?? 0;
-                $asset->asset_code = 'UTS-' . $prefix . '-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+                $asset->updateQuietly(['asset_code' => 'UTS-' . $prefix . '-' . str_pad($asset->id, 4, '0', STR_PAD_LEFT)]);
             }
         });
     }

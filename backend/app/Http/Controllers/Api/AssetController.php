@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAssetRequest;
-use App\Http\Requests\UpdateAssetRequest;
 use App\Models\Asset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,23 +11,45 @@ class AssetController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
         $assets = Asset::with('holder')
+            ->when($role === 'asset_holder', fn ($q) => $q->where('holder_id', $user->id))
             ->when($request->category, fn ($q, $cat) => $q->where('category', $cat))
             ->when($request->status, fn ($q, $status) => $q->where('status', $status))
             ->when($request->campus, fn ($q, $campus) => $q->where('campus', $campus))
             ->when($request->holder_id, fn ($q, $id) => $q->where('holder_id', $id))
-            ->when($request->search, fn ($q, $s) => $q->where('name', 'ilike', "%{$s}%")
-                ->orWhere('asset_code', 'ilike', "%{$s}%")
-                ->orWhere('serial', 'ilike', "%{$s}%"))
+            ->when($request->search, fn ($q, $s) => $q->where(function ($sub) use ($s) {
+                $sub->where('name', 'ilike', "%{$s}%")
+                    ->orWhere('asset_code', 'ilike', "%{$s}%")
+                    ->orWhere('serial', 'ilike', "%{$s}%");
+            }))
             ->orderByDesc('created_at')
             ->paginate($request->per_page ?? 15);
 
         return response()->json($assets);
     }
 
-    public function store(StoreAssetRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|in:pc,laptop,printer,server,router,switch,monitor,projector,other',
+            'brand' => 'nullable|string|max:100',
+            'model' => 'nullable|string|max:100',
+            'serial' => 'nullable|string|max:100|unique:assets,serial',
+            'purchase_date' => 'nullable|date',
+            'campus' => 'nullable|string|max:100',
+            'floor' => 'nullable|string|max:50',
+            'location' => 'nullable|string|max:255',
+            'holder_id' => 'nullable|exists:users,id',
+            'status' => 'nullable|string|in:new,operational,damaged,decommissioned,retired',
+            'specs' => 'nullable|array',
+            'warranty_expiry' => 'nullable|date',
+            'next_maintenance' => 'nullable|date',
+            'notes' => 'nullable|string',
+        ]);
 
         $asset = Asset::create($validated);
 
@@ -43,9 +63,25 @@ class AssetController extends Controller
         );
     }
 
-    public function update(UpdateAssetRequest $request, Asset $asset): JsonResponse
+    public function update(Request $request, Asset $asset): JsonResponse
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'category' => 'sometimes|string|in:pc,laptop,printer,server,router,switch,monitor,projector,other',
+            'brand' => 'nullable|string|max:100',
+            'model' => 'nullable|string|max:100',
+            'serial' => 'nullable|string|max:100|unique:assets,serial,' . $asset->id,
+            'purchase_date' => 'nullable|date',
+            'campus' => 'nullable|string|max:100',
+            'floor' => 'nullable|string|max:50',
+            'location' => 'nullable|string|max:255',
+            'holder_id' => 'nullable|exists:users,id',
+            'status' => 'nullable|string|in:new,operational,damaged,decommissioned,retired',
+            'specs' => 'nullable|array',
+            'warranty_expiry' => 'nullable|date',
+            'next_maintenance' => 'nullable|date',
+            'notes' => 'nullable|string',
+        ]);
 
         $asset->update($validated);
 

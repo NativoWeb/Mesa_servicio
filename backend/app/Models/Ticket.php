@@ -17,6 +17,7 @@ class Ticket extends Model
     use SoftDeletes, LogsActivity;
 
     protected $fillable = [
+        'ticket_number',
         'title',
         'description',
         'category',
@@ -49,10 +50,9 @@ class Ticket extends Model
      */
     protected static function booted(): void
     {
-        static::creating(function (Ticket $ticket) {
+        static::created(function (Ticket $ticket) {
             if (empty($ticket->ticket_number)) {
-                $lastNumber = static::withTrashed()->max('id') ?? 0;
-                $ticket->ticket_number = 'T-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+                $ticket->updateQuietly(['ticket_number' => 'T-' . str_pad($ticket->id, 4, '0', STR_PAD_LEFT)]);
             }
         });
     }
