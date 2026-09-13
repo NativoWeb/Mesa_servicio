@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Maintenance;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MaintenanceController extends Controller
 {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+    ) {}
+
     public function index(Request $request): JsonResponse
     {
         $maintenances = Maintenance::with(['asset', 'technician'])
@@ -39,6 +44,16 @@ class MaintenanceController extends Controller
 
         $maintenance = Maintenance::create($validated);
 
+        // Actualizar próximo mantenimiento del activo
+        if (!empty($validated['next_maintenance_date'])) {
+            $maintenance->asset->update(['next_maintenance' => $validated['next_maintenance_date']]);
+        }
+
+        // Si el mantenimiento se completó, actualizar estado del activo a operativo
+        if (($validated['status'] ?? null) === 'completed') {
+            $maintenance->asset->update(['status' => 'operational']);
+        }
+
         return response()->json($maintenance->load(['asset', 'technician']), 201);
     }
 
@@ -64,6 +79,16 @@ class MaintenanceController extends Controller
         ]);
 
         $maintenance->update($validated);
+
+        // Actualizar próximo mantenimiento del activo si cambió
+        if (!empty($validated['next_maintenance_date'])) {
+            $maintenance->asset->update(['next_maintenance' => $validated['next_maintenance_date']]);
+        }
+
+        // Si se completó el mantenimiento, restaurar activo a operativo
+        if (($validated['status'] ?? null) === 'completed' && $maintenance->asset->status !== 'operational') {
+            $maintenance->asset->update(['status' => 'operational']);
+        }
 
         return response()->json($maintenance->fresh(['asset', 'technician']));
     }

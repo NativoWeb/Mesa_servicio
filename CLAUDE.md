@@ -175,12 +175,9 @@ Bucaramanga (Principal), Piedecuesta, Barrancabermeja, Yopal, Velez, Charala
 
 ## Known Gaps
 
-- Services (`SlaService`, `TicketAssignmentService`, `ReportService`) exist but are not called from controllers
 - No Form Request validation classes — validation is inline
 - No tests written yet (empty `tests/Unit/` and `tests/Feature/`)
-- DashboardController returns global counts with no role/campus scoping
 - No Next.js middleware for server-side route protection
-- `spatie/laravel-activitylog` imported in User model but trait not applied
 - Root layout metadata still says "Create Next App"
 
 ## Reference Docs

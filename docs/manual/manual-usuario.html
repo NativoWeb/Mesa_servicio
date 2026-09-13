@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Usuario - Mesa de Servicio TI</title>
+<style>
+  @page { size: A4; margin: 2.54cm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; line-height: 1.7; font-size: 11pt; }
+  .page { page-break-after: always; min-height: 100vh; padding: 0; }
+  .page:last-child { page-break-after: avoid; }
+
+  /* Header bar */
+  .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1B5E20; padding-bottom: 8px; margin-bottom: 24px; font-size: 8pt; color: #666; }
+  .header-bar strong { color: #1B5E20; }
+
+  /* Cover */
+  .cover { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90vh; text-align: center; }
+  .cover h1 { font-size: 28pt; color: #1B5E20; font-weight: 700; margin-bottom: 8px; }
+  .cover h2 { font-size: 16pt; color: #333; font-weight: 400; margin-bottom: 40px; }
+  .cover .subtitle { font-size: 11pt; color: #666; max-width: 500px; margin-bottom: 60px; }
+  .cover table { font-size: 10pt; text-align: left; border-collapse: collapse; }
+  .cover table td { padding: 4px 16px 4px 0; vertical-align: top; }
+  .cover table td:first-child { font-weight: 600; color: #555; }
+
+  /* Content */
+  h1 { font-size: 18pt; color: #1B5E20; margin: 24px 0 12px; font-weight: 700; }
+  h2 { font-size: 14pt; color: #2E7D32; margin: 20px 0 10px; font-weight: 600; }
+  h3 { font-size: 12pt; color: #333; margin: 16px 0 8px; font-weight: 600; }
+  p { margin-bottom: 10px; text-align: justify; }
+  ol, ul { margin: 8px 0 12px 24px; }
+  li { margin-bottom: 4px; }
+
+  /* Figures (APA) */
+  .figure { margin: 16px 0; text-align: center; }
+  .figure img { max-width: 100%; border: 1px solid #e0e0e0; border-radius: 4px; }
+  .figure figcaption { font-size: 9pt; color: #555; margin-top: 6px; font-style: italic; }
+
+  /* Tables */
+  table.info { width: 100%; border-collapse: collapse; font-size: 10pt; margin: 12px 0; }
+  table.info th { background: #E8F5E9; color: #1B5E20; text-align: left; padding: 8px 12px; border: 1px solid #C8E6C9; font-weight: 600; }
+  table.info td { padding: 8px 12px; border: 1px solid #e0e0e0; vertical-align: top; }
+
+  /* Notes */
+  .note { background: #FFF8E1; border-left: 4px solid #F9A825; padding: 10px 14px; margin: 12px 0; font-size: 10pt; border-radius: 2px; }
+  .note strong { color: #E65100; }
+
+  /* Footer */
+  .page-footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8pt; color: #999; }
+</style>
+</head>
+<body>
+
+<!-- ==================== PORTADA ==================== -->
+<div class="page">
+<div class="cover">
+  <div style="margin-bottom: 40px;">
+    <div style="width: 80px; height: 80px; background: #1B5E20; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+      <span style="color: white; font-weight: bold; font-size: 28pt;">SD</span>
+    </div>
+  </div>
+  <h1>Mesa de Servicio TI</h1>
+  <h2>Manual de usuario</h2>
+  <p class="subtitle">Instrucciones de acceso, operacion y consulta de la version 1.0.0. Dirigido a administradores, lideres TIC, tecnicos de soporte, gestores de inventario, usuarios finales y cuentadantes.</p>
+  <table>
+    <tr><td>Empresa</td><td>NATIVOWEB S.A.S.</td></tr>
+    <tr><td>NIT</td><td>901986453-2</td></tr>
+    <tr><td>Autores</td><td>BRAYAN ALFONSO APARICIO DURAN<br>MARLY TATIANA RANGEL MORENO</td></tr>
+    <tr><td>Edicion documental</td><td>Septiembre de 2026</td></tr>
+    <tr><td>Codigo documental</td><td>NW MDA REG 02</td></tr>
+    <tr><td>Version software</td><td>1.0.0</td></tr>
+    <tr><td>Ciudad</td><td>Bucaramanga, Colombia</td></tr>
+  </table>
+</div>
+</div>
+
+<!-- ==================== USO DEL MANUAL ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Uso del manual y acceso al sistema</h1>
+
+<p>El Sistema de Mesa de Servicio TI centraliza la gestion de soporte tecnico, inventario de activos tecnologicos y mantenimientos institucionales. Este manual permite localizar la funcion, ejecutar el procedimiento y comprobar el resultado de cada actuacion.</p>
+
+<h2>Preparacion del acceso</h2>
+<ol>
+  <li>Solicite al administrador la direccion de acceso y una cuenta personal.</li>
+  <li>Abra la direccion en un navegador actualizado con JavaScript habilitado. Compruebe que la direccion corresponda al servicio autorizado.</li>
+  <li>Ingrese su correo y contrasena y seleccione <strong>Iniciar sesion</strong>. El sistema dirige la navegacion segun los roles asignados.</li>
+  <li>Revise el perfil y las opciones disponibles antes de registrar informacion. Al finalizar, utilice <strong>Cerrar sesion</strong>.</li>
+</ol>
+
+<h2>Credenciales y errores de acceso</h2>
+<p>Una cuenta personal permite asociar cada actuacion con su responsable. Evite compartir credenciales. Si no puede ingresar, compruebe el correo, el teclado y el estado de la cuenta. La recuperacion de contrasena esta disponible mediante el enlace "Olvide mi contrasena" en la pantalla de inicio de sesion.</p>
+
+<figure class="figure">
+  <img src="screenshots/01-login.png" alt="Pantalla de inicio de sesion">
+  <figcaption>Figura 1. Pantalla de inicio de sesion del sistema Mesa de Servicio TI.</figcaption>
+</figure>
+
+<figure class="figure">
+  <img src="screenshots/21-forgot-password.png" alt="Recuperacion de contrasena">
+  <figcaption>Figura 2. Formulario de recuperacion de contrasena.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== NAVEGACION Y PERFILES ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Navegacion y perfiles</h1>
+
+<p>En escritorio, el menu lateral agrupa las funciones disponibles. La zona central presenta listados, formularios y detalles; la cabecera contiene controles de usuario y avisos. Las opciones visibles varian segun los permisos asignados al rol del usuario autenticado.</p>
+
+<table class="info">
+  <thead>
+    <tr><th>Rol</th><th>Acceso principal</th><th>Funciones clave</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Administrador</td><td>/admin</td><td>Usuarios, roles, SLA, logs, reportes, configuracion, tenants</td></tr>
+    <tr><td>Lider TIC</td><td>/lider</td><td>Dashboard global, tickets, asignacion, inventario, mensajeria, reportes</td></tr>
+    <tr><td>Tecnico de Soporte</td><td>/tecnico</td><td>Tickets asignados, detalle con acciones, turnos, equipos</td></tr>
+    <tr><td>Gestor de Inventario</td><td>/inventario</td><td>Activos, registro de equipos, mantenimientos</td></tr>
+    <tr><td>Usuario Final</td><td>/usuario</td><td>Crear y consultar tickets, notificaciones</td></tr>
+    <tr><td>Cuentadante</td><td>/cuentadante</td><td>Equipos a cargo, hoja de vida, notificaciones</td></tr>
+  </tbody>
+</table>
+
+<h2>Controles comunes</h2>
+<p>Use el buscador para localizar un registro y combine los filtros disponibles. Revise la paginacion: un listado puede mostrar solo una parte de los resultados. Al cambiar de periodo o estado, vuelva a comprobar que los filtros correspondan a su consulta.</p>
+<p>Los botones <strong>Nuevo</strong>, <strong>Registrar</strong>, <strong>Guardar</strong>, <strong>Exportar</strong> o equivalentes ejecutan operaciones diferentes. Lea el encabezado del formulario y verifique el registro seleccionado antes de confirmar.</p>
+</div>
+
+<!-- ==================== ADMINISTRADOR ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Administrador del Sistema</h1>
+
+<p>El administrador tiene acceso total al sistema. Gestiona usuarios, roles, parametros SLA, configuracion del servidor, logs de auditoria, reportes y la administracion multitenant.</p>
+
+<h2>Dashboard global</h2>
+<p>El panel principal presenta indicadores clave del sistema: total de usuarios, tickets, activos y mantenimientos. Incluye graficas de tickets creados versus resueltos en los ultimos siete dias y el desglose de estados de tickets y activos.</p>
+
+<figure class="figure">
+  <img src="screenshots/02-admin-dashboard.png" alt="Dashboard del administrador">
+  <figcaption>Figura 3. Dashboard global del administrador con KPIs del sistema, graficas y acciones rapidas.</figcaption>
+</figure>
+
+<h2>Gestion de usuarios</h2>
+<p>Permite crear, consultar y eliminar cuentas de usuario. Cada usuario se asocia a un rol, una sede y un departamento. Los filtros de busqueda y rol permiten localizar rapidamente una cuenta.</p>
+<ol>
+  <li>Abra <strong>Usuarios</strong> desde el menu lateral.</li>
+  <li>Utilice el buscador o el filtro de rol para localizar un usuario.</li>
+  <li>Seleccione <strong>Crear usuario</strong> para registrar una nueva cuenta. Complete nombre, correo, contrasena, rol, sede y departamento.</li>
+  <li>Para eliminar un usuario, seleccione la accion correspondiente y confirme.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/03-admin-usuarios.png" alt="Gestion de usuarios">
+  <figcaption>Figura 4. Listado de usuarios con formulario de creacion y filtros de busqueda.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== ADMIN: ROLES, SLA, LOGS ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h2>Roles y permisos</h2>
+<p>La matriz de roles muestra los seis perfiles del sistema con sus permisos asociados. Esta vista es de consulta; los roles se configuran durante el despliegue inicial.</p>
+
+<figure class="figure">
+  <img src="screenshots/04-admin-roles.png" alt="Roles y permisos">
+  <figcaption>Figura 5. Matriz de roles RBAC del sistema.</figcaption>
+</figure>
+
+<h2>Configuracion de tiempos SLA</h2>
+<p>Define los tiempos de respuesta y resolucion por prioridad de ticket. Los cambios se aplican a los nuevos tickets creados despues de guardar.</p>
+<ol>
+  <li>Abra <strong>SLA</strong> desde el menu lateral.</li>
+  <li>Seleccione <strong>Editar parametros SLA</strong>.</li>
+  <li>Modifique los tiempos de respuesta y resolucion para cada prioridad.</li>
+  <li>Seleccione <strong>Guardar cambios</strong> para persistir la configuracion.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/05-admin-sla.png" alt="Configuracion SLA">
+  <figcaption>Figura 6. Tabla editable de tiempos SLA por prioridad.</figcaption>
+</figure>
+
+<h2>Logs de auditoria</h2>
+<p>El registro de auditoria conserva las acciones realizadas por los usuarios del sistema. Permite filtrar por tipo de entidad, rango de fechas y busqueda por descripcion.</p>
+
+<figure class="figure">
+  <img src="screenshots/06-admin-logs.png" alt="Logs de auditoria">
+  <figcaption>Figura 7. Registro de auditoria con filtros de consulta.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== ADMIN: REPORTES, CONFIG ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h2>Reportes y metricas</h2>
+<p>Genera reportes en tiempo real de tickets, activos y mantenimientos. Cada reporte muestra desgloses por estado, prioridad, categoria o tipo. Los datos pueden exportarse en formato PDF o Excel.</p>
+<ol>
+  <li>Abra <strong>Reportes</strong> y seleccione el tipo de reporte deseado.</li>
+  <li>Revise los totales y desgloses presentados.</li>
+  <li>Configure reportes programados en la seccion inferior para envio automatico por correo.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/07-admin-reportes.png" alt="Reportes">
+  <figcaption>Figura 8. Modulo de reportes con datos en tiempo real y configuracion de reportes programados.</figcaption>
+</figure>
+
+<h2>Configuracion del sistema</h2>
+<p>Administra los parametros generales del sistema, la configuracion SMTP para envio de correos y la informacion de respaldo.</p>
+<ol>
+  <li>Abra <strong>Configuracion</strong> desde el menu.</li>
+  <li>Seleccione la pestana correspondiente: General, SMTP o Backup.</li>
+  <li>Modifique los valores y seleccione <strong>Guardar configuracion</strong>.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/08-admin-configuracion.png" alt="Configuracion del sistema">
+  <figcaption>Figura 9. Panel de configuracion del sistema con pestanas General, SMTP y Backup.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== LIDER TIC ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Lider TIC</h1>
+
+<p>El Lider TIC supervisa toda la operacion de la mesa de servicio. Tiene visibilidad global sobre tickets, tecnicos, inventario y comunicaciones.</p>
+
+<h2>Dashboard principal</h2>
+<p>Presenta cinco indicadores clave: tickets abiertos, en progreso, resueltos, tasa de resolucion y criticos sin resolver. Incluye grafica de distribucion por prioridad, tendencia semanal, carga operativa por tecnico y la cola de tickets sin asignar.</p>
+
+<figure class="figure">
+  <img src="screenshots/09-lider-dashboard.png" alt="Dashboard del lider TIC">
+  <figcaption>Figura 10. Dashboard del Lider TIC con KPIs, graficas de prioridad, carga por tecnico y cola de tickets sin asignar.</figcaption>
+</figure>
+
+<h2>Gestion de tickets</h2>
+<p>Lista completa de tickets con filtros por estado, busqueda por titulo y paginacion. Permite ver el detalle de cada ticket y su asignacion.</p>
+<ol>
+  <li>Abra <strong>Todos los tickets</strong> desde el menu.</li>
+  <li>Utilice las pestanas de estado o el buscador para filtrar.</li>
+  <li>Seleccione un ticket para ver su detalle completo.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/10-lider-tickets.png" alt="Lista de tickets">
+  <figcaption>Figura 11. Listado completo de tickets con filtros por estado y busqueda.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== LIDER: ASIGNACION, MENSAJERIA ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h2>Asignacion de tickets</h2>
+<p>Permite asignar tickets pendientes a tecnicos disponibles. La vista se divide en dos paneles: tickets sin asignar a la izquierda y tecnicos disponibles a la derecha.</p>
+<ol>
+  <li>Abra <strong>Asignar / Reasignar</strong> desde el menu.</li>
+  <li>Seleccione un ticket de la lista izquierda.</li>
+  <li>Seleccione <strong>Asignar</strong> junto al tecnico deseado.</li>
+  <li>El ticket se actualiza automaticamente a estado "En Progreso".</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/11-lider-asignacion.png" alt="Asignacion de tickets">
+  <figcaption>Figura 12. Panel de asignacion con tickets pendientes y tecnicos disponibles.</figcaption>
+</figure>
+
+<h2>Mensajeria masiva</h2>
+<p>Envia comunicaciones por correo electronico o SMS a grupos de usuarios segmentados por rol y sede.</p>
+<ol>
+  <li>Abra <strong>Mensajeria masiva</strong>.</li>
+  <li>Seleccione el canal de envio, escriba el asunto y el cuerpo del mensaje.</li>
+  <li>Configure la segmentacion de audiencia por rol y sede.</li>
+  <li>Seleccione <strong>Enviar mensaje</strong>. El historial de envios aparece en la parte inferior.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/12-lider-mensajeria.png" alt="Mensajeria masiva">
+  <figcaption>Figura 13. Formulario de mensajeria masiva con segmentacion de audiencia e historial de envios.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== TECNICO ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Tecnico de Soporte</h1>
+
+<p>El tecnico atiende los tickets asignados. Su panel muestra indicadores personales y la tabla de tickets con filtros por estado y prioridad.</p>
+
+<h2>Mi panel</h2>
+<p>Presenta cuatro indicadores: tickets abiertos, en progreso, pendientes y cerrados hoy. La tabla permite filtrar y acceder al detalle de cada ticket.</p>
+
+<figure class="figure">
+  <img src="screenshots/13-tecnico-dashboard.png" alt="Panel del tecnico">
+  <figcaption>Figura 14. Panel del tecnico de soporte con KPIs personales y tabla de tickets asignados.</figcaption>
+</figure>
+
+<h2>Detalle del ticket</h2>
+<p>Al abrir un ticket, el tecnico puede cambiar su estado, registrar diagnosticos, escalar el caso o cerrarlo con documentacion de los pasos realizados. La seccion de seguimiento permite enviar comentarios al solicitante.</p>
+<ol>
+  <li>Seleccione un ticket desde la tabla.</li>
+  <li>Revise la descripcion, ubicacion y datos del solicitante.</li>
+  <li>Cambie el estado mediante el selector y seleccione <strong>Actualizar</strong>.</li>
+  <li>Para cerrar, seleccione <strong>Cerrar Ticket</strong>, documente los pasos y confirme.</li>
+  <li>Use el campo de seguimiento para enviar notas tecnicas.</li>
+</ol>
+
+<h2>Mi turno</h2>
+<p>Consulta el horario semanal asignado, la sede y el edificio de cada dia. El turno activo se destaca en el calendario.</p>
+
+<figure class="figure">
+  <img src="screenshots/14-tecnico-turno.png" alt="Mi turno">
+  <figcaption>Figura 15. Calendario semanal de turnos del tecnico con indicador de turno activo.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== USUARIO FINAL ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Usuario Final</h1>
+
+<p>El usuario final crea y da seguimiento a sus solicitudes de soporte tecnico. Su interfaz esta disenada para simplificar el registro y la consulta.</p>
+
+<h2>Dashboard</h2>
+<p>Muestra un saludo personalizado, tres indicadores (abiertos, en progreso, cerrados) y la tabla de tickets recientes con acceso al detalle.</p>
+
+<figure class="figure">
+  <img src="screenshots/15-usuario-dashboard.png" alt="Dashboard del usuario">
+  <figcaption>Figura 16. Dashboard del usuario final con KPIs y tickets recientes.</figcaption>
+</figure>
+
+<h2>Crear ticket</h2>
+<p>El formulario de creacion permite clasificar la solicitud, describir el problema, indicar la ubicacion y adjuntar archivos.</p>
+<ol>
+  <li>Seleccione <strong>Crear ticket</strong> desde el menu o el boton flotante.</li>
+  <li>Seleccione el tipo: Incidente, Solicitud o Requerimiento.</li>
+  <li>Complete la categoria, prioridad, asunto y descripcion.</li>
+  <li>Indique la sede, ubicacion y adjunte archivos si es necesario.</li>
+  <li>Seleccione <strong>Enviar solicitud</strong>.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/16-usuario-crear-ticket.png" alt="Crear ticket">
+  <figcaption>Figura 17. Formulario de creacion de ticket con clasificacion, detalle y ubicacion.</figcaption>
+</figure>
+
+<h2>Detalle del ticket</h2>
+<p>Permite consultar la descripcion, el estado actual, la linea de tiempo y la conversacion con el tecnico asignado.</p>
+
+<figure class="figure">
+  <img src="screenshots/17-usuario-detalle-ticket.png" alt="Detalle del ticket">
+  <figcaption>Figura 18. Vista de detalle del ticket con descripcion, timeline, conversacion y datos del solicitante.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== GESTOR DE INVENTARIO ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Gestor de Inventario</h1>
+
+<p>El gestor de inventario administra el parque tecnologico institucional: registro de activos, mantenimientos preventivos y correctivos, y asignacion de responsables.</p>
+
+<h2>Inventario de activos</h2>
+<p>Lista todos los activos con filtros por categoria, sede, estado y busqueda por nombre o serial. Permite seleccionar multiples activos para cambiar estado masivamente o exportar a CSV.</p>
+<ol>
+  <li>Abra <strong>Lista de activos</strong> desde el menu.</li>
+  <li>Utilice los filtros y el buscador para localizar activos.</li>
+  <li>Seleccione activos con los checkboxes para acciones masivas.</li>
+  <li>Seleccione <strong>Ver hoja de vida</strong> para consultar el detalle completo de un activo.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/18-inventario-dashboard.png" alt="Inventario de activos">
+  <figcaption>Figura 19. Listado de activos TI con KPIs, filtros, seleccion multiple y acciones masivas.</figcaption>
+</figure>
+
+<h2>Registrar nuevo equipo</h2>
+<p>El formulario organiza la captura en secciones: Identificacion, Adquisicion, Ubicacion, Responsabilidad, Informacion adicional y Adjuntos.</p>
+<ol>
+  <li>Seleccione <strong>Registrar nuevo equipo</strong>.</li>
+  <li>Complete los campos obligatorios: nombre, categoria, marca, modelo y serial.</li>
+  <li>Indique la sede, ubicacion y cuentadante responsable.</li>
+  <li>Adjunte documentos de soporte si es necesario.</li>
+  <li>Seleccione <strong>Guardar equipo</strong>.</li>
+</ol>
+
+<figure class="figure">
+  <img src="screenshots/19-inventario-nuevo-equipo.png" alt="Registrar equipo">
+  <figcaption>Figura 20. Formulario de registro de nuevo equipo con secciones colapsables.</figcaption>
+</figure>
+</div>
+
+<!-- ==================== CUENTADANTE ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Cuentadante</h1>
+
+<p>El cuentadante consulta los equipos bajo su responsabilidad. Su vista incluye indicadores de equipos a cargo, alertas de estado y acceso a la hoja de vida de cada activo.</p>
+
+<h2>Dashboard</h2>
+<p>Presenta tres indicadores: equipos a cargo, averiados y mantenimientos del mes. Una alerta destaca los equipos con estado critico. La tabla muestra el inventario asignado con acceso a la hoja de vida.</p>
+
+<figure class="figure">
+  <img src="screenshots/20-cuentadante-dashboard.png" alt="Dashboard del cuentadante">
+  <figcaption>Figura 21. Dashboard del cuentadante con equipos a cargo y acceso a hojas de vida.</figcaption>
+</figure>
+
+<h2>Hoja de vida del equipo</h2>
+<p>La hoja de vida presenta la informacion tecnica completa del activo: categoria, marca, modelo, serial, ubicacion, especificaciones del sistema, estado de garantia, cuentadante actual y el historial de mantenimientos.</p>
+<ol>
+  <li>Seleccione <strong>Ver hoja de vida</strong> en cualquier equipo de la tabla.</li>
+  <li>Revise la informacion tecnica y las especificaciones.</li>
+  <li>Consulte el historial de mantenimientos en la linea de tiempo inferior.</li>
+</ol>
+
+<div class="note">
+  <strong>Verificacion del resultado.</strong> La hoja de vida tiene identificacion y custodia coherentes, con soporte de las actuaciones registradas.
+</div>
+</div>
+
+<!-- ==================== GLOSARIO Y REFERENCIAS ==================== -->
+<div class="page">
+<div class="header-bar">
+  <span><strong>NATIVOWEB S.A.S.</strong> | NIT 901986453-2</span>
+  <span>NW MDA REG 02 &mdash; Manual de usuario</span>
+</div>
+
+<h1>Glosario</h1>
+
+<table class="info">
+  <thead><tr><th>Termino</th><th>Definicion</th></tr></thead>
+  <tbody>
+    <tr><td>Ticket</td><td>Solicitud de soporte tecnico registrada por un usuario. Puede ser un incidente, una solicitud o un requerimiento.</td></tr>
+    <tr><td>SLA</td><td>Acuerdo de Nivel de Servicio. Define los tiempos maximos de respuesta y resolucion por prioridad.</td></tr>
+    <tr><td>Activo</td><td>Equipo tecnologico registrado en el inventario institucional (computador, impresora, servidor, etc.).</td></tr>
+    <tr><td>Cuentadante</td><td>Persona responsable de la custodia de uno o mas activos tecnologicos.</td></tr>
+    <tr><td>Escalamiento</td><td>Derivacion de un ticket a un nivel superior de soporte cuando el tecnico asignado no puede resolver el caso.</td></tr>
+    <tr><td>Mantenimiento preventivo</td><td>Revision programada de un activo para prevenir fallas.</td></tr>
+    <tr><td>Mantenimiento correctivo</td><td>Intervencion para reparar una falla detectada en un activo.</td></tr>
+    <tr><td>RBAC</td><td>Control de Acceso Basado en Roles. Mecanismo que restringe las funciones del sistema segun el rol del usuario.</td></tr>
+    <tr><td>Tenant</td><td>Institucion cliente en el esquema multitenant. Cada tenant tiene su propia base de datos aislada.</td></tr>
+  </tbody>
+</table>
+
+<h1>Referencias</h1>
+
+<p>American Psychological Association. (2020). <em>Publication manual of the American Psychological Association</em> (7a ed.). American Psychological Association. https://doi.org/10.1037/0000165-000</p>
+
+<p>NativoWeb S.A.S. (2026). <em>Mesa de Servicio TI: Documentacion del sistema</em> (Version 1.0.0). Documento interno no publicado.</p>
+
+<p>Laravel. (2024). <em>Laravel 12.x documentation</em>. https://laravel.com/docs/12.x</p>
+
+<p>Vercel. (2025). <em>Next.js 16 documentation</em>. https://nextjs.org/docs</p>
+
+<p style="margin-top: 40px; text-align: center; color: #999; font-size: 9pt;">&mdash; Fin del documento &mdash;</p>
+</div>
+
+</body>
+</html>

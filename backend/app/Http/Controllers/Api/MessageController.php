@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\MassMessageMail;
 use App\Models\MassMessage;
 use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +14,9 @@ use Illuminate\Support\Facades\Mail;
 
 class MessageController extends Controller
 {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+    ) {}
     public function index(Request $request): JsonResponse
     {
         $messages = MassMessage::with('sender')

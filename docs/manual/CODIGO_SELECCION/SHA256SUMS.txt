@@ -1,0 +1,6 @@
+fb11be05441c9c5b3d89f776eb814eace28fbf683769c40eb0563268f4e7e0c4  backend/app/Models/Ticket.php
+88ec6d9838d808475ef1e86427aee66cd531701ca2662e99fecbe04bcb7e639e  backend/app/Http/Controllers/Api/AuthController.php
+60d04d25464ad340a5e0275766151414fc163594fe19a8395e53f3aaffbaa4ee  backend/app/Services/SlaService.php
+0834119975ef8954e21dde14fff9449b1a079c27c00f8404e07f8fd02c7bfd68  backend/app/Enums/UserRole.php
+7f97959b658a3c3e0cefd5985ce2a3e7a6c51c4d8f83f165539393f809c0a374  frontend/src/lib/api.ts
+7c52bf561b61fb212280a6a70375149eb80b203b2dd3f570e9e73df57be21c3a  frontend/src/stores/auth-store.ts

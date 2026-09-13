@@ -7,6 +7,8 @@ use App\Models\Asset;
 use App\Models\Maintenance;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Services\ReportService;
+use App\Services\SlaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -14,6 +16,11 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        private readonly ReportService $reportService,
+        private readonly SlaService $slaService,
+    ) {}
+
     /** Estadísticas generales para el dashboard */
     public function index(Request $request): JsonResponse
     {
@@ -21,29 +28,9 @@ class DashboardController extends Controller
         $role = $user->roles->first()?->name;
 
         $base = [
-            'tickets' => [
-                'total' => Ticket::count(),
-                'open' => Ticket::where('status', 'open')->count(),
-                'in_progress' => Ticket::where('status', 'in_progress')->count(),
-                'pending' => Ticket::where('status', 'pending')->count(),
-                'escalated' => Ticket::where('status', 'escalated')->count(),
-                'closed' => Ticket::where('status', 'closed')->count(),
-                'closed_today' => Ticket::where('status', 'closed')
-                    ->whereDate('closed_at', today())
-                    ->count(),
-            ],
-            'assets' => [
-                'total' => Asset::count(),
-                'operational' => Asset::where('status', 'operational')->count(),
-                'damaged' => Asset::where('status', 'damaged')->count(),
-                'decommissioned' => Asset::where('status', 'decommissioned')->count(),
-            ],
-            'maintenances' => [
-                'total' => Maintenance::count(),
-                'pending_this_month' => Maintenance::where('status', '!=', 'completed')
-                    ->whereMonth('created_at', now()->month)
-                    ->count(),
-            ],
+            'tickets' => $this->reportService->ticketsSummary(),
+            'assets' => $this->reportService->assetsSummary(),
+            'maintenances' => $this->reportService->maintenancesSummary(),
             'users' => [
                 'total' => User::count(),
             ],
@@ -58,6 +45,8 @@ class DashboardController extends Controller
             $base['tickets_weekly'] = $this->ticketsWeekly();
 
             $base['technician_workload'] = $this->technicianWorkload();
+
+            $base['sla_compliance'] = $this->slaCompliance();
 
             $base['unassigned_tickets'] = Ticket::with('requester')
                 ->whereNull('assigned_to')
@@ -75,6 +64,35 @@ class DashboardController extends Controller
                 'closed_today' => Ticket::where('assigned_to', $user->id)
                     ->where('status', 'closed')
                     ->whereDate('closed_at', today())
+                    ->count(),
+            ];
+
+            $base['my_sla_at_risk'] = Ticket::where('assigned_to', $user->id)
+                ->whereNotIn('status', ['closed'])
+                ->whereNotNull('sla_deadline')
+                ->get()
+                ->filter(fn ($t) => $this->slaService->remainingMinutes($t) !== null
+                    && $this->slaService->remainingMinutes($t) <= 60
+                    && $this->slaService->remainingMinutes($t) > 0)
+                ->count();
+        }
+
+        if ($role === 'end_user') {
+            $base['my_tickets'] = [
+                'open' => Ticket::where('requester_id', $user->id)->where('status', 'open')->count(),
+                'in_progress' => Ticket::where('requester_id', $user->id)->where('status', 'in_progress')->count(),
+                'closed' => Ticket::where('requester_id', $user->id)->where('status', 'closed')->count(),
+            ];
+        }
+
+        if ($role === 'inventory_manager') {
+            $base['assets_detail'] = [
+                'total' => Asset::count(),
+                'operational' => Asset::where('status', 'operational')->count(),
+                'damaged' => Asset::where('status', 'damaged')->count(),
+                'in_maintenance' => Asset::where('status', 'decommissioned')->count(),
+                'pending_maintenance' => Asset::whereNotNull('next_maintenance')
+                    ->where('next_maintenance', '<=', now()->addDays(7))
                     ->count(),
             ];
         }
@@ -125,5 +143,28 @@ class DashboardController extends Controller
                 'open_tickets' => $tech->open_tickets,
             ])
             ->toArray();
+    }
+
+    /** Tasa de cumplimiento SLA */
+    private function slaCompliance(): array
+    {
+        $closedWithSla = Ticket::where('status', 'closed')
+            ->whereNotNull('sla_deadline')
+            ->get();
+
+        $total = $closedWithSla->count();
+        if ($total === 0) {
+            return ['rate' => 100, 'met' => 0, 'breached' => 0, 'total' => 0];
+        }
+
+        $met = $closedWithSla->filter(fn ($t) => $t->closed_at && $t->closed_at->lte($t->sla_deadline))->count();
+        $breached = $total - $met;
+
+        return [
+            'rate' => round(($met / $total) * 100, 1),
+            'met' => $met,
+            'breached' => $breached,
+            'total' => $total,
+        ];
     }
 }
