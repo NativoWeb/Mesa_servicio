@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreMaintenanceRequest;
+use App\Http\Requests\UpdateMaintenanceRequest;
 use App\Models\Maintenance;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
@@ -26,21 +28,9 @@ class MaintenanceController extends Controller
         return response()->json($maintenances);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreMaintenanceRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'asset_id' => 'required|exists:assets,id',
-            'type' => 'required|string|in:preventive,corrective,update,cleaning',
-            'description' => 'nullable|string',
-            'technician_id' => 'required|exists:users,id',
-            'started_at' => 'nullable|date',
-            'finished_at' => 'nullable|date|after_or_equal:started_at',
-            'duration_minutes' => 'nullable|integer|min:0',
-            'final_status' => 'nullable|string|max:100',
-            'next_maintenance_date' => 'nullable|date',
-            'observations' => 'nullable|string',
-            'status' => 'nullable|string|in:completed,partial,escalated',
-        ]);
+        $validated = $request->validated();
 
         $maintenance = Maintenance::create($validated);
 
@@ -64,19 +54,9 @@ class MaintenanceController extends Controller
         );
     }
 
-    public function update(Request $request, Maintenance $maintenance): JsonResponse
+    public function update(UpdateMaintenanceRequest $request, Maintenance $maintenance): JsonResponse
     {
-        $validated = $request->validate([
-            'type' => 'sometimes|string|in:preventive,corrective,update,cleaning',
-            'description' => 'nullable|string',
-            'started_at' => 'nullable|date',
-            'finished_at' => 'nullable|date',
-            'duration_minutes' => 'nullable|integer|min:0',
-            'final_status' => 'nullable|string|max:100',
-            'next_maintenance_date' => 'nullable|date',
-            'observations' => 'nullable|string',
-            'status' => 'nullable|string|in:completed,partial,escalated',
-        ]);
+        $validated = $request->validated();
 
         $maintenance->update($validated);
 

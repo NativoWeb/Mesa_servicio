@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
@@ -16,14 +19,9 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     /** Iniciar sesión y obtener token Sanctum */
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->validated('email'))->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
@@ -56,14 +54,10 @@ class AuthController extends Controller
     }
 
     /** Enviar enlace de restablecimiento de contrasena */
-    public function forgotPassword(Request $request): JsonResponse
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
         $status = Password::sendResetLink(
-            $request->only('email')
+            $request->validated()
         );
 
         if ($status === Password::RESET_LINK_SENT) {
@@ -76,14 +70,8 @@ class AuthController extends Controller
     }
 
     /** Restablecer contrasena con token */
-    public function resetPassword(Request $request): JsonResponse
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        $request->validate([
-            'token' => 'required|string',
-            'email' => 'required|email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user, string $password) {

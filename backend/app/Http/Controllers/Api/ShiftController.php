@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreShiftRequest;
+use App\Http\Requests\UpdateShiftRequest;
 use App\Models\Shift;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,17 +25,9 @@ class ShiftController extends Controller
         return response()->json($shifts);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreShiftRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'technician_id' => 'required|exists:users,id',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'campus' => 'nullable|string|max:100',
-            'building' => 'nullable|string|max:100',
-            'status' => 'nullable|string|in:scheduled,active,completed',
-        ]);
+        $validated = $request->validated();
 
         $shift = Shift::create($validated);
 
@@ -45,17 +39,9 @@ class ShiftController extends Controller
         return response()->json($shift->load('technician'));
     }
 
-    public function update(Request $request, Shift $shift): JsonResponse
+    public function update(UpdateShiftRequest $request, Shift $shift): JsonResponse
     {
-        $validated = $request->validate([
-            'technician_id' => 'sometimes|exists:users,id',
-            'date' => 'sometimes|date',
-            'start_time' => 'sometimes|date_format:H:i',
-            'end_time' => 'sometimes|date_format:H:i',
-            'campus' => 'nullable|string|max:100',
-            'building' => 'nullable|string|max:100',
-            'status' => 'nullable|string|in:scheduled,active,completed',
-        ]);
+        $validated = $request->validated();
 
         $shift->update($validated);
 

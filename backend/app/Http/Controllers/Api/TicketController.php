@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Events\TicketUpdated;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
 use App\Services\NotificationService;
 use App\Services\SlaService;
@@ -32,16 +34,9 @@ class TicketController extends Controller
         return response()->json($tickets);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreTicketRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category' => 'nullable|string|max:100',
-            'priority' => 'required|string|in:low,medium,high,critical',
-            'campus' => 'nullable|string|max:100',
-            'location' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $validated['requester_id'] = $request->user()->id;
         $validated['status'] = 'open';
@@ -72,20 +67,9 @@ class TicketController extends Controller
         );
     }
 
-    public function update(Request $request, Ticket $ticket): JsonResponse
+    public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
     {
-        $validated = $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'category' => 'nullable|string|max:100',
-            'priority' => 'sometimes|string|in:low,medium,high,critical',
-            'status' => 'sometimes|string|in:open,in_progress,pending,escalated,closed',
-            'assigned_to' => 'nullable|exists:users,id',
-            'campus' => 'nullable|string|max:100',
-            'location' => 'nullable|string|max:255',
-            'escalated_to' => 'nullable|exists:users,id',
-            'escalation_reason' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $oldStatus = $ticket->status->value;
 

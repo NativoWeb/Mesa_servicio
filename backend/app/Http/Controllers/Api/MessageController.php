@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreMessageRequest;
+use App\Http\Requests\UpdateMessageRequest;
 use App\Mail\MassMessageMail;
 use App\Models\MassMessage;
 use App\Models\User;
@@ -27,16 +29,9 @@ class MessageController extends Controller
         return response()->json($messages);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreMessageRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'subject' => 'required|string|max:255',
-            'body' => 'required|string',
-            'channel' => 'required|string|in:email,sms,both',
-            'template_id' => 'nullable|integer',
-            'recipients_filter' => 'nullable|array',
-            'status' => 'nullable|string|in:draft,sending',
-        ]);
+        $validated = $request->validated();
 
         $validated['sender_id'] = $request->user()->id;
 
@@ -50,15 +45,9 @@ class MessageController extends Controller
         return response()->json($message->load('sender'));
     }
 
-    public function update(Request $request, MassMessage $message): JsonResponse
+    public function update(UpdateMessageRequest $request, MassMessage $message): JsonResponse
     {
-        $validated = $request->validate([
-            'subject' => 'sometimes|string|max:255',
-            'body' => 'sometimes|string',
-            'channel' => 'sometimes|string|in:email,sms,both',
-            'recipients_filter' => 'nullable|array',
-            'status' => 'nullable|string|in:draft,sending,sent',
-        ]);
+        $validated = $request->validated();
 
         $message->update($validated);
 

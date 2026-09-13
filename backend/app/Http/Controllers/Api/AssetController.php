@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreAssetRequest;
+use App\Http\Requests\UpdateAssetRequest;
 use App\Models\Asset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,25 +27,9 @@ class AssetController extends Controller
         return response()->json($assets);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreAssetRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|in:pc,laptop,printer,server,router,switch,monitor,projector,other',
-            'brand' => 'nullable|string|max:100',
-            'model' => 'nullable|string|max:100',
-            'serial' => 'nullable|string|max:100|unique:assets,serial',
-            'purchase_date' => 'nullable|date',
-            'campus' => 'nullable|string|max:100',
-            'floor' => 'nullable|string|max:50',
-            'location' => 'nullable|string|max:255',
-            'holder_id' => 'nullable|exists:users,id',
-            'status' => 'nullable|string|in:new,operational,damaged,decommissioned,retired',
-            'specs' => 'nullable|array',
-            'warranty_expiry' => 'nullable|date',
-            'next_maintenance' => 'nullable|date',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $asset = Asset::create($validated);
 
@@ -57,25 +43,9 @@ class AssetController extends Controller
         );
     }
 
-    public function update(Request $request, Asset $asset): JsonResponse
+    public function update(UpdateAssetRequest $request, Asset $asset): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'category' => 'sometimes|string|in:pc,laptop,printer,server,router,switch,monitor,projector,other',
-            'brand' => 'nullable|string|max:100',
-            'model' => 'nullable|string|max:100',
-            'serial' => 'nullable|string|max:100|unique:assets,serial,' . $asset->id,
-            'purchase_date' => 'nullable|date',
-            'campus' => 'nullable|string|max:100',
-            'floor' => 'nullable|string|max:50',
-            'location' => 'nullable|string|max:255',
-            'holder_id' => 'nullable|exists:users,id',
-            'status' => 'nullable|string|in:new,operational,damaged,decommissioned,retired',
-            'specs' => 'nullable|array',
-            'warranty_expiry' => 'nullable|date',
-            'next_maintenance' => 'nullable|date',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $asset->update($validated);
 
