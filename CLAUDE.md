@@ -177,8 +177,6 @@ Bucaramanga (Principal), Piedecuesta, Barrancabermeja, Yopal, Velez, Charala
 
 - No Form Request validation classes — validation is inline
 - No tests written yet (empty `tests/Unit/` and `tests/Feature/`)
-- No Next.js middleware for server-side route protection
-- Root layout metadata still says "Create Next App"
 
 ## Reference Docs
 
