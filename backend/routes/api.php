@@ -72,12 +72,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- Solo admin ---
     Route::middleware(['role:admin'])->group(function () {
-        Route::apiResource('users', UserController::class);
+        Route::post('users', [UserController::class, 'store']);
+        Route::put('users/{user}', [UserController::class, 'update']);
+        Route::delete('users/{user}', [UserController::class, 'destroy']);
         Route::apiResource('tenants', TenantController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
         Route::get('audit-logs', [AuditLogController::class, 'index']);
         Route::apiResource('sla-configs', SlaConfigController::class)->only(['index', 'store', 'update']);
+    });
+
+    // --- Admin + IT Leader: lectura de usuarios (para asignación de tickets) ---
+    Route::middleware(['role:admin|it_leader'])->group(function () {
+        Route::get('users', [UserController::class, 'index']);
+        Route::get('users/{user}', [UserController::class, 'show']);
     });
 
     // --- Admin + IT Leader ---

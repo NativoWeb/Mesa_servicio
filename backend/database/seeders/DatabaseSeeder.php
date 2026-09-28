@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SlaConfig;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -11,6 +12,17 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // --- SLA Configs ---
+        $slaDefaults = [
+            ['priority' => 'critical', 'response_time_hours' => 1, 'resolution_time_hours' => 4],
+            ['priority' => 'high', 'response_time_hours' => 4, 'resolution_time_hours' => 8],
+            ['priority' => 'medium', 'response_time_hours' => 8, 'resolution_time_hours' => 24],
+            ['priority' => 'low', 'response_time_hours' => 24, 'resolution_time_hours' => 72],
+        ];
+        foreach ($slaDefaults as $sla) {
+            SlaConfig::firstOrCreate(['priority' => $sla['priority']], $sla);
+        }
+
         $roles = ['admin', 'it_leader', 'technician', 'inventory_manager', 'end_user', 'asset_holder'];
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role]);
