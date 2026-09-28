@@ -189,11 +189,12 @@ export default function LoginPage() {
                     <button
                       key={acc.email}
                       type="button"
+                      disabled={loading}
                       onClick={() => {
                         setEmail(acc.email);
                         setPassword('password');
                       }}
-                      className="text-[11px] px-2 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-600 transition-colors"
+                      className="text-[11px] px-2 py-1.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-gray-600 transition-colors"
                     >
                       {acc.label}
                     </button>

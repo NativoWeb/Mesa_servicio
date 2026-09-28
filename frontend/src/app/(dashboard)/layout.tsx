@@ -1,14 +1,24 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/stores/auth-store';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuthStore, getRoleRoute } from '@/stores/auth-store';
 import { useTenantStore } from '@/stores/tenant-store';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { Header } from '@/components/layout/header';
 
+const ROLE_PREFIXES: Record<string, string> = {
+  admin: '/admin',
+  it_leader: '/lider',
+  technician: '/tecnico',
+  inventory_manager: '/inventario',
+  end_user: '/usuario',
+  asset_holder: '/cuentadante',
+};
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { isAuthenticated, isHydrated, user } = useAuthStore();
   const loadBranding = useTenantStore((s) => s.loadBranding);
 
@@ -17,6 +27,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       router.replace('/login');
     }
   }, [isHydrated, isAuthenticated, router]);
+
+  // Proteger rutas por rol: redirigir si el usuario accede a un prefijo que no le corresponde
+  useEffect(() => {
+    if (!isHydrated || !isAuthenticated || !user) return;
+    const allowedPrefix = ROLE_PREFIXES[user.role];
+    if (allowedPrefix && pathname !== '/' && !pathname.startsWith(allowedPrefix)) {
+      router.replace(getRoleRoute(user.role));
+    }
+  }, [isHydrated, isAuthenticated, user, pathname, router]);
 
   // Cargar branding del tenant al montar el dashboard
   useEffect(() => {
