@@ -106,12 +106,6 @@ export const useTenantStore = create<TenantState>()(
     }),
     {
       name: 'tenant-storage',
-      onRehydrateStorage: () => (state) => {
-        // Defer branding application to avoid hydration mismatch
-        if (state?.config?.branding && typeof window !== 'undefined') {
-          requestAnimationFrame(() => applyBrandingToDOM(state.config.branding));
-        }
-      },
     }
   )
 );

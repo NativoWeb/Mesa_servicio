@@ -111,11 +111,9 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
-    // --- Admin + IT Leader + Technician ---
-    Route::middleware(['role:admin|it_leader|technician'])->group(function () {
+    // --- Admin + IT Leader + Technician + Inventory Manager: mantenimientos ---
+    Route::middleware(['role:admin|it_leader|technician|inventory_manager'])->group(function () {
         Route::apiResource('maintenances', MaintenanceController::class);
-
-        // Turnos: lectura para técnicos (si no cubierto por el grupo anterior)
     });
 
     // Turnos: solo lectura para técnicos
@@ -124,14 +122,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('shifts/{shift}', [ShiftController::class, 'show']);
     });
 
-    // --- Admin + IT Leader + Inventory Manager ---
-    Route::middleware(['role:admin|it_leader|inventory_manager'])->group(function () {
-        Route::apiResource('assets', AssetController::class);
-    });
-
-    // --- Asset Holder: solo lectura de activos ---
-    Route::middleware(['role:asset_holder'])->group(function () {
+    // --- Activos: CRUD para admin/lider/inventario, lectura para asset_holder ---
+    Route::middleware(['role:admin|it_leader|inventory_manager|asset_holder'])->group(function () {
         Route::get('assets', [AssetController::class, 'index']);
         Route::get('assets/{asset}', [AssetController::class, 'show']);
+    });
+    Route::middleware(['role:admin|it_leader|inventory_manager'])->group(function () {
+        Route::post('assets', [AssetController::class, 'store']);
+        Route::put('assets/{asset}', [AssetController::class, 'update']);
+        Route::delete('assets/{asset}', [AssetController::class, 'destroy']);
     });
 });
