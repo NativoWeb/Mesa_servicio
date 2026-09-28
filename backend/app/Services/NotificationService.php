@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\TicketNotificationMail;
 use App\Models\MassMessage;
 use App\Models\Ticket;
 use App\Models\User;
@@ -27,17 +28,12 @@ class NotificationService
 
         try {
             $subject = "Ticket #{$ticket->ticket_number} asignado a ti";
-            $body = "Hola {$technician->name},\n\n"
-                . "Se te ha asignado el ticket #{$ticket->ticket_number}.\n\n"
-                . "Asunto: {$ticket->title}\n"
-                . "Prioridad: {$ticket->priority->value}\n"
-                . "Categoria: {$ticket->category}\n"
-                . "Sede: {$ticket->campus}\n\n"
+            $bodyMessage = "Se te ha asignado el ticket #{$ticket->ticket_number}. "
                 . "Por favor atiende este caso a la brevedad.";
 
-            Mail::raw($body, function ($m) use ($technician, $subject) {
-                $m->to($technician->email)->subject($subject);
-            });
+            Mail::to($technician->email)->send(
+                new TicketNotificationMail($subject, $technician->name, $ticket, $bodyMessage)
+            );
         } catch (\Throwable $e) {
             Log::error('Error al notificar asignacion de ticket: ' . $e->getMessage(), [
                 'ticket_id' => $ticket->id,
@@ -60,16 +56,13 @@ class NotificationService
         try {
             $newStatus = $ticket->status->value;
             $subject = "Ticket #{$ticket->ticket_number} - Estado actualizado";
-            $body = "Hola {$requester->name},\n\n"
-                . "El estado de tu ticket #{$ticket->ticket_number} ha cambiado.\n\n"
-                . "Estado anterior: {$oldStatus}\n"
-                . "Estado actual: {$newStatus}\n"
-                . "Asunto: {$ticket->title}\n\n"
+            $bodyMessage = "El estado de tu ticket #{$ticket->ticket_number} ha cambiado "
+                . "de \"{$oldStatus}\" a \"{$newStatus}\". "
                 . "Puedes consultar el detalle en la plataforma.";
 
-            Mail::raw($body, function ($m) use ($requester, $subject) {
-                $m->to($requester->email)->subject($subject);
-            });
+            Mail::to($requester->email)->send(
+                new TicketNotificationMail($subject, $requester->name, $ticket, $bodyMessage)
+            );
         } catch (\Throwable $e) {
             Log::error('Error al notificar cambio de estado: ' . $e->getMessage(), [
                 'ticket_id' => $ticket->id,
