@@ -107,9 +107,9 @@ export const useTenantStore = create<TenantState>()(
     {
       name: 'tenant-storage',
       onRehydrateStorage: () => (state) => {
-        // Re-aplicar branding al DOM cuando se rehidrata desde localStorage
-        if (state?.config?.branding) {
-          applyBrandingToDOM(state.config.branding);
+        // Defer branding application to avoid hydration mismatch
+        if (state?.config?.branding && typeof window !== 'undefined') {
+          requestAnimationFrame(() => applyBrandingToDOM(state.config.branding));
         }
       },
     }

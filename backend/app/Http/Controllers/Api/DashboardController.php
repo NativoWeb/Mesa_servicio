@@ -27,10 +27,38 @@ class DashboardController extends Controller
         $user = $request->user();
         $role = $user->roles->first()?->name;
 
+        $ticketsSummary = $this->reportService->ticketsSummary();
+        $assetsSummary = $this->reportService->assetsSummary();
+        $maintenancesSummary = $this->reportService->maintenancesSummary();
+
         $base = [
-            'tickets' => $this->reportService->ticketsSummary(),
-            'assets' => $this->reportService->assetsSummary(),
-            'maintenances' => $this->reportService->maintenancesSummary(),
+            'tickets' => [
+                'total' => $ticketsSummary['total'],
+                'open' => $ticketsSummary['by_status']['open'] ?? 0,
+                'in_progress' => $ticketsSummary['by_status']['in_progress'] ?? 0,
+                'pending' => $ticketsSummary['by_status']['pending'] ?? 0,
+                'escalated' => $ticketsSummary['by_status']['escalated'] ?? 0,
+                'closed' => $ticketsSummary['by_status']['closed'] ?? 0,
+                'closed_today' => Ticket::where('status', 'closed')
+                    ->whereDate('closed_at', today())->count(),
+                'by_status' => $ticketsSummary['by_status'],
+                'by_priority' => $ticketsSummary['by_priority'],
+            ],
+            'assets' => [
+                'total' => $assetsSummary['total'],
+                'operational' => $assetsSummary['by_status']['operational'] ?? 0,
+                'damaged' => $assetsSummary['by_status']['damaged'] ?? 0,
+                'decommissioned' => $assetsSummary['by_status']['decommissioned'] ?? 0,
+                'by_category' => $assetsSummary['by_category'],
+                'by_status' => $assetsSummary['by_status'],
+            ],
+            'maintenances' => [
+                'total' => $maintenancesSummary['total'],
+                'pending_this_month' => Maintenance::where('status', '!=', 'completed')
+                    ->whereMonth('created_at', now()->month)->count(),
+                'by_type' => $maintenancesSummary['by_type'],
+                'by_status' => $maintenancesSummary['by_status'],
+            ],
             'users' => [
                 'total' => User::count(),
             ],

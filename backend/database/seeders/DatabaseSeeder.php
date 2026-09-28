@@ -78,8 +78,9 @@ class DatabaseSeeder extends Seeder
             $user->assignRole($role);
         }
 
-        // --- Tenant UTS por defecto ---
-        if (Tenant::count() === 0) {
+        // --- Tenant UTS por defecto (crear o actualizar) ---
+        $existingTenant = Tenant::find('uts');
+        if (!$existingTenant) {
             $tenant = Tenant::create([
                 'id' => 'uts',
                 'name' => 'Unidades Tecnológicas de Santander',
@@ -130,6 +131,15 @@ class DatabaseSeeder extends Seeder
 
             $tenant->domains()->create(['domain' => 'localhost']);
             $tenant->domains()->create(['domain' => '127.0.0.1']);
+        } else {
+            // Actualizar datos del tenant existente
+            $existingTenant->name = 'Unidades Tecnológicas de Santander';
+            $existingTenant->short_name = 'UTS';
+            $existingTenant->campuses = [
+                'Bucaramanga', 'Piedecuesta', 'Barrancabermeja',
+                'Yopal', 'Vélez', 'Charalá',
+            ];
+            $existingTenant->save();
         }
     }
 }

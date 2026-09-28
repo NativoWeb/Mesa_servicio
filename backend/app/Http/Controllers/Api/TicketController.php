@@ -102,6 +102,10 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket): JsonResponse
     {
         $this->authorizeAccess($request, $ticket);
+
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
         $validated = $request->validate([
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
@@ -114,6 +118,11 @@ class TicketController extends Controller
             'escalated_to' => 'nullable|exists:users,id',
             'escalation_reason' => 'nullable|string',
         ]);
+
+        // end_user solo puede editar título, descripción y ubicación de sus tickets abiertos
+        if ($role === 'end_user') {
+            $validated = array_intersect_key($validated, array_flip(['title', 'description', 'location']));
+        }
 
         $oldStatus = $ticket->status->value;
 

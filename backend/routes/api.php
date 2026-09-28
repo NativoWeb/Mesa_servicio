@@ -28,8 +28,8 @@ use Illuminate\Support\Facades\Route;
 // --- Branding del tenant (publico, sin auth) ---
 Route::get('tenant/branding', [TenantBrandingController::class, 'show']);
 
-// --- Autenticacion (publicas) ---
-Route::prefix('auth')->group(function () {
+// --- Autenticacion (publicas, con rate limit) ---
+Route::prefix('auth')->middleware('throttle:5,1')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
