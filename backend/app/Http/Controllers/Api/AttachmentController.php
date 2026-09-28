@@ -13,6 +13,19 @@ use Illuminate\Support\Facades\Storage;
 
 class AttachmentController extends Controller
 {
+    /**
+     * Extensiones permitidas para archivos adjuntos.
+     */
+    private const ALLOWED_EXTENSIONS = 'jpg,jpeg,png,gif,pdf,doc,docx,xls,xlsx,csv,txt,zip';
+
+    /**
+     * Tipos MIME permitidos para archivos adjuntos.
+     */
+    private const ALLOWED_MIMES = 'image/jpeg,image/png,image/gif,application/pdf,'
+        . 'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,'
+        . 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,'
+        . 'text/csv,text/plain,application/zip';
+
     private function resolveAttachable(string $type, int $id)
     {
         return match ($type) {
@@ -37,28 +50,59 @@ class AttachmentController extends Controller
     public function store(Request $request, string $type, int $id): JsonResponse
     {
         $request->validate([
-            'file' => 'required|file|max:10240',
+            'file' => [
+                'required',
+                'file',
+                'max:10240', // 10 MB
+                'mimes:' . self::ALLOWED_EXTENSIONS,
+            ],
+        ], [
+            'file.max' => 'El archivo no debe superar los 10 MB.',
+            'file.mimes' => 'Tipo de archivo no permitido. Extensiones válidas: ' . self::ALLOWED_EXTENSIONS . '.',
         ]);
 
         $attachable = $this->resolveAttachable($type, $id);
 
         $file = $request->file('file');
-        $path = $file->store("attachments/{$type}/{$id}", 'public');
+
+        // Guardar organizado por tipo de entidad e ID: tickets/5/, assets/12/, etc.
+        $directory = "{$type}/{$id}";
+        $storedPath = $file->store($directory, 'attachments');
 
         $attachment = $attachable->attachments()->create([
             'file_name' => $file->getClientOriginalName(),
-            'file_path' => $path,
+            'file_path' => $storedPath,
             'file_size' => $file->getSize(),
             'mime_type' => $file->getMimeType(),
             'user_id' => $request->user()->id,
         ]);
 
-        return response()->json($attachment->load('user'), 201);
+        $attachment->load('user');
+
+        // Incluir URL de descarga en la respuesta
+        $attachment->download_url = route('attachments.download', $attachment);
+
+        return response()->json($attachment, 201);
+    }
+
+    /**
+     * Descargar un archivo adjunto.
+     */
+    public function download(Attachment $attachment)
+    {
+        if (! Storage::disk('attachments')->exists($attachment->file_path)) {
+            return response()->json(['message' => 'Archivo no encontrado.'], 404);
+        }
+
+        return Storage::disk('attachments')->download(
+            $attachment->file_path,
+            $attachment->file_name
+        );
     }
 
     public function destroy(Attachment $attachment): JsonResponse
     {
-        Storage::disk('public')->delete($attachment->file_path);
+        Storage::disk('attachments')->delete($attachment->file_path);
         $attachment->delete();
 
         return response()->json(['message' => 'Attachment deleted'], 200);

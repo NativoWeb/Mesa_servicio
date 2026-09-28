@@ -66,6 +66,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [AttachmentController::class, 'index']);
         Route::post('/', [AttachmentController::class, 'store']);
     });
+    Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])
+        ->name('attachments.download');
     Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy']);
 
     // --- Solo admin ---
