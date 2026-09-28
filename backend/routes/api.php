@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ShiftController;
 use App\Http\Controllers\Api\SlaConfigController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\TenantBrandingController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\SystemConfigController;
 use App\Http\Controllers\Api\UserController;
@@ -23,6 +24,9 @@ use Illuminate\Support\Facades\Route;
 | Rutas API — Mesa de Ayuda UTS
 |--------------------------------------------------------------------------
 */
+
+// --- Branding del tenant (publico, sin auth) ---
+Route::get('tenant/branding', [TenantBrandingController::class, 'show']);
 
 // --- Autenticacion (publicas) ---
 Route::prefix('auth')->group(function () {
@@ -67,7 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Solo admin ---
     Route::middleware(['role:admin'])->group(function () {
         Route::apiResource('users', UserController::class);
-        Route::apiResource('tenants', TenantController::class)->only(['index', 'store', 'show', 'destroy']);
+        Route::apiResource('tenants', TenantController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
         Route::get('audit-logs', [AuditLogController::class, 'index']);

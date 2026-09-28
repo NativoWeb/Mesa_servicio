@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthStore, ROLE_LABELS, getRoleRoute } from "@/stores/auth-store";
+import { useTenantStore } from "@/stores/tenant-store";
 import { UserRole } from "@/types/user";
+import type { TenantFeatures } from "@/types/tenant";
 import type { LucideIcon } from "lucide-react";
 import {
   LayoutDashboard,
@@ -170,32 +172,100 @@ const navByRole: Record<string, NavGroup[]> = {
   ],
 };
 
+// Mapeo de grupos de navegación a features del tenant
+const GROUP_FEATURE_MAP: Record<string, keyof TenantFeatures> = {
+  "Inventario": "inventory",
+  "Activos TI": "inventory",
+  "Responsables": "inventory",
+  "Mis Equipos": "inventory",
+  "Mantenimiento": "maintenance",
+  "Comunicación": "mass_messaging",
+  "Mi turno": "shifts",
+  "Analítica": "reports",
+  "Seguridad": "audit_logs",
+};
+
+// Mapeo de items individuales a features
+const ITEM_FEATURE_MAP: Record<string, keyof TenantFeatures> = {
+  "Inventario": "inventory",
+  "Lista de activos": "inventory",
+  "Registrar nuevo equipo": "inventory",
+  "Dar de baja activo": "inventory",
+  "Equipos relacionados": "inventory",
+  "Hoja de vida": "inventory",
+  "Mantenimientos próximos": "maintenance",
+  "Registrar mantenimiento": "maintenance",
+  "Calendario": "maintenance",
+  "Historial mantenimientos": "maintenance",
+  "Mensajería masiva": "mass_messaging",
+  "Plantillas": "mass_messaging",
+  "Mi turno": "shifts",
+  "Calendario de turnos": "shifts",
+  "Reportes": "reports",
+  "SLA": "sla",
+  "Logs": "audit_logs",
+};
+
 export function AppSidebar() {
   const pathname = usePathname();
   const { user } = useAuthStore();
+  const config = useTenantStore((s) => s.config);
+  const isFeatureEnabled = useTenantStore((s) => s.isFeatureEnabled);
   const role = user?.role || "end_user";
-  const nav = navByRole[role] || navByRole.end_user;
+  const rawNav = navByRole[role] || navByRole.end_user;
   const roleLabel = ROLE_LABELS[role as UserRole] || role;
   const initials = user?.name
     ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
     : "??";
+  const logoInitials = config.short_name
+    ? config.short_name.slice(0, 2).toUpperCase()
+    : "SD";
+
+  // Filtrar navegación según features habilitadas del tenant
+  const nav = rawNav
+    .map((group) => {
+      // Si el grupo completo está mapeado a una feature deshabilitada, excluirlo
+      const groupFeature = GROUP_FEATURE_MAP[group.group];
+      if (groupFeature && !isFeatureEnabled(groupFeature)) {
+        return null;
+      }
+      // Filtrar items individuales por feature
+      const filteredItems = group.items.filter((item) => {
+        const itemFeature = ITEM_FEATURE_MAP[item.label];
+        return !itemFeature || isFeatureEnabled(itemFeature);
+      });
+      if (filteredItems.length === 0) return null;
+      return { ...group, items: filteredItems };
+    })
+    .filter(Boolean) as NavGroup[];
 
   return (
-    <aside className="w-64 min-h-screen bg-gradient-to-b from-green-950 to-green-900 text-white flex flex-col sticky top-0">
+    <aside
+      className="w-64 min-h-screen text-white flex flex-col sticky top-0"
+      style={{ background: 'linear-gradient(to bottom, var(--brand-sidebar-from), var(--brand-sidebar-to))' }}
+    >
       {/* Header */}
-      <div className="p-4 border-b border-green-800/50">
+      <div className="p-4 border-b border-white/10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-sm font-bold">
-            SD
-          </div>
+          {config.logo_url ? (
+            <img
+              src={config.logo_url}
+              alt={config.short_name}
+              className="w-8 h-8 rounded-lg object-contain"
+            />
+          ) : (
+            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-sm font-bold">
+              {logoInitials}
+            </div>
+          )}
           <div>
-            <p className="text-sm font-semibold leading-tight">Service Desk</p>
-            <p className="text-[10px] text-green-300 uppercase tracking-wider">
-              Mesa de Servicio TI
+            <p className="text-sm font-semibold leading-tight">{config.short_name || 'SD'}</p>
+            <p className="text-[10px] text-white/60 uppercase tracking-wider">
+              {config.name}
             </p>
           </div>
         </div>
-        <div className="mt-3 px-2 py-1 bg-green-800/50 rounded text-xs text-green-200 inline-block uppercase">
+        <div className="mt-3 px-2 py-1 bg-white/10 rounded text-xs text-white/70 inline-block uppercase">
           {roleLabel}
         </div>
       </div>
@@ -204,7 +274,7 @@ export function AppSidebar() {
       <nav className="flex-1 p-3 space-y-4 overflow-y-auto text-sm">
         {nav.map((group) => (
           <div key={group.group}>
-            <p className="text-[10px] uppercase tracking-wider text-green-400/70 mb-1 px-2">
+            <p className="text-[10px] uppercase tracking-wider text-white/40 mb-1 px-2">
               {group.group}
             </p>
             <div className="space-y-0.5">
@@ -218,8 +288,8 @@ export function AppSidebar() {
                     href={item.href}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors ${
                       isActive
-                        ? "bg-green-700/50 text-white"
-                        : "text-green-200/80 hover:bg-green-800/40 hover:text-white"
+                        ? "bg-white/15 text-white"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
                     }`}
                   >
                     <item.icon className="w-4 h-4 shrink-0" />
@@ -238,16 +308,16 @@ export function AppSidebar() {
       </nav>
 
       {/* User footer */}
-      <div className="p-3 border-t border-green-800/50">
+      <div className="p-3 border-t border-white/10">
         <div className="flex items-center gap-2 px-2">
-          <div className="w-8 h-8 rounded-full bg-green-700 flex items-center justify-center text-xs font-bold">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
             {initials}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium truncate">{user?.name}</p>
-            <p className="text-[10px] text-green-300 truncate">{roleLabel}</p>
+            <p className="text-[10px] text-white/60 truncate">{roleLabel}</p>
           </div>
-          <button className="text-green-400/60 hover:text-white transition-colors p-1">
+          <button className="text-white/40 hover:text-white transition-colors p-1">
             <Settings className="w-4 h-4" />
           </button>
         </div>

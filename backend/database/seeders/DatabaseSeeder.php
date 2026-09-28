@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -75,6 +76,60 @@ class DatabaseSeeder extends Seeder
                 $userData
             );
             $user->assignRole($role);
+        }
+
+        // --- Tenant UTS por defecto ---
+        if (Tenant::count() === 0) {
+            $tenant = Tenant::create([
+                'id' => 'uts',
+                'name' => 'Unidades Tecnológicas de Santander',
+                'short_name' => 'UTS',
+                'branding' => [
+                    'primary' => '#1B5E20',
+                    'primary_light' => '#4CAF50',
+                    'primary_dark' => '#0D3B0D',
+                    'accent' => '#F9A825',
+                    'sidebar_from' => '#1B3A1B',
+                    'sidebar_to' => '#2E5A2E',
+                    'background' => '#FAFAFA',
+                    'card' => '#FFFFFF',
+                    'text_primary' => '#1A1A1A',
+                    'text_secondary' => '#6B7280',
+                ],
+                'features' => [
+                    'tickets' => true,
+                    'inventory' => true,
+                    'maintenance' => true,
+                    'mass_messaging' => true,
+                    'shifts' => true,
+                    'reports' => true,
+                    'sla' => true,
+                    'audit_logs' => true,
+                ],
+                'campuses' => [
+                    'Bucaramanga',
+                    'Piedecuesta',
+                    'Barrancabermeja',
+                    'Yopal',
+                    'Vélez',
+                    'Charalá',
+                ],
+                'ticket_categories' => [
+                    'Hardware',
+                    'Software',
+                    'Redes e Infraestructura',
+                    'Correo Electrónico',
+                    'Soporte Web',
+                    'Accesos y Permisos',
+                    'Impresoras',
+                    'Telefonía',
+                    'Otro',
+                ],
+                'timezone' => 'America/Bogota',
+            ]);
+
+            $tenant->domains()->create(['domain' => 'localhost']);
+            $tenant->domains()->create(['domain' => '127.0.0.1']);
         }
     }
 }

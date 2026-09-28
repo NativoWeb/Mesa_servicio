@@ -3,18 +3,25 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
+import { useTenantStore } from '@/stores/tenant-store';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { Header } from '@/components/layout/header';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { isAuthenticated, isHydrated, user } = useAuthStore();
+  const loadBranding = useTenantStore((s) => s.loadBranding);
 
   useEffect(() => {
     if (isHydrated && !isAuthenticated) {
       router.replace('/login');
     }
   }, [isHydrated, isAuthenticated, router]);
+
+  // Cargar branding del tenant al montar el dashboard
+  useEffect(() => {
+    loadBranding();
+  }, [loadBranding]);
 
   // Mostrar loading mientras se hidrata el store
   if (!isHydrated) {

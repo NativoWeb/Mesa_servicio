@@ -49,6 +49,18 @@
 }
 
 :root {
+  /* Brand CSS variables (overridden dynamically by tenant branding) */
+  --brand-primary: #1B5E20;
+  --brand-primary-light: #4CAF50;
+  --brand-primary-dark: #0D3B0D;
+  --brand-accent: #F9A825;
+  --brand-sidebar-from: #1B3A1B;
+  --brand-sidebar-to: #2E5A2E;
+  --brand-background: #FAFAFA;
+  --brand-card: #FFFFFF;
+  --brand-text-primary: #1A1A1A;
+  --brand-text-secondary: #6B7280;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
