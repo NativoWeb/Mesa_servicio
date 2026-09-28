@@ -10,6 +10,7 @@ use App\Services\SlaService;
 use App\Services\TicketAssignmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class TicketController extends Controller
 {
@@ -35,6 +36,25 @@ class TicketController extends Controller
             ->paginate($request->per_page ?? 15);
 
         return response()->json($tickets);
+    }
+
+    /** Verificar que el usuario tiene acceso al ticket */
+    private function authorizeAccess(Request $request, Ticket $ticket): void
+    {
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
+        if (in_array($role, ['admin', 'it_leader', 'inventory_manager'])) {
+            return;
+        }
+
+        if ($role === 'end_user' && $ticket->requester_id !== $user->id) {
+            throw new AccessDeniedHttpException('No tienes acceso a este ticket.');
+        }
+
+        if ($role === 'technician' && $ticket->assigned_to !== $user->id && $ticket->requester_id !== $user->id) {
+            throw new AccessDeniedHttpException('No tienes acceso a este ticket.');
+        }
     }
 
     public function store(Request $request): JsonResponse
@@ -70,8 +90,10 @@ class TicketController extends Controller
         return response()->json($ticket, 201);
     }
 
-    public function show(Ticket $ticket): JsonResponse
+    public function show(Request $request, Ticket $ticket): JsonResponse
     {
+        $this->authorizeAccess($request, $ticket);
+
         return response()->json(
             $ticket->load(['requester', 'assignedUser', 'escalatedUser', 'comments.user', 'attachments', 'events.user'])
         );
@@ -79,6 +101,7 @@ class TicketController extends Controller
 
     public function update(Request $request, Ticket $ticket): JsonResponse
     {
+        $this->authorizeAccess($request, $ticket);
         $validated = $request->validate([
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
@@ -117,8 +140,9 @@ class TicketController extends Controller
         return response()->json($ticket);
     }
 
-    public function destroy(Ticket $ticket): JsonResponse
+    public function destroy(Request $request, Ticket $ticket): JsonResponse
     {
+        $this->authorizeAccess($request, $ticket);
         $ticket->delete();
 
         return response()->json(['message' => 'Ticket eliminado correctamente.']);
