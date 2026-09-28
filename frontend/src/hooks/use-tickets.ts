@@ -12,6 +12,8 @@ export function useTickets(params?: Record<string, string | number>) {
       const { data } = await api.get<PaginatedResponse<Ticket>>('/tickets', { params });
       return data;
     },
+    refetchInterval: 30_000,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -23,6 +25,8 @@ export function useTicket(id: number) {
       return data.data;
     },
     enabled: !!id,
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: false,
   });
 }
 

@@ -22,5 +22,7 @@ export function useNotifications(params?: Record<string, string | number>) {
       const { data } = await api.get<PaginatedResponse<Notification>>('/notifications', { params });
       return data;
     },
+    refetchInterval: 30_000,
+    refetchIntervalInBackground: false,
   });
 }

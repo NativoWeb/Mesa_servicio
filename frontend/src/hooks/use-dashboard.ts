@@ -58,5 +58,7 @@ export function useDashboard() {
       const { data } = await api.get<DashboardData>('/dashboard');
       return data;
     },
+    refetchInterval: 30_000,
+    refetchIntervalInBackground: false,
   });
 }
