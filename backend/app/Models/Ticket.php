@@ -50,9 +50,10 @@ class Ticket extends Model
      */
     protected static function booted(): void
     {
-        static::created(function (Ticket $ticket) {
+        static::creating(function (Ticket $ticket) {
             if (empty($ticket->ticket_number)) {
-                $ticket->updateQuietly(['ticket_number' => 'T-' . str_pad($ticket->id, 4, '0', STR_PAD_LEFT)]);
+                $last = static::withTrashed()->max('id') ?? 0;
+                $ticket->ticket_number = 'T-' . str_pad($last + 1, 4, '0', STR_PAD_LEFT);
             }
         });
     }

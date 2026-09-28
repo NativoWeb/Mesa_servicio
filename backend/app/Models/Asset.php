@@ -52,10 +52,11 @@ class Asset extends Model
      */
     protected static function booted(): void
     {
-        static::created(function (Asset $asset) {
+        static::creating(function (Asset $asset) {
             if (empty($asset->asset_code)) {
                 $prefix = strtoupper(substr($asset->category?->value ?? 'OTH', 0, 3));
-                $asset->updateQuietly(['asset_code' => 'UTS-' . $prefix . '-' . str_pad($asset->id, 4, '0', STR_PAD_LEFT)]);
+                $last = static::withTrashed()->max('id') ?? 0;
+                $asset->asset_code = 'UTS-' . $prefix . '-' . str_pad($last + 1, 4, '0', STR_PAD_LEFT);
             }
         });
     }
