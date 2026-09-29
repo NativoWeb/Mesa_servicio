@@ -18,9 +18,9 @@ export default function LoginPage() {
   // Redirigir si ya está autenticado
   useEffect(() => {
     if (isHydrated && isAuthenticated && user) {
-      router.replace(getRoleRoute(user.role));
+      window.location.href = getRoleRoute(user.role);
     }
-  }, [isHydrated, isAuthenticated, user, router]);
+  }, [isHydrated, isAuthenticated, user]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
