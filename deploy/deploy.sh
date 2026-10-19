@@ -68,7 +68,11 @@ on_error() {
         echo "!!! Frontend anterior restaurado." >&2
     fi
     sudo systemctl start mesa-ayuda-next
-    echo "!!! mesa-ayuda-next: $(systemctl is-active mesa-ayuda-next)" >&2
+    for _ in $(seq 1 30); do
+        curl -fsS -o /dev/null http://127.0.0.1:3000/login && break
+        sleep 1
+    done
+    echo "!!! mesa-ayuda-next: $(systemctl is-active mesa-ayuda-next), HTTP $(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/login)" >&2
     echo "!!! Revisa el error de arriba, corrige, commitea y vuelve a correr deploy.sh." >&2
     exit "$code"
 }
