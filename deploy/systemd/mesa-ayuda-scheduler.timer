@@ -1,0 +1,10 @@
+[Unit]
+Description=Mesa de Ayuda UTS - ejecuta el scheduler de Laravel cada minuto
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+AccuracySec=1s
+Unit=mesa-ayuda-scheduler.service
+
+[Install]
+WantedBy=timers.target

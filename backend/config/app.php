@@ -67,6 +67,8 @@ return [
 
     'timezone' => 'UTC',
 
+    'schedule_timezone' => env('SCHEDULE_TIMEZONE', 'UTC'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

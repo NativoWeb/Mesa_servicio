@@ -1,0 +1,15 @@
+[Unit]
+Description=Mesa de Ayuda UTS - worker de colas (Laravel queue:work)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+User=nginx
+Group=nginx
+WorkingDirectory=/var/www/mesa-ayuda/backend
+ExecStart=/usr/bin/php artisan queue:work database --sleep=3 --tries=3 --max-time=3600 --memory=192
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
