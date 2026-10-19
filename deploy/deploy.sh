@@ -109,7 +109,7 @@ echo "==> Reiniciando servicios"
 sudo systemctl enable --now postgresql php-fpm nginx mesa-ayuda-queue mesa-ayuda-next mesa-ayuda-scheduler.timer >/dev/null
 sudo systemctl reload php-fpm
 sudo systemctl reload nginx
-"${ARTISAN[@]}" queue:restart
+(cd "$APP_DIR/backend" && "${ARTISAN[@]}" queue:restart)
 sudo systemctl restart mesa-ayuda-queue mesa-ayuda-next
 
 for i in $(seq 1 30); do
