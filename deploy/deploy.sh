@@ -77,7 +77,7 @@ sudo php-fpm -t
 
 echo "==> Backend: carpetas y permisos"
 cd "$APP_DIR/backend"
-mkdir -p storage/app/public storage/framework/cache/data storage/framework/sessions \
+sudo mkdir -p storage/app/public storage/framework/cache/data storage/framework/sessions \
     storage/framework/views storage/framework/testing storage/logs bootstrap/cache
 sudo chown -R nginx:nginx storage bootstrap/cache
 sudo chmod -R u+rwX,g+rwX,o-rwx storage bootstrap/cache
