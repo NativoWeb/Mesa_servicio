@@ -11,5 +11,16 @@ ExecStart=/usr/bin/php artisan queue:work database --sleep=3 --tries=3 --max-tim
 Restart=always
 RestartSec=5
 
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/var/www/mesa-ayuda/backend/storage /var/www/mesa-ayuda/backend/bootstrap/cache
+
 [Install]
 WantedBy=multi-user.target

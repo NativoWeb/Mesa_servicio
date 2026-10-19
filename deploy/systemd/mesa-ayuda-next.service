@@ -3,13 +3,27 @@ Description=Mesa de Ayuda UTS - frontend Next.js (next start)
 After=network.target
 
 [Service]
-User=ec2-user
-Group=ec2-user
+# Usuario de sistema sin shell ni sudo; solo puede escribir en .next/cache
+User=mesa-next
+Group=mesa-next
 WorkingDirectory=/var/www/mesa-ayuda/frontend
 Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
 ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -p 3000 -H 127.0.0.1
 Restart=always
 RestartSec=5
+SuccessExitStatus=143
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=-/var/www/mesa-ayuda/frontend/.next/cache
 
 [Install]
 WantedBy=multi-user.target

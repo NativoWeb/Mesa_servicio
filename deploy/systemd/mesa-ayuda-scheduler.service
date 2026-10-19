@@ -8,3 +8,14 @@ User=nginx
 Group=nginx
 WorkingDirectory=/var/www/mesa-ayuda/backend
 ExecStart=/usr/bin/php artisan schedule:run --no-interaction
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/var/www/mesa-ayuda/backend/storage /var/www/mesa-ayuda/backend/bootstrap/cache

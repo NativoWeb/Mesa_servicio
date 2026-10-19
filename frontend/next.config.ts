@@ -7,6 +7,7 @@ const apiProxyTarget =
   (process.env.NODE_ENV === "production" ? undefined : "http://localhost:8001");
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   async rewrites() {
     if (!apiProxyTarget) return [];
     return [

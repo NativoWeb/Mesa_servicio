@@ -10,7 +10,7 @@ Todo vive en **una sola maquina EC2** (Amazon Linux 2023, t3.small, IP `18.225.2
 ```
 Navegador ──> Nginx :80
                ├── /api/*, /sanctum/*, /up ──> PHP-FPM ──> Laravel (backend/public)
-               ├── /storage/*              ──> archivos publicos de Laravel
+               ├── /storage/*              ──> 404 (los adjuntos solo se bajan por la API con token)
                └── todo lo demas           ──> Next.js (next start en 127.0.0.1:3000)
 
 Laravel ──> PostgreSQL 16 (solo escucha en 127.0.0.1:5432)
@@ -21,11 +21,20 @@ Laravel ──> PostgreSQL 16 (solo escucha en 127.0.0.1:5432)
 | Nginx | `nginx` | Recibe todo el trafico del puerto 80 y lo reparte |
 | PHP-FPM | `php-fpm` | Ejecuta Laravel (pool `mesa-ayuda`, usuario `nginx`) |
 | PostgreSQL | `postgresql` | Base de datos `mesa_ayuda_uts`, usuario `mesa_ayuda` |
-| Next.js | `mesa-ayuda-next` | El frontend (`next start -p 3000`) |
+| Next.js | `mesa-ayuda-next` | El frontend (`next start -p 3000`), como usuario `mesa-next` (sin shell ni sudo) |
 | Colas | `mesa-ayuda-queue` | `php artisan queue:work` (se reinicia solo si se cae) |
 | Scheduler | `mesa-ayuda-scheduler.timer` | Corre `php artisan schedule:run` cada minuto |
 
 Todos estan "enabled": arrancan solos cuando el servidor se reinicia.
+
+Seguridad basica aplicada:
+- Next.js corre con un usuario de sistema propio (`mesa-next`) que no tiene sudo y solo
+  puede escribir en `frontend/.next/cache`. El worker y el scheduler corren como `nginx`
+  y solo pueden escribir en `backend/storage` y `backend/bootstrap/cache`
+  (systemd: `ProtectSystem=strict`, `NoNewPrivileges`, `PrivateTmp`...).
+- Nginx agrega `X-Frame-Options`, `X-Content-Type-Options` y `Referrer-Policy` y oculta `X-Powered-By`.
+- PostgreSQL solo escucha en 127.0.0.1. En produccion CORS no acepta los tuneles de desarrollo
+  (`*.trycloudflare.com`, etc.); si alguna vez los necesitas, define `CORS_ALLOWED_ORIGIN_PATTERNS`.
 
 La app queda en `/var/www/mesa-ayuda` (carpetas `backend/` y `frontend/`).
 El servidor tiene 2 GB de swap (`/swapfile`) porque 2 GB de RAM no alcanzan para compilar Next.js.
@@ -38,6 +47,7 @@ Laravel guarda las fechas en UTC (como en desarrollo).
 |---------|----------------|------------------------------|
 | `deploy.sh` | Sube el codigo y redespliega (lo corres en tu PC) | — |
 | `provision.sh` | Prepara un servidor nuevo (paquetes, swap, BD...) | — |
+| `nginx/nginx.conf` | Nginx principal sin la pagina de ejemplo de AL2023 | `/etc/nginx/nginx.conf` (el original queda en `nginx.conf.al2023`) |
 | `nginx/mesa-ayuda.conf` | Reglas de Nginx | `/etc/nginx/conf.d/` |
 | `php-fpm/mesa-ayuda.conf` | Pool de PHP-FPM | `/etc/php-fpm.d/` |
 | `systemd/*.service`, `*.timer` | Servicios propios | `/etc/systemd/system/` |
@@ -87,15 +97,21 @@ Eso hace, en orden:
 ./deploy/deploy.sh main     # o una rama / commit concreto
 ```
 
-El script es seguro de repetir. Hace:
+El script es seguro de repetir. Hace, en este orden:
 
-- Sincroniza el codigo en `/var/www/mesa-ayuda` (sin tocar `.env`, `storage/`, `vendor/`).
-- Copia las configs de Nginx, PHP-FPM y systemd.
-- `composer install --no-dev -o`, `php artisan migrate --force`, cachea config/rutas/vistas.
-- `npm ci` + `npm run build` del frontend.
-- Reinicia Next.js, el worker de colas y recarga PHP-FPM y Nginx.
+1. Copia las configs de Nginx, PHP-FPM y systemd.
+2. Compila el frontend (`npm ci` + `npm run build`) en `frontend-staging/`, **mientras la
+   version actual sigue funcionando**. Si el build falla, se detiene aqui y nada cambia.
+3. Pone el backend en mantenimiento (`artisan down`, la API responde 503), sincroniza el
+   codigo (sin tocar `.env`, `storage/`, `vendor/`), `composer install --no-dev -o`,
+   `migrate --force`, cachea config/rutas/vistas y lo saca de mantenimiento (`artisan up`).
+4. Cambia `frontend-staging/` por `frontend/` y reinicia Next (unos segundos sin servicio).
+5. Recarga PHP-FPM y Nginx y reinicia el worker de colas.
 
-Mientras compila Next.js (2-4 minutos) el frontend no responde: hazlo en horas de poco uso.
+**Si algo falla** veras un bloque `!!! ERROR en la linea ...`. El script saca el backend de
+mantenimiento, devuelve el frontend anterior si quedo a medio cambiar y vuelve a levantar Next.
+Ojo: si el fallo fue en composer o migrate, el codigo PHP nuevo ya quedo copiado; corrige y
+redespliega cuanto antes.
 
 **No uses `--seed` en redespliegues**: vuelve a correr los seeders sobre datos reales.
 
@@ -137,8 +153,8 @@ cd /var/www/mesa-ayuda/backend && sudo -u nginx php artisan config:cache && sudo
 - **HTTPS y dominio**: hoy es solo `http://`. Con un dominio apuntando a la IP se instala
   certbot (`sudo dnf install certbot python3-certbot-nginx`) y se actualiza `APP_URL` y
   `CORS_ALLOWED_ORIGINS`. Ojo: los tokens viajan sin cifrar mientras no haya HTTPS.
-- **IP fija**: si la instancia se detiene y se vuelve a encender, AWS puede cambiar la IP
-  publica. Para evitarlo asigna una *Elastic IP* desde la consola.
+- **IP fija**: `18.225.227.5` ya es una *Elastic IP* asociada a la instancia, asi que no cambia
+  al detener/encender. No la liberes en la consola: si la sueltas, pierdes la direccion.
 - **Correo real**: hoy `MAIL_MAILER=log` (los correos se escriben en el log).
 - **Respaldos de la BD**: no hay. Un `pg_dump` diario o snapshots del disco EBS desde la consola.
 - **Usuarios demo**: tienen contraseña `password`. Cambialas antes de dar acceso real.

@@ -55,6 +55,9 @@ sed -i -E 's#^(host\s+all\s+all\s+127\.0\.0\.1/32\s+)ident#\1scram-sha-256#; s#^
 systemctl enable postgresql
 systemctl restart postgresql
 
+echo "==> Usuario de sistema para Next.js (sin shell ni sudo)"
+id mesa-next >/dev/null 2>&1 || useradd --system --no-create-home --home-dir /nonexistent --shell /sbin/nologin mesa-next
+
 echo "==> Carpetas de la app"
 mkdir -p "$APP_DIR/backend" "$APP_DIR/frontend"
 chown ec2-user:ec2-user "$APP_DIR" "$APP_DIR/backend" "$APP_DIR/frontend"
@@ -64,14 +67,20 @@ if [ ! -f "$ENV_FILE" ]; then
     echo "==> Creando backend/.env de produccion con contrasena de BD aleatoria"
     db_pass="$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 40)"
     app_key="base64:$(openssl rand -base64 32)"
-    sudo -u postgres psql -v ON_ERROR_STOP=1 -q -v pass="$db_pass" <<'SQL'
+    # La contrasena viaja por stdin/variables de entorno, nunca como argumento (no aparece en `ps`)
+    {
+        printf "\\\\set pass '%s'\n" "$db_pass"
+        cat <<'SQL'
 SELECT format('CREATE ROLE mesa_ayuda LOGIN PASSWORD %L', :'pass')
 WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'mesa_ayuda') \gexec
 SELECT format('ALTER ROLE mesa_ayuda PASSWORD %L', :'pass') \gexec
 SQL
-    sed -e "s#^APP_KEY=.*#APP_KEY=${app_key}#" \
-        -e "s#^DB_PASSWORD=.*#DB_PASSWORD=${db_pass}#" \
-        "$DEPLOY_SRC/.env.production.example" > "$ENV_FILE"
+    } | sudo -u postgres psql -v ON_ERROR_STOP=1 -q
+    DB_PASS="$db_pass" APP_KEY_VAL="$app_key" awk '
+        /^APP_KEY=/     { print "APP_KEY=" ENVIRON["APP_KEY_VAL"]; next }
+        /^DB_PASSWORD=/ { print "DB_PASSWORD=" ENVIRON["DB_PASS"]; next }
+        { print }
+    ' "$DEPLOY_SRC/.env.production.example" > "$ENV_FILE"
     unset db_pass app_key
 fi
 chown ec2-user:nginx "$ENV_FILE"
@@ -87,7 +96,9 @@ install -m 644 "$DEPLOY_SRC/php-fpm/mesa-ayuda.conf" /etc/php-fpm.d/mesa-ayuda.c
 php-fpm -t
 systemctl enable php-fpm
 
-echo "==> Nginx"
+echo "==> Nginx (nginx.conf propio sin el server de ejemplo de AL2023)"
+[ -f /etc/nginx/nginx.conf.al2023 ] || cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.al2023
+install -m 644 "$DEPLOY_SRC/nginx/nginx.conf" /etc/nginx/nginx.conf
 install -m 644 "$DEPLOY_SRC/nginx/mesa-ayuda.conf" /etc/nginx/conf.d/mesa-ayuda.conf
 nginx -t
 systemctl enable nginx
