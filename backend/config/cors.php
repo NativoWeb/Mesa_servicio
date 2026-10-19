@@ -10,6 +10,7 @@ return [
     'allowed_origins_patterns' => [
         '#https://.*\.lhr\.life#',
         '#https://.*\.serveousercontent\.com#',
+        '#https://.*\.trycloudflare\.com#',
     ],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],

@@ -44,8 +44,8 @@ export default function NuevoEquipoPage() {
     try {
       const newAsset = await createAsset.mutateAsync({
         ...form,
-        holder_id: form.holder_id ? Number(form.holder_id) : 0,
-      });
+        ...(form.holder_id ? { holder_id: Number(form.holder_id) } : {}),
+      } as any);
 
       // Subir archivos adjuntos si hay
       if (files.length > 0) {
@@ -98,7 +98,7 @@ export default function NuevoEquipoPage() {
         <h1 className="text-2xl font-bold text-gray-900">Registrar nuevo equipo</h1>
       </div>
 
-      <Section num={1} title="Identificacion" desc="Datos basicos y seriales unicos del activo">
+      <Section num={1} title="Identificación" desc="Datos básicos y seriales únicos del activo">
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -106,7 +106,7 @@ export default function NuevoEquipoPage() {
               <input value={form.name} onChange={e => set('name', e.target.value)} placeholder="Ej: Workstation Diseno 01" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Categoria*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Categoría*</label>
               <select value={form.category} onChange={e => set('category', e.target.value)} className={inputClass}>
                 <option value="">Seleccionar</option>
                 {['pc', 'laptop', 'printer', 'server', 'router', 'switch', 'monitor', 'projector', 'other'].map(c => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
@@ -130,7 +130,7 @@ export default function NuevoEquipoPage() {
         </div>
       </Section>
 
-      <Section num={2} title="Adquisicion" desc="Informacion contable y de proveedor">
+      <Section num={2} title="Adquisición" desc="Información contable y de proveedor">
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -138,14 +138,14 @@ export default function NuevoEquipoPage() {
               <input type="date" value={form.purchase_date} onChange={e => set('purchase_date', e.target.value)} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Garantia hasta</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Garantía hasta</label>
               <input type="date" value={form.warranty_expiry} onChange={e => set('warranty_expiry', e.target.value)} className={inputClass} />
             </div>
           </div>
         </div>
       </Section>
 
-      <Section num={3} title="Ubicacion" desc="Sede y espacio fisico asignado">
+      <Section num={3} title="Ubicación" desc="Sede y espacio físico asignado">
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -161,7 +161,7 @@ export default function NuevoEquipoPage() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Ubicacion especifica</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Ubicación específica</label>
             <input value={form.location} onChange={e => set('location', e.target.value)} placeholder="Ej: Lab. Informatica 3, Puesto 12" className={inputClass} />
           </div>
         </div>
@@ -188,7 +188,7 @@ export default function NuevoEquipoPage() {
         </div>
       </Section>
 
-      <Section num={5} title="Informacion adicional" desc="Notas">
+      <Section num={5} title="Información adicional" desc="Notas">
         <div className="space-y-4 mt-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Notas</label>

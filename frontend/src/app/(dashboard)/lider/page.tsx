@@ -46,8 +46,8 @@ export default function LiderDashboardPage() {
     { label: 'Tickets Abiertos', value: tickets.open, color: 'text-blue-700', bg: 'bg-blue-50' },
     { label: 'En Progreso', value: tickets.in_progress, color: 'text-yellow-700', bg: 'bg-yellow-50' },
     { label: 'Resueltos', value: tickets.closed, color: 'text-green-700', bg: 'bg-green-50' },
-    { label: 'Tasa Resolucion', value: `${slaRate}%`, color: 'text-green-800', bg: 'bg-green-50' },
-    { label: 'Criticos/Altos Abiertos', value: criticalOpen, color: 'text-red-700', bg: 'bg-red-50' },
+    { label: 'Tasa Resolución', value: `${slaRate}%`, color: 'text-green-800', bg: 'bg-green-50' },
+    { label: 'Críticos/Altos Abiertos', value: criticalOpen, color: 'text-red-700', bg: 'bg-red-50' },
   ];
 
   const maxCapacity = 20;
@@ -139,7 +139,7 @@ export default function LiderDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Technician Workload */}
         <div className="bg-white rounded-xl border p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Carga Operativa por Tecnico</h2>
+          <h2 className="font-semibold text-gray-900 mb-4">Carga Operativa por Técnico</h2>
           {technician_workload && technician_workload.length > 0 ? (
             <div className="space-y-3">
               {technician_workload.map((tech) => {

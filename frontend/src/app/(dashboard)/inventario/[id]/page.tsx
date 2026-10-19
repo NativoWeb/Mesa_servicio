@@ -12,7 +12,7 @@ import { es } from 'date-fns/locale';
 const MAINT_TYPE_LABELS: Record<string, string> = {
   preventive: 'Preventivo',
   corrective: 'Correctivo',
-  update: 'Actualizacion',
+  update: 'Actualización',
   cleaning: 'Limpieza',
 };
 
@@ -69,17 +69,17 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
         {/* Technical Info */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border p-6">
-            <h2 className="font-semibold mb-4 text-lg">Informacion Tecnica</h2>
+            <h2 className="font-semibold mb-4 text-lg">Información Técnica</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
-                { label: 'Categoria', value: asset.category },
+                { label: 'Categoría', value: asset.category },
                 { label: 'Marca', value: asset.brand },
                 { label: 'Modelo', value: asset.model },
                 { label: 'Serial', value: asset.serial },
                 { label: 'Sede', value: asset.campus },
-                { label: 'Ubicacion', value: `${asset.floor || ''} ${asset.location || ''}`.trim() || '-' },
+                { label: 'Ubicación', value: `${asset.floor || ''} ${asset.location || ''}`.trim() || '-' },
                 { label: 'Fecha Compra', value: asset.purchase_date ? format(new Date(asset.purchase_date), 'dd/MM/yyyy') : '-' },
-                { label: 'Garantia', value: asset.warranty_expiry ? format(new Date(asset.warranty_expiry), 'dd/MM/yyyy') : 'Sin garantia' },
+                { label: 'Garantía', value: asset.warranty_expiry ? format(new Date(asset.warranty_expiry), 'dd/MM/yyyy') : 'Sin garantía' },
               ].map(item => (
                 <div key={item.label}>
                   <p className="text-xs text-gray-500 uppercase tracking-wide">{item.label}</p>
@@ -121,8 +121,8 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
                       <div className="pb-2">
                         <p className="text-xs text-gray-500 font-mono">{m.started_at ? format(new Date(m.started_at), 'dd/MM/yyyy') : format(new Date(m.created_at), 'dd/MM/yyyy')}</p>
                         <p className="text-sm font-semibold text-gray-900 mt-0.5">{MAINT_TYPE_LABELS[m.type] || m.type}</p>
-                        <p className="text-sm text-gray-600 mt-0.5">{m.description || m.observations || 'Sin descripcion'}</p>
-                        {m.technician && <p className="text-xs text-gray-400 mt-1">Tecnico: {m.technician.name}</p>}
+                        <p className="text-sm text-gray-600 mt-0.5">{m.description || m.observations || 'Sin descripción'}</p>
+                        {m.technician && <p className="text-xs text-gray-400 mt-1">Técnico: {m.technician.name}</p>}
                       </div>
                     </div>
                   ))}
@@ -152,13 +152,13 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
               </div>
               {asset.next_maintenance && (
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Proximo Mantenimiento</p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">Próximo Mantenimiento</p>
                   <p className="text-sm font-medium text-gray-900 mt-1">{format(new Date(asset.next_maintenance), 'dd/MM/yyyy')}</p>
                 </div>
               )}
               {asset.warranty_expiry && (
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Garantia</p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">Garantía</p>
                   <span className={`inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${new Date(asset.warranty_expiry) > new Date() ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                     {new Date(asset.warranty_expiry) > new Date() ? 'Vigente' : 'Vencida'}
                   </span>

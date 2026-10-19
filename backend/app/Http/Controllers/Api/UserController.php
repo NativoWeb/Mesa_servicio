@@ -77,8 +77,22 @@ class UserController extends Controller
         return response()->json($user->fresh('roles'));
     }
 
-    public function destroy(User $user): JsonResponse
+    public function destroy(Request $request, User $user): JsonResponse
     {
+        if ($user->id === $request->user()->id) {
+            return response()->json(['message' => 'No puedes eliminar tu propia cuenta.'], 422);
+        }
+
+        $ticketCount = \App\Models\Ticket::where('requester_id', $user->id)
+            ->orWhere('assigned_to', $user->id)
+            ->count();
+
+        if ($ticketCount > 0) {
+            return response()->json([
+                'message' => "No se puede eliminar: el usuario tiene {$ticketCount} ticket(s) asociados. Reasígnalos primero.",
+            ], 422);
+        }
+
         $user->delete();
 
         return response()->json(['message' => 'Usuario eliminado correctamente.']);

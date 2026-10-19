@@ -27,9 +27,9 @@ export default function TecnicoEquiposPage() {
             <tr className="border-b bg-gray-50/50">
               <th className="text-left p-3 pl-6 font-medium text-gray-500 text-xs uppercase">Ticket</th>
               <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Asunto</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Categoria</th>
+              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Categoría</th>
               <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Sede</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Ubicacion</th>
+              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Ubicación</th>
               <th className="text-left p-3 pr-6 font-medium text-gray-500 text-xs uppercase">Estado</th>
             </tr>
           </thead>

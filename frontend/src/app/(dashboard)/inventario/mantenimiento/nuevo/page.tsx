@@ -14,7 +14,7 @@ import type { MaintenanceType } from '@/types/maintenance';
 const typeConfig: Record<string, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
   preventive: { label: 'Preventivo', icon: Shield },
   corrective: { label: 'Correctivo', icon: Wrench },
-  update: { label: 'Actualizacion', icon: Package },
+  update: { label: 'Actualización', icon: Package },
   cleaning: { label: 'Limpieza', icon: Sparkles },
 };
 
@@ -127,14 +127,14 @@ export default function NuevoMantenimientoPage() {
               ))}
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Descripcion del trabajo</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Descripción del trabajo</label>
               <textarea value={description} onChange={e => setDescription(e.target.value)} rows={4} placeholder="Detalle las acciones realizadas..." className={inputClass + ' resize-none'} />
             </div>
           </div>
 
           {/* Dates */}
           <div className="bg-white rounded-xl border p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Ejecucion</h2>
+            <h2 className="font-semibold text-gray-900 mb-4">Ejecución</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Fecha Inicio</label>

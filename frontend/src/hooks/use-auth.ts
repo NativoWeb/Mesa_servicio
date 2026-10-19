@@ -14,12 +14,7 @@ export function useAuth() {
     const { data } = await api.post<LoginResponse>('/auth/login', credentials);
     setAuth(data.user, data.token);
     const route = getRoleRoute(data.user.role);
-    // Use full navigation to ensure cookie is sent on next request
-    if (typeof window !== 'undefined') {
-      window.location.href = route;
-    } else {
-      router.push(route);
-    }
+    router.push(route);
     return data.user;
   };
 

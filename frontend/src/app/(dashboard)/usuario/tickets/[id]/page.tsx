@@ -153,7 +153,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
         </div>
         <h1 className="text-xl font-bold text-gray-900">{ticket.title}</h1>
         <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-          <span>Tecnico asignado: <strong className="text-gray-900">{assigneeName}</strong></span>
+          <span>Técnico asignado: <strong className="text-gray-900">{assigneeName}</strong></span>
           <span>Fecha de reporte: <strong className="text-gray-900">{dateStr}</strong></span>
         </div>
       </div>
@@ -200,7 +200,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
               <p className="text-sm text-gray-400 mb-4">No hay comentarios aun.</p>
             ) : (
               <div className="space-y-4 mb-4">
-                {comments.filter(c => !c.is_internal).map((c) => {
+                {comments.filter((c: any) => !c.is_internal).map((c: any) => {
                   const isCurrentUser = c.user?.name === user?.name;
                   return (
                     <div key={c.id} className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>

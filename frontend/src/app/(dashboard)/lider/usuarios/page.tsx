@@ -6,8 +6,8 @@ import { useDashboard } from '@/hooks/use-dashboard';
 
 const ROLE_LABELS: Record<string, string> = {
   admin: 'Administrador',
-  it_leader: 'Lider TIC',
-  technician: 'Tecnico',
+  it_leader: 'Líder TIC',
+  technician: 'Técnico',
   inventory_manager: 'Gestor Inventario',
   end_user: 'Usuario Final',
   asset_holder: 'Cuentadante',
@@ -115,7 +115,7 @@ export default function UsuariosRolesPage() {
 
         {data && data.last_page > 1 && (
           <div className="px-6 py-3 border-t flex items-center justify-between text-xs text-gray-500">
-            <span>Pagina {data.current_page} de {data.last_page} ({data.total} usuarios)</span>
+            <span>Página {data.current_page} de {data.last_page} ({data.total} usuarios)</span>
             <div className="flex gap-1">
               <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50">Anterior</button>
               <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50">Siguiente</button>

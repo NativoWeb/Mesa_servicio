@@ -11,7 +11,7 @@ const SMTP_KEYS = [
   { key: 'smtp_host', label: 'Host SMTP', placeholder: 'smtp.example.com' },
   { key: 'smtp_port', label: 'Puerto', placeholder: '587' },
   { key: 'smtp_username', label: 'Usuario', placeholder: 'user@example.com' },
-  { key: 'smtp_password', label: 'Contrasena', placeholder: '********', type: 'password' },
+  { key: 'smtp_password', label: 'Contraseña', placeholder: '********', type: 'password' },
   { key: 'smtp_from_address', label: 'Correo remitente', placeholder: 'noreply@example.com' },
   { key: 'smtp_from_name', label: 'Nombre remitente', placeholder: 'Mesa de Servicio TI' },
 ] as const;
@@ -19,7 +19,7 @@ const SMTP_KEYS = [
 const SMTP_ENCRYPTION_OPTIONS = ['tls', 'ssl'] as const;
 
 const GENERAL_KEYS = [
-  { key: 'app_name', label: 'Nombre de la aplicacion', placeholder: 'Mesa de Servicio TI' },
+  { key: 'app_name', label: 'Nombre de la aplicación', placeholder: 'Mesa de Servicio TI' },
   { key: 'support_email', label: 'Correo de soporte', placeholder: 'soporte@uts.edu.co' },
 ] as const;
 
@@ -49,20 +49,26 @@ export default function AdminConfigPage() {
 
   useEffect(() => {
     if (data) {
-      setForm((prev) => ({ ...data, ...prev }));
+      setForm(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (form['app_name']) {
+      document.title = form['app_name'];
+    }
+  }, [form['app_name']]);
 
   const mutation = useMutation({
     mutationFn: async (configs: ConfigData) => {
       await api.put('/system-configs', { configs });
     },
     onSuccess: () => {
-      toast.success('Configuracion actualizada correctamente.');
+      toast.success('Configuración actualizada correctamente.');
       queryClient.invalidateQueries({ queryKey: ['system-configs'] });
     },
     onError: () => {
-      toast.error('Error al guardar la configuracion.');
+      toast.error('Error al guardar la configuración.');
     },
   });
 
@@ -84,8 +90,8 @@ export default function AdminConfigPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Configuracion del Sistema</h1>
-          <p className="text-gray-500">Cargando configuracion...</p>
+          <h1 className="text-2xl font-bold text-gray-900">Configuración del Sistema</h1>
+          <p className="text-gray-500">Cargando configuración...</p>
         </div>
         <div className="h-64 bg-gray-100 rounded-xl animate-pulse" />
       </div>
@@ -95,7 +101,7 @@ export default function AdminConfigPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Configuracion del Sistema</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Configuración del Sistema</h1>
         <p className="text-gray-500">Ajustes generales, correo SMTP y backup</p>
       </div>
 
@@ -119,7 +125,10 @@ export default function AdminConfigPage() {
       {/* General */}
       {activeTab === 'general' && (
         <div className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900 mb-2">Configuracion General</h2>
+          <h2 className="font-semibold text-gray-900 mb-2">Configuración General</h2>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+            Estos ajustes aplican a notificaciones y correos del sistema. El logo, nombre y colores del sidebar se configuran en <strong>Tenants</strong>.
+          </div>
           {GENERAL_KEYS.map(({ key, label, placeholder }) => (
             <div key={key}>
               <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
@@ -151,16 +160,16 @@ export default function AdminConfigPage() {
       {/* SMTP */}
       {activeTab === 'smtp' && (
         <div className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900 mb-2">Configuracion SMTP</h2>
+          <h2 className="font-semibold text-gray-900 mb-2">Configuración SMTP</h2>
           <p className="text-sm text-gray-500 mb-4">
             Configure el servidor de correo para notificaciones y reportes programados.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {SMTP_KEYS.map(({ key, label, placeholder, type }) => (
+            {SMTP_KEYS.map(({ key, label, placeholder, ...rest }) => (
               <div key={key}>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
                 <input
-                  type={type || 'text'}
+                  type={'type' in rest ? rest.type : 'text'}
                   value={form[key] || ''}
                   onChange={(e) => handleChange(key, e.target.value)}
                   placeholder={placeholder}
@@ -169,7 +178,7 @@ export default function AdminConfigPage() {
               </div>
             ))}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Encriptacion</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Encriptación</label>
               <select
                 value={form['smtp_encryption'] || 'tls'}
                 onChange={(e) => handleChange('smtp_encryption', e.target.value)}
@@ -187,11 +196,11 @@ export default function AdminConfigPage() {
       {/* Backup */}
       {activeTab === 'backup' && (
         <div className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900 mb-2">Backup y Restauracion</h2>
+          <h2 className="font-semibold text-gray-900 mb-2">Backup y Restauración</h2>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-800 font-medium mb-1">Informacion</p>
+            <p className="text-sm text-blue-800 font-medium mb-1">Información</p>
             <p className="text-sm text-blue-700">
-              La configuracion de backups automaticos se gestiona a nivel de servidor.
+              La configuración de backups automáticos se gestiona a nivel de servidor.
               Contacte al administrador del sistema para programar backups de la base de datos PostgreSQL.
             </p>
           </div>
@@ -200,7 +209,7 @@ export default function AdminConfigPage() {
               <strong>Base de datos:</strong> PostgreSQL 16+
             </p>
             <p className="text-sm text-gray-700">
-              <strong>Estrategia recomendada:</strong> pg_dump diario con retencion de 30 dias
+              <strong>Estrategia recomendada:</strong> pg_dump diario con retención de 30 dias
             </p>
             <p className="text-sm text-gray-700">
               <strong>Multitenancy:</strong> Cada tenant tiene su propio schema, los backups deben incluir todos los schemas

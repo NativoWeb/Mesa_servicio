@@ -188,7 +188,7 @@ export default function NuevoTicketPage() {
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Descripción detallada <span className="text-gray-400 font-normal">0/500</span></label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Descripción detallada <span className="text-gray-400 font-normal">{description.length}/500</span></label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}

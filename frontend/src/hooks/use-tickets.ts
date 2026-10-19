@@ -21,8 +21,8 @@ export function useTicket(id: number) {
   return useQuery({
     queryKey: ['tickets', id],
     queryFn: async () => {
-      const { data } = await api.get<{ data: Ticket }>(`/tickets/${id}`);
-      return data.data;
+      const { data } = await api.get<Ticket | { data: Ticket }>(`/tickets/${id}`);
+      return (data as { data: Ticket }).data ?? data as Ticket;
     },
     enabled: !!id,
     refetchInterval: 15_000,

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSlaConfigs, useUpdateSlaConfig, SlaConfig } from '@/hooks/use-sla-configs';
+import { toast } from 'sonner';
 
 const priorityLabels: Record<string, string> = {
   critical: 'Critica',
@@ -47,14 +48,26 @@ export default function AdminSlaPage() {
   }, [configs]);
 
   const handleFieldChange = (index: number, field: 'response_time_hours' | 'resolution_time_hours', value: number) => {
-    setEditableRows((prev) => prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)));
+    const clamped = Math.max(1, value);
+    setEditableRows((prev) => prev.map((row, i) => (i === index ? { ...row, [field]: clamped } : row)));
   };
 
   const handleSave = async () => {
     if (!configs) return;
+
+    for (const row of editableRows) {
+      if (row.response_time_hours < 1 || row.resolution_time_hours < 1) {
+        toast.error(`Los tiempos deben ser de al menos 1 hora (${priorityLabels[row.priority] || row.priority}).`);
+        return;
+      }
+      if (row.response_time_hours >= row.resolution_time_hours) {
+        toast.error(`El tiempo de respuesta debe ser menor al de resolución (${priorityLabels[row.priority] || row.priority}).`);
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      // Solo actualizar las filas que cambiaron
       const promises = editableRows
         .filter((row) => {
           const original = configs.find((c) => c.id === row.id);
@@ -72,10 +85,18 @@ export default function AdminSlaPage() {
           })
         );
 
+      if (promises.length === 0) {
+        toast.info('No hay cambios para guardar.');
+        setEditing(false);
+        setSaving(false);
+        return;
+      }
+
       await Promise.all(promises);
+      toast.success('Tiempos SLA actualizados correctamente.');
       setEditing(false);
     } catch {
-      // Error manejado por react-query
+      toast.error('Error al guardar los tiempos SLA.');
     } finally {
       setSaving(false);
     }
@@ -139,7 +160,7 @@ export default function AdminSlaPage() {
             <tr className="border-b bg-gray-50/50">
               <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Prioridad del Ticket</th>
               <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Respuesta (hrs)</th>
-              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Resolucion (hrs)</th>
+              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Resolución (hrs)</th>
             </tr>
           </thead>
           <tbody>

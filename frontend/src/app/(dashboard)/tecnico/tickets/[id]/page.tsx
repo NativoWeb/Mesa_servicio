@@ -98,7 +98,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
         <div className="lg:col-span-2 space-y-6">
           {/* Description */}
           <div className="bg-white rounded-xl border p-6">
-            <h2 className="font-semibold text-gray-900 mb-3">Descripcion del problema</h2>
+            <h2 className="font-semibold text-gray-900 mb-3">Descripción del problema</h2>
             <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{ticket.description}</p>
           </div>
 
@@ -237,8 +237,8 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
             <div className="space-y-3 text-sm">
               {[
                 { label: 'Sede', value: ticket.campus },
-                { label: 'Ubicacion', value: ticket.location || '-' },
-                { label: 'Categoria', value: ticket.category || '-' },
+                { label: 'Ubicación', value: ticket.location || '-' },
+                { label: 'Categoría', value: ticket.category || '-' },
                 { label: 'Solicitante', value: ticket.requester?.name || 'N/A' },
                 { label: 'Email', value: ticket.requester?.email || '-' },
               ].map((d) => (
@@ -252,7 +252,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
 
           {ticket.assignee && (
             <div className="bg-white rounded-xl border p-5">
-              <h3 className="font-semibold text-gray-900 text-sm mb-3">Tecnico Asignado</h3>
+              <h3 className="font-semibold text-gray-900 text-sm mb-3">Técnico Asignado</h3>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-800 text-sm font-bold">
                   {ticket.assignee.name.split(' ').map(n => n[0]).join('').slice(0, 2)}

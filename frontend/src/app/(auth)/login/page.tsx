@@ -18,9 +18,9 @@ export default function LoginPage() {
   // Redirigir si ya está autenticado
   useEffect(() => {
     if (isHydrated && isAuthenticated && user) {
-      window.location.href = getRoleRoute(user.role);
+      router.replace(getRoleRoute(user.role));
     }
-  }, [isHydrated, isAuthenticated, user]);
+  }, [isHydrated, isAuthenticated, user, router]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -133,7 +133,7 @@ export default function LoginPage() {
                     Contraseña
                   </label>
                   <Link href="/forgot-password" className="text-xs text-green-700 hover:text-green-800 font-medium">
-                    Olvide mi contrasena
+                    Olvidé mi contraseña
                   </Link>
                 </div>
                 <input

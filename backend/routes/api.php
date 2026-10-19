@@ -82,8 +82,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('sla-configs', SlaConfigController::class)->only(['index', 'store', 'update']);
     });
 
-    // --- Admin + IT Leader: lectura de usuarios (para asignación de tickets) ---
-    Route::middleware(['role:admin|it_leader'])->group(function () {
+    // --- Admin + IT Leader + Inventory Manager: lectura de usuarios ---
+    Route::middleware(['role:admin|it_leader|inventory_manager'])->group(function () {
         Route::get('users', [UserController::class, 'index']);
         Route::get('users/{user}', [UserController::class, 'show']);
     });
