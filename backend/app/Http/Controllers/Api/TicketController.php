@@ -32,6 +32,8 @@ class TicketController extends Controller
             ->when($request->priority, fn ($q, $priority) => $q->where('priority', $priority))
             ->when($request->assigned_to, fn ($q, $id) => $q->where('assigned_to', $id))
             ->when($request->search, fn ($q, $search) => $q->where('title', 'ilike', "%{$search}%"))
+            ->when($request->boolean('unassigned'), fn ($q) => $q->whereNull('assigned_to'))
+            ->when($request->campus, fn ($q, $campus) => $q->where('campus', $campus))
             ->orderByDesc('created_at')
             ->paginate($request->per_page ?? 15);
 

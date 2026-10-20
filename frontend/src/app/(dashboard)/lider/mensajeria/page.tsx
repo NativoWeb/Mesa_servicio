@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useMessages, useCreateMessage, useSendMessage } from '@/hooks/use-messages';
 import { CAMPUSES } from '@/lib/constants';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { FileText } from 'lucide-react';
 import type { MessageChannel } from '@/types/message';
 
 const ROLE_OPTIONS = [
@@ -16,6 +18,44 @@ const ROLE_OPTIONS = [
 ];
 
 export default function MensajeriaPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-96 bg-gray-100 rounded-xl" />}>
+      <MensajeriaContent />
+    </Suspense>
+  );
+}
+
+function TemplatesPlaceholder() {
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-gray-900">Plantillas de Mensajes</h1>
+      <p className="text-gray-500 mb-6">Crea y gestiona plantillas reutilizables para tus comunicaciones</p>
+      <div className="bg-white rounded-xl border p-12 text-center">
+        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <FileText className="w-8 h-8 text-gray-400" />
+        </div>
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">Proximamente</h2>
+        <p className="text-gray-500 max-w-md mx-auto">
+          Aqui podras crear plantillas de correo y SMS personalizables con variables dinamicas
+          para agilizar tus comunicaciones institucionales.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function MensajeriaContent() {
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') || '';
+
+  if (activeTab === 'templates') {
+    return <TemplatesPlaceholder />;
+  }
+
+  return <MensajeriaForm />;
+}
+
+function MensajeriaForm() {
   const [channel, setChannel] = useState<MessageChannel>('email');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');

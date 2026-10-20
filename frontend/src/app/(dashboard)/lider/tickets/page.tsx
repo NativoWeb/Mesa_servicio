@@ -1,24 +1,63 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useTickets } from '@/hooks/use-tickets';
-import { STATUS_CONFIG, PRIORITY_CONFIG } from '@/lib/constants';
-import { TicketStatus } from '@/types/ticket';
+import { STATUS_CONFIG, PRIORITY_CONFIG, CAMPUSES } from '@/lib/constants';
+
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+const FILTER_TITLES: Record<string, { title: string; subtitle: string }> = {
+  unassigned: { title: 'Tickets Sin Asignar', subtitle: 'Tickets que aun no tienen tecnico asignado' },
+  escalated: { title: 'Tickets Escalonados', subtitle: 'Tickets que han sido escalados' },
+  campus: { title: 'Tickets por Sede', subtitle: 'Filtra los tickets por sede de origen' },
+};
+
 export default function LiderTicketsPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-96 bg-gray-100 rounded-xl" />}>
+      <LiderTicketsContent />
+    </Suspense>
+  );
+}
+
+function LiderTicketsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const sidebarFilter = searchParams.get('filter') || '';
+
   const [statusFilter, setStatusFilter] = useState('');
   const [search, setSearch] = useState('');
+  const [campusFilter, setCampusFilter] = useState('');
   const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useTickets({
+  useEffect(() => {
+    setStatusFilter('');
+    setPage(1);
+  }, [sidebarFilter]);
+
+  const queryParams: Record<string, string | number> = {
     page,
     per_page: 15,
-    ...(statusFilter && { status: statusFilter }),
+    ...(!sidebarFilter && statusFilter && { status: statusFilter }),
     ...(search && { search }),
-  });
+  };
+
+  if (sidebarFilter === 'unassigned') {
+    queryParams.unassigned = 1;
+  } else if (sidebarFilter === 'escalated') {
+    queryParams.status = 'escalated';
+  } else if (sidebarFilter === 'campus' && campusFilter) {
+    queryParams.campus = campusFilter;
+  }
+
+  const { data, isLoading } = useTickets(queryParams);
+
+  const { title, subtitle } = FILTER_TITLES[sidebarFilter] || {
+    title: 'Todos los Tickets',
+    subtitle: 'Gestion completa de tickets de soporte',
+  };
 
   const tabs: { key: string; label: string }[] = [
     { key: '', label: 'Todos' },
@@ -32,26 +71,38 @@ export default function LiderTicketsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Todos los Tickets</h1>
-          <p className="text-gray-500">Gestion completa de tickets de soporte</p>
+          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+          <p className="text-gray-500">{subtitle}</p>
         </div>
       </div>
       <div className="bg-white rounded-xl border">
         <div className="p-6 pb-0">
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => { setStatusFilter(tab.key); setPage(1); }}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                    statusFilter === tab.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+            {!sidebarFilter && (
+              <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => { setStatusFilter(tab.key); setPage(1); }}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      statusFilter === tab.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            )}
+            {sidebarFilter === 'campus' && (
+              <select
+                value={campusFilter}
+                onChange={(e) => { setCampusFilter(e.target.value); setPage(1); }}
+                className="px-3 py-1.5 bg-white border rounded-lg text-sm outline-none focus:ring-2 focus:ring-green-500/20"
+              >
+                <option value="">Selecciona una sede</option>
+                {CAMPUSES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            )}
             <input
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -91,11 +142,15 @@ export default function LiderTicketsPage() {
                   const sCfg = STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG];
                   const pCfg = PRIORITY_CONFIG[t.priority as keyof typeof PRIORITY_CONFIG];
                   return (
-                    <tr key={t.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                    <tr
+                      key={t.id}
+                      onClick={() => router.push(`/lider/tickets/${t.id}`)}
+                      className="border-b hover:bg-gray-50/50 transition-colors cursor-pointer"
+                    >
                       <td className="p-3 pl-6">
-                        <Link href={`/lider/tickets/${t.id}`} className="font-mono font-medium text-green-700 hover:underline">
+                        <span className="font-mono font-medium text-green-700">
                           #{t.id}
-                        </Link>
+                        </span>
                       </td>
                       <td className="p-3 text-gray-900 font-medium max-w-[200px] truncate">{t.title}</td>
                       <td className="p-3 text-gray-600">{t.requester?.name || 'N/A'}</td>

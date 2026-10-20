@@ -1,7 +1,8 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore, ROLE_LABELS, getRoleRoute } from "@/stores/auth-store";
 import { useTenantStore } from "@/stores/tenant-store";
 import { UserRole } from "@/types/user";
@@ -207,7 +208,16 @@ const ITEM_FEATURE_MAP: Record<string, keyof TenantFeatures> = {
 };
 
 export function AppSidebar() {
+  return (
+    <Suspense fallback={null}>
+      <AppSidebarInner />
+    </Suspense>
+  );
+}
+
+function AppSidebarInner() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuthStore();
   const config = useTenantStore((s) => s.config);
@@ -221,6 +231,7 @@ export function AppSidebar() {
   const logoInitials = config.short_name
     ? config.short_name.slice(0, 2).toUpperCase()
     : "SD";
+  const currentSearch = searchParams.toString();
 
   // Filtrar navegación según features habilitadas del tenant
   const nav = rawNav
@@ -280,9 +291,18 @@ export function AppSidebar() {
             </p>
             <div className="space-y-0.5">
               {group.items.map((item) => {
-                const baseHref = item.href.split("?")[0];
-                const isActive =
-                  pathname === baseHref || pathname.startsWith(baseHref + "/");
+                const [itemPath, itemQuery] = item.href.split("?");
+                let isActive: boolean;
+                if (itemQuery) {
+                  isActive = pathname === itemPath && currentSearch === itemQuery;
+                } else {
+                  const pathMatches = pathname === itemPath || pathname.startsWith(itemPath + "/");
+                  const siblingWithQueryMatches = group.items.some((sibling) => {
+                    const [sibPath, sibQuery] = sibling.href.split("?");
+                    return sibQuery && sibPath === itemPath && currentSearch === sibQuery;
+                  });
+                  isActive = pathMatches && !siblingWithQueryMatches;
+                }
                 return (
                   <Link
                     key={item.href + item.label}

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useTickets } from '@/hooks/use-tickets';
 import { useAuthStore } from '@/stores/auth-store';
 import { STATUS_CONFIG, PRIORITY_CONFIG } from '@/lib/constants';
@@ -9,8 +9,18 @@ import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export default function TecnicoTicketsPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-96 bg-gray-100 rounded-xl" />}>
+      <TecnicoTicketsContent />
+    </Suspense>
+  );
+}
+
+function TecnicoTicketsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
-  const [statusFilter, setStatusFilter] = useState('');
+  const statusFilter = searchParams.get('status') || '';
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
@@ -56,7 +66,10 @@ export default function TecnicoTicketsPage() {
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => { setStatusFilter(tab.key); setPage(1); }}
+                  onClick={() => {
+                    setPage(1);
+                    router.push(tab.key ? `/tecnico/tickets?status=${tab.key}` : '/tecnico/tickets');
+                  }}
                   className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                     statusFilter === tab.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                   }`}
@@ -103,11 +116,15 @@ export default function TecnicoTicketsPage() {
                   const sCfg = STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG];
                   const pCfg = PRIORITY_CONFIG[t.priority as keyof typeof PRIORITY_CONFIG];
                   return (
-                    <tr key={t.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                    <tr
+                      key={t.id}
+                      onClick={() => router.push(`/tecnico/tickets/${t.id}`)}
+                      className="border-b hover:bg-gray-50/50 transition-colors cursor-pointer"
+                    >
                       <td className="p-3 pl-6">
-                        <Link href={`/tecnico/tickets/${t.id}`} className="font-mono font-medium text-green-700 hover:underline">
+                        <span className="font-mono font-medium text-green-700">
                           #{t.id}
-                        </Link>
+                        </span>
                       </td>
                       <td className="p-3 text-gray-900 font-medium max-w-[200px] truncate">{t.title}</td>
                       <td className="p-3 text-gray-600">{t.requester?.name || 'N/A'}</td>
