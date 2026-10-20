@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Ticket extends Model
 {
-    use SoftDeletes, LogsActivity;
+    use LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'ticket_number',
@@ -28,6 +28,7 @@ class Ticket extends Model
         'campus',
         'location',
         'escalated_to',
+        'asset_id',
         'escalation_reason',
         'sla_deadline',
         'resolved_at',
@@ -53,7 +54,7 @@ class Ticket extends Model
         static::creating(function (Ticket $ticket) {
             if (empty($ticket->ticket_number)) {
                 $last = static::withTrashed()->max('id') ?? 0;
-                $ticket->ticket_number = 'T-' . str_pad($last + 1, 4, '0', STR_PAD_LEFT);
+                $ticket->ticket_number = 'T-'.str_pad($last + 1, 4, '0', STR_PAD_LEFT);
             }
         });
     }
@@ -68,6 +69,11 @@ class Ticket extends Model
     public function assignedUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function asset(): BelongsTo
+    {
+        return $this->belongsTo(Asset::class);
     }
 
     public function escalatedUser(): BelongsTo
@@ -93,7 +99,7 @@ class Ticket extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title', 'status', 'priority', 'assigned_to', 'campus', 'category'])
+            ->logOnly(['title', 'status', 'priority', 'assigned_to', 'asset_id', 'campus', 'category'])
             ->logOnlyDirty();
     }
 }

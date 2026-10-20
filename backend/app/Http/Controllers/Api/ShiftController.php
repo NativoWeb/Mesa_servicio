@@ -13,9 +13,16 @@ class ShiftController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
+        $request->validate([
+            'date_from' => 'nullable|date',
+            'date_to' => 'nullable|date',
+        ]);
+
         $shifts = Shift::with('technician')
             ->when($request->technician_id, fn ($q, $id) => $q->where('technician_id', $id))
             ->when($request->date, fn ($q, $date) => $q->whereDate('date', $date))
+            ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
+            ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
             ->when($request->status, fn ($q, $status) => $q->where('status', $status))
             ->when($request->campus, fn ($q, $campus) => $q->where('campus', $campus))
             ->orderBy('date')

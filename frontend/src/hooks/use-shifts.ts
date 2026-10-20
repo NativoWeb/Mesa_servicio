@@ -36,3 +36,25 @@ export function useCreateShift() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['shifts'] }),
   });
 }
+
+export function useUpdateShift() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...data }: Partial<Shift> & { id: number }) => {
+      const { data: res } = await api.put(`/shifts/${id}`, data);
+      return res;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['shifts'] }),
+  });
+}
+
+export function useDeleteShift() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const { data } = await api.delete(`/shifts/${id}`);
+      return data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['shifts'] }),
+  });
+}

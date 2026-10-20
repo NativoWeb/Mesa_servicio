@@ -36,6 +36,16 @@ export interface TicketEvent {
   user?: User;
 }
 
+export interface TicketAsset {
+  id: number;
+  asset_code: string;
+  name: string;
+  category: string;
+  serial_number?: string;
+  serial?: string;
+  campus?: string;
+}
+
 export interface Ticket {
   id: number;
   ticket_number: string;
@@ -46,6 +56,7 @@ export interface Ticket {
   status: TicketStatus;
   requester_id: number;
   assigned_to: number | null;
+  asset_id?: number | null;
   campus: string;
   location: string;
   escalated_to: number | null;
@@ -57,6 +68,7 @@ export interface Ticket {
   updated_at: string;
   requester?: User;
   assignee?: User;
+  asset?: TicketAsset | null;
   comments?: Comment[];
   attachments?: Attachment[];
   events?: TicketEvent[];

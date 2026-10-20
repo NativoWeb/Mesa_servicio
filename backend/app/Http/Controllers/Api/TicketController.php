@@ -10,6 +10,7 @@ use App\Services\SlaService;
 use App\Services\TicketAssignmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class TicketController extends Controller
@@ -25,10 +26,10 @@ class TicketController extends Controller
         $user = $request->user();
         $role = $user->roles->first()?->name;
 
-        $tickets = Ticket::with(['requester', 'assignedUser'])
+        $tickets = Ticket::with(['requester', 'assignedUser', 'asset'])
             ->when(in_array($role, ['end_user', 'asset_holder']), fn ($q) => $q->where('requester_id', $user->id))
             ->when($role === 'technician', fn ($q) => $q->where('assigned_to', $user->id))
-            ->when($request->status, fn ($q, $status) => $q->where('status', $status))
+            ->when($request->status, fn ($q, $status) => str_contains($status, ',') ? $q->whereIn('status', explode(',', $status)) : $q->where('status', $status))
             ->when($request->priority, fn ($q, $priority) => $q->where('priority', $priority))
             ->when($request->assigned_to, fn ($q, $id) => $q->where('assigned_to', $id))
             ->when($request->search, fn ($q, $search) => $q->where('title', 'ilike', "%{$search}%"))
@@ -68,6 +69,7 @@ class TicketController extends Controller
             'priority' => 'required|string|in:low,medium,high,critical',
             'campus' => 'nullable|string|max:100',
             'location' => 'nullable|string|max:255',
+            'asset_id' => ['nullable', Rule::exists('assets', 'id')->whereNull('deleted_at')],
         ]);
 
         $validated['requester_id'] = $request->user()->id;
@@ -85,7 +87,7 @@ class TicketController extends Controller
             $this->notificationService->notifyTicketAssignment($ticket->fresh('assignedUser'));
         }
 
-        $ticket = $ticket->fresh(['requester', 'assignedUser']);
+        $ticket = $ticket->fresh(['requester', 'assignedUser', 'asset']);
 
         TicketUpdated::dispatch($ticket, 'created');
 
@@ -101,6 +103,7 @@ class TicketController extends Controller
         $ticket->load([
             'requester',
             'assignedUser',
+            'asset',
             'escalatedUser',
             'comments' => function ($q) use ($role) {
                 if (in_array($role, ['end_user', 'asset_holder'])) {
@@ -129,6 +132,7 @@ class TicketController extends Controller
             'priority' => 'sometimes|string|in:low,medium,high,critical',
             'status' => 'sometimes|string|in:open,in_progress,pending,escalated,closed',
             'assigned_to' => 'nullable|exists:users,id',
+            'asset_id' => ['nullable', Rule::exists('assets', 'id')->whereNull('deleted_at')],
             'campus' => 'nullable|string|max:100',
             'location' => 'nullable|string|max:255',
             'escalated_to' => 'nullable|exists:users,id',
@@ -151,7 +155,7 @@ class TicketController extends Controller
         }
 
         $ticket->update($validated);
-        $ticket = $ticket->fresh(['requester', 'assignedUser']);
+        $ticket = $ticket->fresh(['requester', 'assignedUser', 'asset']);
 
         // Notificar cambio de estado
         if (isset($validated['status']) && $validated['status'] !== $oldStatus) {

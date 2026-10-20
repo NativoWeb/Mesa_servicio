@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
-import { FileText, MapPin, Building2, Tag, User, Paperclip } from 'lucide-react';
+import { FileText, MapPin, Building2, Tag, User, Paperclip, Monitor } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth-store';
 import { useComments, useCreateComment } from '@/hooks/use-comments';
@@ -63,6 +63,8 @@ interface TicketDetail {
   campus: string;
   location: string;
   created_at: string;
+  asset_id?: number | null;
+  asset?: { id: number; asset_code: string; name: string; category: string; serial_number?: string; serial?: string; campus?: string } | null;
   requester?: { name: string };
   assigned_user?: { name: string; role?: string } | null;
   comments?: { id: number; body: string; user: { name: string }; created_at: string; is_internal: boolean }[];
@@ -273,6 +275,28 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
               ))}
             </div>
           </div>
+
+          {/* Linked Asset */}
+          {ticket.asset && (
+            <div className="bg-white rounded-xl border p-5">
+              <h3 className="font-semibold text-gray-900 text-sm mb-3 flex items-center gap-2">
+                <Monitor className="w-4 h-4 text-green-700" />
+                Equipo Vinculado
+              </h3>
+              <div className="space-y-1.5">
+                <p className="text-sm font-medium text-gray-900">
+                  <span className="font-mono text-green-700">[{ticket.asset.asset_code}]</span> {ticket.asset.name}
+                </p>
+                {(ticket.asset.serial_number || ticket.asset.serial) && (
+                  <p className="text-xs text-gray-500">Serial: {ticket.asset.serial_number || ticket.asset.serial}</p>
+                )}
+                {ticket.asset.campus && (
+                  <p className="text-xs text-gray-500">Sede: {ticket.asset.campus}</p>
+                )}
+                <p className="text-xs text-gray-400 capitalize">{ticket.asset.category}</p>
+              </div>
+            </div>
+          )}
 
           {/* Attachments */}
           <div className="bg-white rounded-xl border p-5">

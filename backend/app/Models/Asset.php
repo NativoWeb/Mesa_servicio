@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Asset extends Model
 {
-    use SoftDeletes, LogsActivity;
+    use LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'asset_code',
@@ -56,7 +56,7 @@ class Asset extends Model
             if (empty($asset->asset_code)) {
                 $prefix = strtoupper(substr($asset->category?->value ?? 'OTH', 0, 3));
                 $last = static::withTrashed()->max('id') ?? 0;
-                $asset->asset_code = 'UTS-' . $prefix . '-' . str_pad($last + 1, 4, '0', STR_PAD_LEFT);
+                $asset->asset_code = 'UTS-'.$prefix.'-'.str_pad($last + 1, 4, '0', STR_PAD_LEFT);
             }
         });
     }
@@ -67,6 +67,11 @@ class Asset extends Model
     public function holder(): BelongsTo
     {
         return $this->belongsTo(User::class, 'holder_id');
+    }
+
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class);
     }
 
     public function maintenances(): HasMany

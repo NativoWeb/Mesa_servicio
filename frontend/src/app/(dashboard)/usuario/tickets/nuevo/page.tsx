@@ -6,6 +6,7 @@ import { AlertTriangle, ClipboardList, Settings, CheckCircle, Paperclip } from '
 import { CAMPUSES } from '@/lib/constants';
 import api from '@/lib/api';
 import { toast } from 'sonner';
+import { AssetSearchInput } from '@/components/tickets/asset-search-input';
 
 type TicketType = 'incident' | 'request' | 'requirement' | null;
 type Priority = 'low' | 'medium' | 'high' | 'critical';
@@ -36,6 +37,9 @@ export default function NuevoTicketPage() {
   const [description, setDescription] = useState('');
   const [campus, setCampus] = useState('');
   const [location, setLocation] = useState('');
+  const [selectedAsset, setSelectedAsset] = useState<{
+    id: number; asset_code: string; name: string; category: string; serial_number?: string; campus?: string;
+  } | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string | null>(null);
@@ -59,6 +63,7 @@ export default function NuevoTicketPage() {
         campus,
         location,
         type,
+        asset_id: selectedAsset?.id ?? null,
       });
 
       // Subir archivos adjuntos si hay
@@ -201,10 +206,20 @@ export default function NuevoTicketPage() {
           </div>
         </div>
 
-        {/* 3. Location */}
+        {/* 3. Related Asset */}
         <div className="bg-white rounded-xl border p-6">
           <h2 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
             <span className="w-6 h-6 bg-green-800 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+            Equipo Relacionado
+          </h2>
+          <p className="text-xs text-gray-400 mb-4">Si tu solicitud involucra un equipo registrado, seleccionalo para agilizar la atencion.</p>
+          <AssetSearchInput value={selectedAsset} onChange={setSelectedAsset} />
+        </div>
+
+        {/* 4. Location */}
+        <div className="bg-white rounded-xl border p-6">
+          <h2 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
+            <span className="w-6 h-6 bg-green-800 text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
             Ubicación Física
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -227,10 +242,10 @@ export default function NuevoTicketPage() {
           </div>
         </div>
 
-        {/* 4. Attachments */}
+        {/* 5. Attachments */}
         <div className="bg-white rounded-xl border p-6">
           <h2 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
-            <span className="w-6 h-6 bg-green-800 text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
+            <span className="w-6 h-6 bg-green-800 text-white rounded-full flex items-center justify-center text-xs font-bold">5</span>
             Adjuntos y Evidencia
           </h2>
           <div className="mt-4">
