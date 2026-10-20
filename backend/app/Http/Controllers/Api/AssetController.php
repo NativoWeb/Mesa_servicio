@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AssetController extends Controller
 {
@@ -56,8 +57,15 @@ class AssetController extends Controller
         return response()->json($asset->load('holder'), 201);
     }
 
-    public function show(Asset $asset): JsonResponse
+    public function show(Request $request, Asset $asset): JsonResponse
     {
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
+        if ($role === 'asset_holder' && $asset->holder_id !== $user->id) {
+            throw new AccessDeniedHttpException('No tienes acceso a este activo.');
+        }
+
         return response()->json(
             $asset->load(['holder', 'maintenances.technician', 'comments.user', 'attachments'])
         );
@@ -70,7 +78,7 @@ class AssetController extends Controller
             'category' => 'sometimes|string|in:pc,laptop,printer,server,router,switch,monitor,projector,other',
             'brand' => 'nullable|string|max:100',
             'model' => 'nullable|string|max:100',
-            'serial' => 'nullable|string|max:100|unique:assets,serial,' . $asset->id,
+            'serial' => 'nullable|string|max:100|unique:assets,serial,'.$asset->id,
             'purchase_date' => 'nullable|date',
             'campus' => 'nullable|string|max:100',
             'floor' => 'nullable|string|max:50',

@@ -7,6 +7,7 @@ use App\Models\Maintenance;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class MaintenanceController extends Controller
 {
@@ -16,7 +17,11 @@ class MaintenanceController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
         $maintenances = Maintenance::with(['asset', 'technician'])
+            ->when($role === 'asset_holder', fn ($q) => $q->whereHas('asset', fn ($a) => $a->where('holder_id', $user->id)))
             ->when($request->asset_id, fn ($q, $id) => $q->where('asset_id', $id))
             ->when($request->type, fn ($q, $type) => $q->where('type', $type))
             ->when($request->technician_id, fn ($q, $id) => $q->where('technician_id', $id))
@@ -45,7 +50,7 @@ class MaintenanceController extends Controller
         $maintenance = Maintenance::create($validated);
 
         // Actualizar próximo mantenimiento del activo
-        if (!empty($validated['next_maintenance_date'])) {
+        if (! empty($validated['next_maintenance_date'])) {
             $maintenance->asset->update(['next_maintenance' => $validated['next_maintenance_date']]);
         }
 
@@ -57,8 +62,15 @@ class MaintenanceController extends Controller
         return response()->json($maintenance->load(['asset', 'technician']), 201);
     }
 
-    public function show(Maintenance $maintenance): JsonResponse
+    public function show(Request $request, Maintenance $maintenance): JsonResponse
     {
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
+        if ($role === 'asset_holder' && $maintenance->asset?->holder_id !== $user->id) {
+            throw new AccessDeniedHttpException('No tienes acceso a este mantenimiento.');
+        }
+
         return response()->json(
             $maintenance->load(['asset', 'technician', 'comments.user', 'attachments'])
         );
@@ -81,7 +93,7 @@ class MaintenanceController extends Controller
         $maintenance->update($validated);
 
         // Actualizar próximo mantenimiento del activo si cambió
-        if (!empty($validated['next_maintenance_date'])) {
+        if (! empty($validated['next_maintenance_date'])) {
             $maintenance->asset->update(['next_maintenance' => $validated['next_maintenance_date']]);
         }
 

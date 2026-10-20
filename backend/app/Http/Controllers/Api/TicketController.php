@@ -26,7 +26,7 @@ class TicketController extends Controller
         $role = $user->roles->first()?->name;
 
         $tickets = Ticket::with(['requester', 'assignedUser'])
-            ->when($role === 'end_user', fn ($q) => $q->where('requester_id', $user->id))
+            ->when(in_array($role, ['end_user', 'asset_holder']), fn ($q) => $q->where('requester_id', $user->id))
             ->when($role === 'technician', fn ($q) => $q->where('assigned_to', $user->id))
             ->when($request->status, fn ($q, $status) => $q->where('status', $status))
             ->when($request->priority, fn ($q, $priority) => $q->where('priority', $priority))
@@ -48,7 +48,7 @@ class TicketController extends Controller
             return;
         }
 
-        if ($role === 'end_user' && $ticket->requester_id !== $user->id) {
+        if (in_array($role, ['end_user', 'asset_holder']) && $ticket->requester_id !== $user->id) {
             throw new AccessDeniedHttpException('No tienes acceso a este ticket.');
         }
 
@@ -94,9 +94,23 @@ class TicketController extends Controller
     {
         $this->authorizeAccess($request, $ticket);
 
-        return response()->json(
-            $ticket->load(['requester', 'assignedUser', 'escalatedUser', 'comments.user', 'attachments', 'events.user'])
-        );
+        $role = $request->user()->roles->first()?->name;
+
+        $ticket->load([
+            'requester',
+            'assignedUser',
+            'escalatedUser',
+            'comments' => function ($q) use ($role) {
+                if (in_array($role, ['end_user', 'asset_holder'])) {
+                    $q->where('is_internal', false);
+                }
+                $q->with('user');
+            },
+            'attachments',
+            'events.user',
+        ]);
+
+        return response()->json($ticket);
     }
 
     public function update(Request $request, Ticket $ticket): JsonResponse
@@ -126,6 +140,14 @@ class TicketController extends Controller
 
         $oldStatus = $ticket->status->value;
 
+        if (isset($validated['status'])) {
+            if ($validated['status'] === 'closed' && $oldStatus !== 'closed') {
+                $validated['closed_at'] = now();
+            } elseif ($validated['status'] !== 'closed' && $oldStatus === 'closed') {
+                $validated['closed_at'] = null;
+            }
+        }
+
         $ticket->update($validated);
         $ticket = $ticket->fresh(['requester', 'assignedUser']);
 
@@ -151,7 +173,12 @@ class TicketController extends Controller
 
     public function destroy(Request $request, Ticket $ticket): JsonResponse
     {
-        $this->authorizeAccess($request, $ticket);
+        $role = $request->user()->roles->first()?->name;
+
+        if (! in_array($role, ['admin', 'it_leader'])) {
+            throw new AccessDeniedHttpException('Solo administradores y líderes TI pueden eliminar tickets.');
+        }
+
         $ticket->delete();
 
         return response()->json(['message' => 'Ticket eliminado correctamente.']);

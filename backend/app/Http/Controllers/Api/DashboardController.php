@@ -71,6 +71,7 @@ class DashboardController extends Controller
         // Datos extra según rol
         if (in_array($role, ['admin', 'it_leader'])) {
             $base['tickets_by_priority'] = Ticket::select('priority', DB::raw('count(*) as total'))
+                ->where('status', '!=', 'closed')
                 ->groupBy('priority')
                 ->pluck('total', 'priority');
 
@@ -105,6 +106,7 @@ class DashboardController extends Controller
                 ->get()
                 ->filter(function ($t) {
                     $remaining = $this->slaService->remainingMinutes($t);
+
                     return $remaining !== null && $remaining <= 60 && $remaining > 0;
                 })
                 ->count();
@@ -156,6 +158,7 @@ class DashboardController extends Controller
                 'resueltos' => Ticket::where('status', 'closed')->whereDate('closed_at', $date)->count(),
             ];
         }
+
         return $days;
     }
 

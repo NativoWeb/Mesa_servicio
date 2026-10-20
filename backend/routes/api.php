@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\AttachmentController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\AttachmentController;
+use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\MaintenanceController;
@@ -11,11 +12,10 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\ShiftController;
 use App\Http\Controllers\Api\SlaConfigController;
-use App\Http\Controllers\Api\TicketController;
-use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\SystemConfigController;
 use App\Http\Controllers\Api\TenantBrandingController;
 use App\Http\Controllers\Api\TenantController;
-use App\Http\Controllers\Api\SystemConfigController;
+use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -119,9 +119,15 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
-    // --- Admin + IT Leader + Technician + Inventory Manager: mantenimientos ---
+    // --- Mantenimientos: CRUD para admin/lider/técnico/inventario, lectura para asset_holder ---
+    Route::middleware(['role:admin|it_leader|technician|inventory_manager|asset_holder'])->group(function () {
+        Route::get('maintenances', [MaintenanceController::class, 'index']);
+        Route::get('maintenances/{maintenance}', [MaintenanceController::class, 'show']);
+    });
     Route::middleware(['role:admin|it_leader|technician|inventory_manager'])->group(function () {
-        Route::apiResource('maintenances', MaintenanceController::class);
+        Route::post('maintenances', [MaintenanceController::class, 'store']);
+        Route::put('maintenances/{maintenance}', [MaintenanceController::class, 'update']);
+        Route::delete('maintenances/{maintenance}', [MaintenanceController::class, 'destroy']);
     });
 
     // Turnos: solo lectura para técnicos

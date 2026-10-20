@@ -8,6 +8,22 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useComments, useCreateComment } from '@/hooks/use-comments';
 import { toast as sonnerToast } from 'sonner';
 
+async function handleDownload(attachmentId: number, fileName: string) {
+  try {
+    const res = await api.get(`/attachments/${attachmentId}/download`, { responseType: 'blob' });
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch {
+    sonnerToast.error('Error al descargar el archivo');
+  }
+}
+
 const statusLabelMap: Record<string, string> = {
   open: 'Abierto',
   in_progress: 'En Progreso',
@@ -266,10 +282,16 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
             ) : (
               <div className="space-y-2">
                 {attachments.map((a) => (
-                  <div key={a.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer transition-colors">
+                  <div key={a.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 text-sm hover:bg-gray-100 transition-colors">
                     <Paperclip className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                     <span className="text-gray-700 truncate flex-1">{a.file_name}</span>
                     {a.file_size && <span className="text-[11px] text-gray-400">{Math.round(a.file_size / 1024)} KB</span>}
+                    <button
+                      onClick={() => handleDownload(a.id, a.file_name)}
+                      className="text-green-700 hover:text-green-900 text-xs font-medium shrink-0"
+                    >
+                      Descargar
+                    </button>
                   </div>
                 ))}
               </div>

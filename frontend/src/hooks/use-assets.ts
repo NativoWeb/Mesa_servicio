@@ -19,8 +19,8 @@ export function useAsset(id: number) {
   return useQuery({
     queryKey: ['assets', id],
     queryFn: async () => {
-      const { data } = await api.get<{ data: Asset }>(`/assets/${id}`);
-      return data.data;
+      const { data } = await api.get(`/assets/${id}`);
+      return ((data as { data?: Asset }).data ?? data) as Asset;
     },
     enabled: !!id,
   });

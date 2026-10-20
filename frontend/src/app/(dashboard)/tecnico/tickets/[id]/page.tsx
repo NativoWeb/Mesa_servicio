@@ -5,9 +5,26 @@ import Link from 'next/link';
 import { useTicket, useUpdateTicket } from '@/hooks/use-tickets';
 import { useComments, useCreateComment } from '@/hooks/use-comments';
 import { STATUS_CONFIG, PRIORITY_CONFIG } from '@/lib/constants';
+import api from '@/lib/api';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+
+async function handleDownload(attachmentId: number, fileName: string) {
+  try {
+    const res = await api.get(`/attachments/${attachmentId}/download`, { responseType: 'blob' });
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch {
+    toast.error('Error al descargar el archivo');
+  }
+}
 
 export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -19,6 +36,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
 
   const [selectedStatus, setSelectedStatus] = useState('');
   const [comment, setComment] = useState('');
+  const [isInternal, setIsInternal] = useState(true);
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [closeNotes, setCloseNotes] = useState('');
   const [confirmRestore, setConfirmRestore] = useState(false);
@@ -61,6 +79,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
         status: 'closed',
         closed_at: new Date().toISOString(),
       });
+      await createComment.mutateAsync({ body: closeNotes, is_internal: false });
       toast.success('Ticket cerrado correctamente');
       setShowCloseModal(false);
     } catch {
@@ -198,26 +217,42 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
               );
             })()}
 
-            {/* Comment input */}
-            <h3 className="font-semibold text-gray-900 text-sm mb-3">Agregar nota</h3>
+            <h3 className="font-semibold text-gray-900 text-sm mb-3">Agregar comentario</h3>
+            <div className="mb-2">
+              <button
+                type="button"
+                onClick={() => setIsInternal(!isInternal)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                  isInternal
+                    ? 'bg-yellow-50 border-yellow-300 text-yellow-800'
+                    : 'bg-blue-50 border-blue-300 text-blue-800'
+                }`}
+              >
+                {isInternal ? (
+                  <><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg> Nota interna</>
+                ) : (
+                  <><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg> Respuesta al usuario</>
+                )}
+              </button>
+            </div>
             <div className="flex gap-2">
               <input
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && comment.trim()) {
-                    createComment.mutateAsync({ body: comment, is_internal: true })
+                    createComment.mutateAsync({ body: comment, is_internal: isInternal })
                       .then(() => { setComment(''); toast.success('Comentario enviado'); })
                       .catch(() => toast.error('Error al enviar comentario'));
                   }
                 }}
-                placeholder="Escribe una respuesta o nota tecnica..."
+                placeholder={isInternal ? 'Escribe una nota tecnica interna...' : 'Escribe una respuesta visible para el usuario...'}
                 className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20"
               />
               <button
                 onClick={() => {
                   if (!comment.trim()) return;
-                  createComment.mutateAsync({ body: comment, is_internal: true })
+                  createComment.mutateAsync({ body: comment, is_internal: isInternal })
                     .then(() => { setComment(''); toast.success('Comentario enviado'); })
                     .catch(() => toast.error('Error al enviar comentario'));
                 }}
@@ -261,6 +296,25 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
                   <p className="text-sm font-medium text-gray-900">{ticket.assignee.name}</p>
                   <p className="text-xs text-gray-500">{ticket.assignee.campus}</p>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {ticket.attachments && ticket.attachments.length > 0 && (
+            <div className="bg-white rounded-xl border p-5">
+              <h3 className="font-semibold text-gray-900 text-sm mb-3">Adjuntos ({ticket.attachments.length})</h3>
+              <div className="space-y-2">
+                {ticket.attachments.map((a) => (
+                  <div key={a.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                    <span className="text-gray-700 truncate flex-1">{a.file_name}</span>
+                    <button
+                      onClick={() => handleDownload(a.id, a.file_name)}
+                      className="text-green-700 hover:text-green-900 text-xs font-medium shrink-0"
+                    >
+                      Descargar
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
           )}

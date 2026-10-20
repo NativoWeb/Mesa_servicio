@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useTicketsReport, useAssetsReport, useMaintenancesReport } from '@/hooks/use-reports';
 import { STATUS_CONFIG, PRIORITY_CONFIG, ASSET_STATUS_CONFIG } from '@/lib/constants';
+import api from '@/lib/api';
+import { toast } from 'sonner';
 
 type ReportType = 'tickets' | 'assets' | 'maintenances';
 
@@ -13,8 +15,30 @@ const MAINTENANCE_TYPE_LABELS: Record<string, string> = {
   cleaning: 'Limpieza',
 };
 
+async function handleExport(format: 'pdf' | 'excel', type: ReportType) {
+  try {
+    const res = await api.get(`/reports/export/${format}`, {
+      params: { type },
+      responseType: 'blob',
+    });
+    const ext = format === 'excel' ? 'xlsx' : 'pdf';
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `reporte-${type}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success(`Reporte ${format.toUpperCase()} descargado`);
+  } catch {
+    toast.error(`Error al exportar reporte ${format.toUpperCase()}`);
+  }
+}
+
 export default function LiderReportesPage() {
   const [activeReport, setActiveReport] = useState<ReportType>('tickets');
+  const [exporting, setExporting] = useState<string | null>(null);
 
   const { data: ticketsReport, isLoading: loadingTickets } = useTicketsReport();
   const { data: assetsReport, isLoading: loadingAssets } = useAssetsReport();
@@ -45,7 +69,7 @@ export default function LiderReportesPage() {
       <h1 className="text-2xl font-bold text-gray-900">Reportes y Metricas</h1>
       <p className="text-gray-500 mb-6">Datos en tiempo real de la Mesa de Servicio e Inventario TI</p>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap items-center gap-2 mb-6">
         {reports.map(r => (
           <button
             key={r.key}
@@ -55,6 +79,24 @@ export default function LiderReportesPage() {
             {r.title}
           </button>
         ))}
+        <div className="ml-auto flex gap-2">
+          <button
+            onClick={async () => { setExporting('pdf'); await handleExport('pdf', activeReport); setExporting(null); }}
+            disabled={exporting === 'pdf'}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium border border-red-200 text-red-700 bg-red-50 rounded-lg hover:bg-red-100 disabled:opacity-50 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            {exporting === 'pdf' ? 'Exportando...' : 'Exportar PDF'}
+          </button>
+          <button
+            onClick={async () => { setExporting('excel'); await handleExport('excel', activeReport); setExporting(null); }}
+            disabled={exporting === 'excel'}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium border border-green-200 text-green-700 bg-green-50 rounded-lg hover:bg-green-100 disabled:opacity-50 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            {exporting === 'excel' ? 'Exportando...' : 'Exportar Excel'}
+          </button>
+        </div>
       </div>
 
       {activeReport === 'tickets' && (

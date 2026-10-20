@@ -10,6 +10,7 @@ use App\Models\Ticket;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AttachmentController extends Controller
 {
@@ -22,9 +23,9 @@ class AttachmentController extends Controller
      * Tipos MIME permitidos para archivos adjuntos.
      */
     private const ALLOWED_MIMES = 'image/jpeg,image/png,image/gif,application/pdf,'
-        . 'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,'
-        . 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,'
-        . 'text/csv,text/plain,application/zip';
+        .'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,'
+        .'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,'
+        .'text/csv,text/plain,application/zip';
 
     private function resolveAttachable(string $type, int $id)
     {
@@ -35,9 +36,55 @@ class AttachmentController extends Controller
         };
     }
 
+    private function authorizeParentAccess(Request $request, $parent): void
+    {
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
+        if (in_array($role, ['admin', 'it_leader'])) {
+            return;
+        }
+
+        if ($parent instanceof Ticket) {
+            if ($role === 'inventory_manager') {
+                return;
+            }
+            if (in_array($role, ['end_user', 'asset_holder']) && $parent->requester_id === $user->id) {
+                return;
+            }
+            if ($role === 'technician' && ($parent->assigned_to === $user->id || $parent->requester_id === $user->id)) {
+                return;
+            }
+            throw new AccessDeniedHttpException('No tienes acceso a este recurso.');
+        }
+
+        if ($parent instanceof Asset) {
+            if (in_array($role, ['inventory_manager', 'technician'])) {
+                return;
+            }
+            if ($role === 'asset_holder' && $parent->holder_id === $user->id) {
+                return;
+            }
+            throw new AccessDeniedHttpException('No tienes acceso a este recurso.');
+        }
+
+        if ($parent instanceof Maintenance) {
+            if (in_array($role, ['inventory_manager', 'technician'])) {
+                return;
+            }
+            if ($role === 'asset_holder' && $parent->asset?->holder_id === $user->id) {
+                return;
+            }
+            throw new AccessDeniedHttpException('No tienes acceso a este recurso.');
+        }
+
+        throw new AccessDeniedHttpException('No tienes acceso a este recurso.');
+    }
+
     public function index(Request $request, string $type, int $id): JsonResponse
     {
         $attachable = $this->resolveAttachable($type, $id);
+        $this->authorizeParentAccess($request, $attachable);
 
         $attachments = $attachable->attachments()
             ->with('user')
@@ -54,14 +101,15 @@ class AttachmentController extends Controller
                 'required',
                 'file',
                 'max:10240', // 10 MB
-                'mimes:' . self::ALLOWED_EXTENSIONS,
+                'mimes:'.self::ALLOWED_EXTENSIONS,
             ],
         ], [
             'file.max' => 'El archivo no debe superar los 10 MB.',
-            'file.mimes' => 'Tipo de archivo no permitido. Extensiones válidas: ' . self::ALLOWED_EXTENSIONS . '.',
+            'file.mimes' => 'Tipo de archivo no permitido. Extensiones válidas: '.self::ALLOWED_EXTENSIONS.'.',
         ]);
 
         $attachable = $this->resolveAttachable($type, $id);
+        $this->authorizeParentAccess($request, $attachable);
 
         $file = $request->file('file');
 
@@ -88,8 +136,10 @@ class AttachmentController extends Controller
     /**
      * Descargar un archivo adjunto.
      */
-    public function download(Attachment $attachment)
+    public function download(Request $request, Attachment $attachment)
     {
+        $this->authorizeParentAccess($request, $attachment->attachable);
+
         if (! Storage::disk('attachments')->exists($attachment->file_path)) {
             return response()->json(['message' => 'Archivo no encontrado.'], 404);
         }
@@ -100,11 +150,20 @@ class AttachmentController extends Controller
         );
     }
 
-    public function destroy(Attachment $attachment): JsonResponse
+    public function destroy(Request $request, Attachment $attachment): JsonResponse
     {
+        $this->authorizeParentAccess($request, $attachment->attachable);
+
+        $user = $request->user();
+        $role = $user->roles->first()?->name;
+
+        if ($attachment->user_id !== $user->id && $role !== 'admin') {
+            throw new AccessDeniedHttpException('Solo el autor o un administrador puede eliminar este adjunto.');
+        }
+
         Storage::disk('attachments')->delete($attachment->file_path);
         $attachment->delete();
 
-        return response()->json(['message' => 'Attachment deleted'], 200);
+        return response()->json(['message' => 'Adjunto eliminado correctamente.']);
     }
 }

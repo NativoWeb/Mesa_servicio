@@ -9,6 +9,25 @@ import { CAMPUSES } from '@/lib/constants';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 
+function Section({ num, title, desc, children, isOpen, onToggle }: {
+  num: number; title: string; desc: string; children: React.ReactNode;
+  isOpen: boolean; onToggle: () => void;
+}) {
+  return (
+    <div className="bg-white rounded-xl border overflow-hidden">
+      <button onClick={onToggle} className="w-full flex items-center gap-3 p-5 text-left hover:bg-gray-50/50 transition-colors">
+        <span className="w-7 h-7 bg-green-800 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">{num}</span>
+        <div className="flex-1">
+          <h2 className="font-semibold text-gray-900 text-sm">{title}</h2>
+          <p className="text-xs text-gray-500">{desc}</p>
+        </div>
+        <span className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}>&#x25BE;</span>
+      </button>
+      {isOpen && <div className="px-5 pb-5 pt-0 border-t">{children}</div>}
+    </div>
+  );
+}
+
 export default function NuevoEquipoPage() {
   const router = useRouter();
   const createAsset = useCreateAsset();
@@ -47,7 +66,6 @@ export default function NuevoEquipoPage() {
         ...(form.holder_id ? { holder_id: Number(form.holder_id) } : {}),
       } as any);
 
-      // Subir archivos adjuntos si hay
       if (files.length > 0) {
         const assetId = newAsset.id;
         for (let i = 0; i < files.length; i++) {
@@ -71,19 +89,7 @@ export default function NuevoEquipoPage() {
     }
   };
 
-  const Section = ({ num, title, desc, children }: { num: number; title: string; desc: string; children: React.ReactNode }) => (
-    <div className="bg-white rounded-xl border overflow-hidden">
-      <button onClick={() => setOpenSection(openSection === num ? 0 : num)} className="w-full flex items-center gap-3 p-5 text-left hover:bg-gray-50/50 transition-colors">
-        <span className="w-7 h-7 bg-green-800 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">{num}</span>
-        <div className="flex-1">
-          <h2 className="font-semibold text-gray-900 text-sm">{title}</h2>
-          <p className="text-xs text-gray-500">{desc}</p>
-        </div>
-        <span className={`text-gray-400 transition-transform ${openSection === num ? 'rotate-180' : ''}`}>&#x25BE;</span>
-      </button>
-      {openSection === num && <div className="px-5 pb-5 pt-0 border-t">{children}</div>}
-    </div>
-  );
+  const toggleSection = (num: number) => setOpenSection(openSection === num ? 0 : num);
 
   const inputClass = "w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600";
 
@@ -98,7 +104,7 @@ export default function NuevoEquipoPage() {
         <h1 className="text-2xl font-bold text-gray-900">Registrar nuevo equipo</h1>
       </div>
 
-      <Section num={1} title="Identificación" desc="Datos básicos y seriales únicos del activo">
+      <Section num={1} title="Identificación" desc="Datos básicos y seriales únicos del activo" isOpen={openSection === 1} onToggle={() => toggleSection(1)}>
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -130,7 +136,7 @@ export default function NuevoEquipoPage() {
         </div>
       </Section>
 
-      <Section num={2} title="Adquisición" desc="Información contable y de proveedor">
+      <Section num={2} title="Adquisición" desc="Información contable y de proveedor" isOpen={openSection === 2} onToggle={() => toggleSection(2)}>
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -145,7 +151,7 @@ export default function NuevoEquipoPage() {
         </div>
       </Section>
 
-      <Section num={3} title="Ubicación" desc="Sede y espacio físico asignado">
+      <Section num={3} title="Ubicación" desc="Sede y espacio físico asignado" isOpen={openSection === 3} onToggle={() => toggleSection(3)}>
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -167,7 +173,7 @@ export default function NuevoEquipoPage() {
         </div>
       </Section>
 
-      <Section num={4} title="Responsabilidad" desc="Cuentadante y estado actual del activo">
+      <Section num={4} title="Responsabilidad" desc="Cuentadante y estado actual del activo" isOpen={openSection === 4} onToggle={() => toggleSection(4)}>
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -188,7 +194,7 @@ export default function NuevoEquipoPage() {
         </div>
       </Section>
 
-      <Section num={5} title="Información adicional" desc="Notas">
+      <Section num={5} title="Información adicional" desc="Notas" isOpen={openSection === 5} onToggle={() => toggleSection(5)}>
         <div className="space-y-4 mt-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Notas</label>
@@ -197,7 +203,7 @@ export default function NuevoEquipoPage() {
         </div>
       </Section>
 
-      <Section num={6} title="Adjuntos" desc="Fotos, facturas, actas de entrega">
+      <Section num={6} title="Adjuntos" desc="Fotos, facturas, actas de entrega" isOpen={openSection === 6} onToggle={() => toggleSection(6)}>
         <div className="space-y-4 mt-4">
           <div
             onClick={() => fileRef.current?.click()}
