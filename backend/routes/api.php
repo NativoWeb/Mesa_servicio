@@ -112,11 +112,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('export/pdf', [ReportController::class, 'exportPdf']);
         });
 
-        // Turnos: CRUD completo
+        // Turnos: CRUD para admin y líder
         Route::prefix('shifts')->group(function () {
-            Route::get('/', [ShiftController::class, 'index']);
             Route::post('/', [ShiftController::class, 'store']);
-            Route::get('{shift}', [ShiftController::class, 'show']);
             Route::put('{shift}', [ShiftController::class, 'update']);
             Route::delete('{shift}', [ShiftController::class, 'destroy']);
         });
@@ -133,8 +131,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('maintenances/{maintenance}', [MaintenanceController::class, 'destroy']);
     });
 
-    // Turnos: solo lectura para técnicos
-    Route::middleware(['role:technician'])->group(function () {
+    // Turnos: lectura para admin, líder y técnicos
+    Route::middleware(['role:admin|it_leader|technician'])->group(function () {
         Route::get('shifts', [ShiftController::class, 'index']);
         Route::get('shifts/{shift}', [ShiftController::class, 'show']);
     });

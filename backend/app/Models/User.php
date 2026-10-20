@@ -17,6 +17,8 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens, HasRoles, LogsActivity;
 
+    protected string $guard_name = 'web';
+
     /**
      * @var list<string>
      */
