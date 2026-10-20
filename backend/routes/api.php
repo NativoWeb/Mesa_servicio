@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\MaintenanceController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\ShiftController;
 use App\Http\Controllers\Api\SlaConfigController;
 use App\Http\Controllers\Api\SystemConfigController;
@@ -80,6 +81,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('system-configs', [SystemConfigController::class, 'update']);
         Route::get('audit-logs', [AuditLogController::class, 'index']);
         Route::apiResource('sla-configs', SlaConfigController::class)->only(['index', 'store', 'update']);
+        Route::apiResource('roles', RoleController::class);
+        Route::get('permissions', [RoleController::class, 'permissions']);
     });
 
     // --- Admin + IT Leader + Inventory Manager: lectura de usuarios ---

@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             Role::firstOrCreate(['name' => $role]);
         }
 
+        $this->call(PermissionSeeder::class);
+
         $users = [
             [
                 'name' => 'Admin Sistema',
@@ -92,7 +94,7 @@ class DatabaseSeeder extends Seeder
 
         // --- Tenant UTS por defecto (crear o actualizar) ---
         $existingTenant = Tenant::find('uts');
-        if (!$existingTenant) {
+        if (! $existingTenant) {
             $tenant = Tenant::create([
                 'id' => 'uts',
                 'name' => 'Unidades Tecnológicas de Santander',

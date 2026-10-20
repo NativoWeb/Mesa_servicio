@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore, ROLE_LABELS, getRoleRoute } from "@/stores/auth-store";
 import { useTenantStore } from "@/stores/tenant-store";
 import { UserRole } from "@/types/user";
@@ -208,6 +208,7 @@ const ITEM_FEATURE_MAP: Record<string, keyof TenantFeatures> = {
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user } = useAuthStore();
   const config = useTenantStore((s) => s.config);
   const isFeatureEnabled = useTenantStore((s) => s.isFeatureEnabled);
@@ -317,9 +318,15 @@ export function AppSidebar() {
             <p className="text-xs font-medium truncate">{user?.name}</p>
             <p className="text-[10px] text-white/60 truncate">{roleLabel}</p>
           </div>
-          <button className="text-white/40 hover:text-white transition-colors p-1">
-            <Settings className="w-4 h-4" />
-          </button>
+          {role === 'admin' && (
+            <button
+              onClick={() => router.push('/admin/configuracion')}
+              className="text-white/40 hover:text-white transition-colors p-1"
+              title="Configuracion"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </aside>
