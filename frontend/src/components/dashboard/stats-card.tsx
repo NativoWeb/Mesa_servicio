@@ -7,20 +7,20 @@ interface StatsCardProps {
   color?: string;
 }
 
-export function StatsCard({ label, value, icon, trend, trendUp, color = "text-gray-900" }: StatsCardProps) {
+export function StatsCard({ label, value, icon, trend, trendUp, color = "text-[var(--ink)]" }: StatsCardProps) {
   return (
-    <div className="bg-white rounded-xl border p-4 hover:shadow-sm transition-shadow">
+    <div className="bg-[var(--surface)] rounded-xl border p-4 hover:shadow-[var(--sh-1)] transition-shadow">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wider">{label}</p>
+          <p className="text-xs text-[var(--muted)] uppercase tracking-wider">{label}</p>
           <p className={`text-2xl font-bold mt-1 ${color}`}>{value}</p>
           {trend && (
-            <p className={`text-xs mt-1 ${trendUp ? "text-green-600" : "text-red-600"}`}>
+            <p className={`text-xs mt-1 ${trendUp ? "text-[var(--selva-500)]" : "text-[var(--crit)]"}`}>
               {trendUp ? "↑" : "↓"} {trend}
             </p>
           )}
         </div>
-        {icon && <div className="text-gray-400">{icon}</div>}
+        {icon && <div className="text-[var(--faint)]">{icon}</div>}
       </div>
     </div>
   );

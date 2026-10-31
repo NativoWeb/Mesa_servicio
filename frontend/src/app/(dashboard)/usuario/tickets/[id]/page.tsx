@@ -39,17 +39,17 @@ const priorityLabelMap: Record<string, string> = {
 };
 
 const statusColorMap: Record<string, string> = {
-  open: 'bg-yellow-100 text-yellow-800',
-  in_progress: 'bg-blue-100 text-blue-800',
-  pending: 'bg-orange-100 text-orange-800',
-  closed: 'bg-green-100 text-green-800',
+  open: 'bg-[var(--med-bg)] text-[var(--med)]',
+  in_progress: 'bg-[var(--info-bg)] text-[var(--info)]',
+  pending: 'bg-[var(--high-bg)] text-[var(--high)]',
+  closed: 'bg-[var(--low-bg)] text-[var(--selva-500)]',
 };
 
 const priorityColorMap: Record<string, string> = {
-  low: 'bg-slate-100 text-slate-800',
-  medium: 'bg-yellow-100 text-yellow-800',
-  high: 'bg-orange-100 text-orange-800',
-  critical: 'bg-red-100 text-red-800',
+  low: 'bg-[var(--surface-3)] text-[var(--ink-2)]',
+  medium: 'bg-[var(--med-bg)] text-[var(--med)]',
+  high: 'bg-[var(--high-bg)] text-[var(--high)]',
+  critical: 'bg-[var(--crit-bg)] text-[var(--crit)]',
 };
 
 interface TicketDetail {
@@ -72,28 +72,10 @@ interface TicketDetail {
   events?: { type: string; description: string; created_at: string }[];
 }
 
-// Mock fallback data
-const mockTicket: TicketDetail = {
-  id: 42,
-  ticket_number: 'T-0042',
-  title: 'Computador del aula 203 no enciende',
-  status: 'in_progress',
-  priority: 'high',
-  category: 'Hardware - Equipos de Computo',
-  campus: 'Sede Central',
-  location: 'Lab. Informatica 3 - Aula 203',
-  created_at: '2025-04-15T00:00:00Z',
-  assigned_user: { name: 'Andres Gomez' },
-  description: 'Al intentar encender el equipo del docente en el aula 203, este emite una serie de pitidos cortos y la pantalla permanece en negro.',
-  comments: [],
-  attachments: [],
-  events: [],
-};
-
 export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [comment, setComment] = useState('');
-  const [ticket, setTicket] = useState<TicketDetail>(mockTicket);
+  const [ticket, setTicket] = useState<TicketDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const { user } = useAuthStore();
@@ -109,7 +91,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
         const data = res.data.data || res.data;
         setTicket(data);
       } catch {
-        // Keep mock data as fallback
+        // ticket stays null on error
       } finally {
         setLoading(false);
       }
@@ -128,11 +110,11 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
     }
   };
 
-  if (loading) {
+  if (loading || !ticket) {
     return (
       <div className="max-w-5xl mx-auto text-center py-20">
-        <svg className="animate-spin h-8 w-8 mx-auto text-green-700 mb-3" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-        <p className="text-sm text-gray-500">Cargando ticket...</p>
+        <svg className="animate-spin h-8 w-8 mx-auto text-[var(--selva-500)] mb-3" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+        <p className="text-sm text-[var(--muted)]">{loading ? 'Cargando ticket...' : 'No se pudo cargar el ticket.'}</p>
       </div>
     );
   }
@@ -148,31 +130,31 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Toast */}
       {toast && (
-        <div className="fixed top-6 right-6 bg-yellow-50 border border-yellow-300 text-yellow-800 px-4 py-3 rounded-xl shadow-lg text-sm z-50">
+        <div className="fixed top-6 right-6 bg-[var(--med-bg)] border border-[var(--line-2)] text-[var(--med)] px-4 py-3 rounded-xl shadow-lg text-sm z-50">
           {toast}
         </div>
       )}
 
       {/* Breadcrumb */}
-      <nav className="text-xs text-gray-500 flex items-center gap-1">
-        <Link href="/usuario" className="hover:text-gray-700">Inicio</Link>
-        <span className="text-gray-300">›</span>
-        <Link href="/usuario/tickets" className="hover:text-gray-700">Mis Tickets</Link>
-        <span className="text-gray-300">›</span>
-        <span className="text-gray-700 font-medium">{displayId}</span>
+      <nav className="text-xs text-[var(--muted)] flex items-center gap-1">
+        <Link href="/usuario" className="hover:text-[var(--ink-2)]">Inicio</Link>
+        <span className="text-[var(--faint)]">›</span>
+        <Link href="/usuario/tickets" className="hover:text-[var(--ink-2)]">Mis Tickets</Link>
+        <span className="text-[var(--faint)]">›</span>
+        <span className="text-[var(--ink-2)] font-medium">{displayId}</span>
       </nav>
 
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 text-sm mb-1">
-          <span className="font-mono text-gray-500">ID {displayId}</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColorMap[ticket.status] || 'bg-gray-100 text-gray-700'}`}>{statusLabelMap[ticket.status] || ticket.status}</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityColorMap[ticket.priority] || 'bg-gray-100 text-gray-700'}`}>{priorityLabelMap[ticket.priority] || ticket.priority}</span>
+          <span className="font-mono text-[var(--muted)]">ID {displayId}</span>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColorMap[ticket.status] || 'bg-[var(--surface-3)] text-[var(--ink-2)]'}`}>{statusLabelMap[ticket.status] || ticket.status}</span>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityColorMap[ticket.priority] || 'bg-[var(--surface-3)] text-[var(--ink-2)]'}`}>{priorityLabelMap[ticket.priority] || ticket.priority}</span>
         </div>
-        <h1 className="text-xl font-bold text-gray-900">{ticket.title}</h1>
-        <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-          <span>Técnico asignado: <strong className="text-gray-900">{assigneeName}</strong></span>
-          <span>Fecha de reporte: <strong className="text-gray-900">{dateStr}</strong></span>
+        <h1 className="text-xl font-bold text-[var(--ink)]">{ticket.title}</h1>
+        <div className="flex items-center gap-4 mt-2 text-sm text-[var(--muted)]">
+          <span>Técnico asignado: <strong className="text-[var(--ink)]">{assigneeName}</strong></span>
+          <span>Fecha de reporte: <strong className="text-[var(--ink)]">{dateStr}</strong></span>
         </div>
       </div>
 
@@ -180,30 +162,30 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Description */}
-          <div className="bg-white rounded-xl border p-6">
-            <h2 className="font-semibold text-gray-900 flex items-center gap-2 mb-3">
-              <FileText className="w-4 h-4 text-gray-500" /> Tu Descripción
+          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+            <h2 className="font-semibold text-[var(--ink)] flex items-center gap-2 mb-3">
+              <FileText className="w-4 h-4 text-[var(--muted)]" /> Tu Descripción
             </h2>
-            <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{ticket.description}</p>
+            <p className="text-sm text-[var(--ink-2)] whitespace-pre-line leading-relaxed">{ticket.description}</p>
           </div>
 
           {/* Timeline */}
-          <div className="bg-white rounded-xl border p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Historial de Eventos</h2>
+          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+            <h2 className="font-semibold text-[var(--ink)] mb-4">Historial de Eventos</h2>
             {events.length === 0 ? (
-              <p className="text-sm text-gray-400">No hay eventos registrados aun.</p>
+              <p className="text-sm text-[var(--faint)]">No hay eventos registrados aun.</p>
             ) : (
               <div className="space-y-4">
                 {events.map((e, i) => (
                   <div key={i} className="flex gap-3">
                     <div className="flex flex-col items-center">
-                      <div className="w-3 h-3 rounded-full bg-green-600 mt-1" />
-                      {i < events.length - 1 && <div className="w-px flex-1 bg-gray-200 mt-1" />}
+                      <div className="w-3 h-3 rounded-full bg-[var(--selva-500)] mt-1" />
+                      {i < events.length - 1 && <div className="w-px flex-1 bg-[var(--line)] mt-1" />}
                     </div>
                     <div className="pb-4">
-                      <p className="text-sm font-medium text-gray-900">{e.type}</p>
-                      <p className="text-xs text-gray-500">{e.description}</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">{new Date(e.created_at).toLocaleString('es-CO')}</p>
+                      <p className="text-sm font-medium text-[var(--ink)]">{e.type}</p>
+                      <p className="text-xs text-[var(--muted)]">{e.description}</p>
+                      <p className="text-[11px] text-[var(--faint)] mt-0.5">{new Date(e.created_at).toLocaleString('es-CO')}</p>
                     </div>
                   </div>
                 ))}
@@ -212,22 +194,22 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
           </div>
 
           {/* Conversation */}
-          <div className="bg-white rounded-xl border p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Conversacion</h2>
+          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+            <h2 className="font-semibold text-[var(--ink)] mb-4">Conversacion</h2>
             {comments.length === 0 ? (
-              <p className="text-sm text-gray-400 mb-4">No hay comentarios aun.</p>
+              <p className="text-sm text-[var(--faint)] mb-4">No hay comentarios aun.</p>
             ) : (
               <div className="space-y-4 mb-4">
                 {comments.filter((c: any) => !c.is_internal).map((c: any) => {
                   const isCurrentUser = c.user?.name === user?.name;
                   return (
                     <div key={c.id} className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${isCurrentUser ? 'bg-green-50 border border-green-200' : 'bg-gray-100'}`}>
+                      <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${isCurrentUser ? 'bg-[var(--low-bg)] border border-[var(--line)]' : 'bg-[var(--surface-3)]'}`}>
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-semibold text-gray-900">{isCurrentUser ? 'Tu' : c.user?.name}</span>
-                          <span className="text-[10px] text-gray-400">{new Date(c.created_at).toLocaleString('es-CO')}</span>
+                          <span className="text-xs font-semibold text-[var(--ink)]">{isCurrentUser ? 'Tu' : c.user?.name}</span>
+                          <span className="text-[10px] text-[var(--faint)]">{new Date(c.created_at).toLocaleString('es-CO')}</span>
                         </div>
-                        <p className="text-sm text-gray-700">{c.body}</p>
+                        <p className="text-sm text-[var(--ink-2)]">{c.body}</p>
                       </div>
                     </div>
                   );
@@ -240,12 +222,12 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
                 onChange={(e) => setComment(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
                 placeholder="Escribe un comentario o actualizacion..."
-                className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600"
+                className="flex-1 px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)]"
               />
               <button
                 onClick={handleSendComment}
                 disabled={createComment.isPending || !comment.trim()}
-                className="bg-green-700 hover:bg-green-600 disabled:bg-gray-300 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
+                className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
               >
                 {createComment.isPending ? 'Enviando...' : 'Enviar comentario'}
               </button>
@@ -256,8 +238,8 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
         {/* Right Column */}
         <div className="space-y-4">
           {/* Location Details */}
-          <div className="bg-white rounded-xl border p-5">
-            <h3 className="font-semibold text-gray-900 text-sm mb-3">Detalles de Ubicación</h3>
+          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+            <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Detalles de Ubicación</h3>
             <div className="space-y-3 text-sm">
               {[
                 { icon: MapPin, label: 'Sede', value: ticket.campus },
@@ -266,10 +248,10 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
                 { icon: User, label: 'Solicitante', value: ticket.requester?.name || 'N/A' },
               ].map((d) => (
                 <div key={d.label} className="flex items-start gap-2">
-                  <d.icon className="w-3.5 h-3.5 text-gray-400 mt-0.5 shrink-0" />
+                  <d.icon className="w-3.5 h-3.5 text-[var(--faint)] mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-[11px] text-gray-400 uppercase">{d.label}</p>
-                    <p className="text-gray-700">{d.value}</p>
+                    <p className="text-[11px] text-[var(--faint)] uppercase">{d.label}</p>
+                    <p className="text-[var(--ink-2)]">{d.value}</p>
                   </div>
                 </div>
               ))}
@@ -278,41 +260,41 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
 
           {/* Linked Asset */}
           {ticket.asset && (
-            <div className="bg-white rounded-xl border p-5">
-              <h3 className="font-semibold text-gray-900 text-sm mb-3 flex items-center gap-2">
-                <Monitor className="w-4 h-4 text-green-700" />
+            <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+              <h3 className="font-semibold text-[var(--ink)] text-sm mb-3 flex items-center gap-2">
+                <Monitor className="w-4 h-4 text-[var(--selva-500)]" />
                 Equipo Vinculado
               </h3>
               <div className="space-y-1.5">
-                <p className="text-sm font-medium text-gray-900">
-                  <span className="font-mono text-green-700">[{ticket.asset.asset_code}]</span> {ticket.asset.name}
+                <p className="text-sm font-medium text-[var(--ink)]">
+                  <span className="font-mono text-[var(--selva-500)]">[{ticket.asset.asset_code}]</span> {ticket.asset.name}
                 </p>
                 {(ticket.asset.serial_number || ticket.asset.serial) && (
-                  <p className="text-xs text-gray-500">Serial: {ticket.asset.serial_number || ticket.asset.serial}</p>
+                  <p className="text-xs text-[var(--muted)]">Serial: {ticket.asset.serial_number || ticket.asset.serial}</p>
                 )}
                 {ticket.asset.campus && (
-                  <p className="text-xs text-gray-500">Sede: {ticket.asset.campus}</p>
+                  <p className="text-xs text-[var(--muted)]">Sede: {ticket.asset.campus}</p>
                 )}
-                <p className="text-xs text-gray-400 capitalize">{ticket.asset.category}</p>
+                <p className="text-xs text-[var(--faint)] capitalize">{ticket.asset.category}</p>
               </div>
             </div>
           )}
 
           {/* Attachments */}
-          <div className="bg-white rounded-xl border p-5">
-            <h3 className="font-semibold text-gray-900 text-sm mb-3">Adjuntos ({attachments.length})</h3>
+          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+            <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Adjuntos ({attachments.length})</h3>
             {attachments.length === 0 ? (
-              <p className="text-xs text-gray-400">Sin adjuntos</p>
+              <p className="text-xs text-[var(--faint)]">Sin adjuntos</p>
             ) : (
               <div className="space-y-2">
                 {attachments.map((a) => (
-                  <div key={a.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 text-sm hover:bg-gray-100 transition-colors">
-                    <Paperclip className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                    <span className="text-gray-700 truncate flex-1">{a.file_name}</span>
-                    {a.file_size && <span className="text-[11px] text-gray-400">{Math.round(a.file_size / 1024)} KB</span>}
+                  <div key={a.id} className="flex items-center gap-2 bg-[var(--canvas)] rounded-lg px-3 py-2 text-sm hover:bg-[var(--surface-3)] transition-colors">
+                    <Paperclip className="w-3.5 h-3.5 text-[var(--faint)] shrink-0" />
+                    <span className="text-[var(--ink-2)] truncate flex-1">{a.file_name}</span>
+                    {a.file_size && <span className="text-[11px] text-[var(--faint)]">{Math.round(a.file_size / 1024)} KB</span>}
                     <button
                       onClick={() => handleDownload(a.id, a.file_name)}
-                      className="text-green-700 hover:text-green-900 text-xs font-medium shrink-0"
+                      className="text-[var(--selva-500)] hover:text-[var(--selva-500)] text-xs font-medium shrink-0"
                     >
                       Descargar
                     </button>
@@ -324,16 +306,16 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
 
           {/* Actions */}
           <div className="space-y-2">
-            <button className="w-full bg-white border rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            <button className="w-full bg-[var(--surface)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--surface-2)] transition-colors">
               Reabrir ticket
             </button>
-            <button className="w-full bg-white border rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            <button className="w-full bg-[var(--surface)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--surface-2)] transition-colors">
               Crear relacionado
             </button>
           </div>
 
           {/* Info banner */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-xs text-yellow-800 leading-relaxed">
+          <div className="bg-[var(--med-bg)] border border-[var(--line)] rounded-xl p-4 text-xs text-[var(--med)] leading-relaxed">
             <strong>Aviso importante:</strong> Para solicitar cambios urgentes o reportar fallos masivos, por favor contacte a la extensión 0234.
           </div>
         </div>

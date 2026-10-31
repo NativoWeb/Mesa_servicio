@@ -90,10 +90,10 @@ export default function AdminConfigPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Configuración del Sistema</h1>
-          <p className="text-gray-500">Cargando configuración...</p>
+          <h1 className="text-2xl font-bold text-[var(--ink)]">Configuración del Sistema</h1>
+          <p className="text-[var(--muted)]">Cargando configuración...</p>
         </div>
-        <div className="h-64 bg-gray-100 rounded-xl animate-pulse" />
+        <div className="h-64 bg-[var(--surface-3)] rounded-xl animate-pulse" />
       </div>
     );
   }
@@ -101,8 +101,8 @@ export default function AdminConfigPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Configuración del Sistema</h1>
-        <p className="text-gray-500">Ajustes generales, correo SMTP y backup</p>
+        <h1 className="text-2xl font-bold text-[var(--ink)]">Configuración del Sistema</h1>
+        <p className="text-[var(--muted)]">Ajustes generales, correo SMTP y backup</p>
       </div>
 
       {/* Tabs */}
@@ -113,8 +113,8 @@ export default function AdminConfigPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 text-sm rounded-t-lg border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-green-600 text-green-800 font-medium bg-green-50'
-                : 'border-transparent hover:bg-gray-50 text-gray-600'
+                ? 'border-[var(--selva-500)] text-[var(--selva-500)] font-medium bg-[var(--low-bg)]'
+                : 'border-transparent hover:bg-[var(--surface-2)] text-[var(--ink-2)]'
             }`}
           >
             {tab.label}
@@ -124,29 +124,29 @@ export default function AdminConfigPage() {
 
       {/* General */}
       {activeTab === 'general' && (
-        <div className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900 mb-2">Configuración General</h2>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+        <div className="bg-[var(--surface)] rounded-xl border p-6 space-y-4">
+          <h2 className="font-semibold text-[var(--ink)] mb-2">Configuración General</h2>
+          <div className="bg-[var(--med-bg)] border border-[var(--med)] rounded-lg p-3 text-sm text-[var(--med)]">
             Estos ajustes aplican a notificaciones y correos del sistema. El logo, nombre y colores del sidebar se configuran en <strong>Tenants</strong>.
           </div>
           {GENERAL_KEYS.map(({ key, label, placeholder }) => (
             <div key={key}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">{label}</label>
               <input
                 type="text"
                 value={form[key] || ''}
                 onChange={(e) => handleChange(key, e.target.value)}
                 placeholder={placeholder}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
               />
             </div>
           ))}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sede por defecto</label>
+            <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Sede por defecto</label>
             <select
               value={form['default_campus'] || ''}
               onChange={(e) => handleChange('default_campus', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
             >
               <option value="">Seleccionar sede</option>
               {CAMPUS_OPTIONS.map((campus) => (
@@ -159,30 +159,30 @@ export default function AdminConfigPage() {
 
       {/* SMTP */}
       {activeTab === 'smtp' && (
-        <div className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900 mb-2">Configuración SMTP</h2>
-          <p className="text-sm text-gray-500 mb-4">
+        <div className="bg-[var(--surface)] rounded-xl border p-6 space-y-4">
+          <h2 className="font-semibold text-[var(--ink)] mb-2">Configuración SMTP</h2>
+          <p className="text-sm text-[var(--muted)] mb-4">
             Configure el servidor de correo para notificaciones y reportes programados.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {SMTP_KEYS.map(({ key, label, placeholder, ...rest }) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+                <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">{label}</label>
                 <input
                   type={'type' in rest ? rest.type : 'text'}
                   value={form[key] || ''}
                   onChange={(e) => handleChange(key, e.target.value)}
                   placeholder={placeholder}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
                 />
               </div>
             ))}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Encriptación</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Encriptación</label>
               <select
                 value={form['smtp_encryption'] || 'tls'}
                 onChange={(e) => handleChange('smtp_encryption', e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
               >
                 {SMTP_ENCRYPTION_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>{opt.toUpperCase()}</option>
@@ -195,23 +195,23 @@ export default function AdminConfigPage() {
 
       {/* Backup */}
       {activeTab === 'backup' && (
-        <div className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900 mb-2">Backup y Restauración</h2>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-800 font-medium mb-1">Información</p>
-            <p className="text-sm text-blue-700">
+        <div className="bg-[var(--surface)] rounded-xl border p-6 space-y-4">
+          <h2 className="font-semibold text-[var(--ink)] mb-2">Backup y Restauración</h2>
+          <div className="bg-[var(--info-bg)] border border-[var(--info)] rounded-lg p-4">
+            <p className="text-sm text-[var(--info)] font-medium mb-1">Información</p>
+            <p className="text-sm text-[var(--info)]">
               La configuración de backups automáticos se gestiona a nivel de servidor.
               Contacte al administrador del sistema para programar backups de la base de datos PostgreSQL.
             </p>
           </div>
-          <div className="bg-gray-50 border rounded-lg p-4 space-y-2">
-            <p className="text-sm text-gray-700">
+          <div className="bg-[var(--canvas)] border rounded-lg p-4 space-y-2">
+            <p className="text-sm text-[var(--ink-2)]">
               <strong>Base de datos:</strong> PostgreSQL 16+
             </p>
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-[var(--ink-2)]">
               <strong>Estrategia recomendada:</strong> pg_dump diario con retención de 30 dias
             </p>
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-[var(--ink-2)]">
               <strong>Multitenancy:</strong> Cada tenant tiene su propio schema, los backups deben incluir todos los schemas
             </p>
           </div>
@@ -224,7 +224,7 @@ export default function AdminConfigPage() {
           <button
             onClick={handleSave}
             disabled={mutation.isPending}
-            className="px-6 py-2 bg-green-700 text-white text-sm font-medium rounded-lg hover:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-6 py-2 bg-[var(--lima-500)] text-[var(--lima-ink)] text-sm font-medium rounded-lg hover:bg-[var(--lima-400)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {mutation.isPending ? 'Guardando...' : 'Guardar cambios'}
           </button>

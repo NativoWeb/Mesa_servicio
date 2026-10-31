@@ -66,14 +66,14 @@ const navByRole: Record<string, NavGroup[]> = {
     { group: "Asignación", items: [
       { label: "Asignar / Reasignar", href: "/lider/asignacion", icon: Users },
       { label: "Calendario de turnos", href: "/lider/asignacion?tab=calendar", icon: Calendar },
-      { label: "Carga por técnico", href: "/lider/asignacion?tab=workload", icon: TrendingUp },
+      { label: "Carga por tecnico", href: "/lider/asignacion?tab=workload", icon: TrendingUp },
     ]},
     { group: "Inventario", items: [
       { label: "Lista de activos", href: "/lider/inventario", icon: Monitor },
       { label: "Mantenimiento", href: "/lider/inventario?tab=maintenance", icon: Wrench },
     ]},
     { group: "Comunicación", items: [
-      { label: "Mensajería masiva", href: "/lider/mensajeria", icon: Send },
+      { label: "Mensajeria masiva", href: "/lider/mensajeria", icon: Send },
       { label: "Plantillas", href: "/lider/mensajeria?tab=templates", icon: FileText },
     ]},
     { group: "Analítica", items: [
@@ -116,7 +116,7 @@ const navByRole: Record<string, NavGroup[]> = {
       { label: "Hoja de vida", href: "/cuentadante/equipos", icon: ClipboardList },
     ]},
     { group: "Alertas", items: [
-      { label: "Mantenimientos próximos", href: "/cuentadante?tab=maintenance", icon: Wrench },
+      { label: "Mantenimientos proximos", href: "/cuentadante?tab=maintenance", icon: Wrench },
       { label: "Cambios de responsable", href: "/cuentadante?tab=changes", icon: RefreshCw },
     ]},
     { group: "Cuenta", items: [
@@ -173,7 +173,7 @@ const navByRole: Record<string, NavGroup[]> = {
   ],
 };
 
-// Mapeo de grupos de navegación a features del tenant
+// Mapeo de grupos de navegacion a features del tenant
 const GROUP_FEATURE_MAP: Record<string, keyof TenantFeatures> = {
   "Inventario": "inventory",
   "Activos TI": "inventory",
@@ -194,11 +194,11 @@ const ITEM_FEATURE_MAP: Record<string, keyof TenantFeatures> = {
   "Dar de baja activo": "inventory",
   "Equipos relacionados": "inventory",
   "Hoja de vida": "inventory",
-  "Mantenimientos próximos": "maintenance",
+  "Mantenimientos proximos": "maintenance",
   "Registrar mantenimiento": "maintenance",
   "Calendario": "maintenance",
   "Historial mantenimientos": "maintenance",
-  "Mensajería masiva": "mass_messaging",
+  "Mensajeria masiva": "mass_messaging",
   "Plantillas": "mass_messaging",
   "Mi turno": "shifts",
   "Calendario de turnos": "shifts",
@@ -233,15 +233,13 @@ function AppSidebarInner() {
     : "SD";
   const currentSearch = searchParams.toString();
 
-  // Filtrar navegación según features habilitadas del tenant
+  // Filtrar navegacion segun features habilitadas del tenant
   const nav = rawNav
     .map((group) => {
-      // Si el grupo completo está mapeado a una feature deshabilitada, excluirlo
       const groupFeature = GROUP_FEATURE_MAP[group.group];
       if (groupFeature && !isFeatureEnabled(groupFeature)) {
         return null;
       }
-      // Filtrar items individuales por feature
       const filteredItems = group.items.filter((item) => {
         const itemFeature = ITEM_FEATURE_MAP[item.label];
         return !itemFeature || isFeatureEnabled(itemFeature);
@@ -253,40 +251,58 @@ function AppSidebarInner() {
 
   return (
     <aside
-      className="w-64 min-h-screen text-white flex flex-col sticky top-0"
-      style={{ background: 'linear-gradient(to bottom, var(--brand-sidebar-from), var(--brand-sidebar-to))' }}
+      className="w-[272px] min-h-screen text-white flex flex-col sticky top-0 relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #0f3d2b, #08261b)' }}
     >
+      {/* Decorative glow */}
+      <div
+        className="pointer-events-none absolute bottom-0 right-0 w-48 h-48"
+        style={{ background: 'radial-gradient(circle at 100% 100%, rgba(184,212,50,.16), transparent 65%)' }}
+      />
+
       {/* Header */}
-      <div className="p-4 border-b border-white/10">
-        <div className="flex items-center gap-2">
+      <div className="p-4 border-b" style={{ borderColor: 'rgba(255,255,255,.07)' }}>
+        <div className="flex items-center gap-3">
           {config.logo_url ? (
             <img
               src={config.logo_url}
               alt={config.short_name}
-              className="w-8 h-8 rounded-lg object-contain"
+              className="w-10 h-10 object-contain"
+              style={{ borderRadius: '11px' }}
             />
           ) : (
-            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-sm font-bold">
+            <div
+              className="w-10 h-10 flex items-center justify-center text-sm font-bold"
+              style={{ background: '#b8d432', color: '#0c3324', borderRadius: '11px' }}
+            >
               {logoInitials}
             </div>
           )}
           <div>
             <p className="text-sm font-semibold leading-tight">{config.short_name || 'SD'}</p>
-            <p className="text-[10px] text-white/60 uppercase tracking-wider">
+            <p className="text-[10px] uppercase tracking-wider" style={{ color: 'rgba(255,255,255,.6)' }}>
               {config.name}
             </p>
           </div>
         </div>
-        <div className="mt-3 px-2 py-1 bg-white/10 rounded text-xs text-white/70 inline-block uppercase">
+        <div
+          className="mt-3 px-2.5 py-1 text-xs inline-block uppercase tracking-wide font-medium"
+          style={{
+            background: 'rgba(184,212,50,.14)',
+            color: '#c9e25a',
+            border: '1px solid rgba(184,212,50,.28)',
+            borderRadius: '8px',
+          }}
+        >
           {roleLabel}
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-4 overflow-y-auto text-sm">
+      <nav className="flex-1 p-3 space-y-4 overflow-y-auto text-sm relative z-10">
         {nav.map((group) => (
           <div key={group.group}>
-            <p className="text-[10px] uppercase tracking-wider text-white/40 mb-1 px-2">
+            <p className="text-[10px] uppercase tracking-wider mb-1 px-2" style={{ color: 'rgba(255,255,255,.4)' }}>
               {group.group}
             </p>
             <div className="space-y-0.5">
@@ -307,16 +323,35 @@ function AppSidebarInner() {
                   <Link
                     key={item.href + item.label}
                     href={item.href}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors ${
-                      isActive
-                        ? "bg-white/15 text-white"
-                        : "text-white/70 hover:bg-white/10 hover:text-white"
-                    }`}
+                    className="flex items-center gap-2 px-3 py-1.5 transition-colors relative"
+                    style={{
+                      borderRadius: '8px',
+                      background: isActive ? 'rgba(184,212,50,.14)' : undefined,
+                      color: isActive ? '#ffffff' : 'rgba(255,255,255,.7)',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,.06)';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) e.currentTarget.style.background = '';
+                    }}
                   >
-                    <item.icon className="w-4 h-4 shrink-0" />
+                    {isActive && (
+                      <span
+                        className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4"
+                        style={{ background: '#b8d432', borderRadius: '0 4px 4px 0' }}
+                      />
+                    )}
+                    <item.icon
+                      className="w-4 h-4 shrink-0"
+                      style={{ color: isActive ? '#b8d432' : undefined }}
+                    />
                     <span>{item.label}</span>
-                    {item.badge && (
-                      <span className="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                    {item.badge && item.badge > 0 && (
+                      <span
+                        className="ml-auto text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold"
+                        style={{ background: '#cf3b35' }}
+                      >
                         {item.badge}
                       </span>
                     )}
@@ -329,20 +364,26 @@ function AppSidebarInner() {
       </nav>
 
       {/* User footer */}
-      <div className="p-3 border-t border-white/10">
+      <div className="p-3 relative z-10" style={{ borderTop: '1px solid rgba(255,255,255,.07)' }}>
         <div className="flex items-center gap-2 px-2">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+            style={{ background: 'rgba(255,255,255,.1)' }}
+          >
             {initials}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium truncate">{user?.name}</p>
-            <p className="text-[10px] text-white/60 truncate">{roleLabel}</p>
+            <p className="text-[10px] truncate" style={{ color: 'rgba(255,255,255,.6)' }}>{roleLabel}</p>
           </div>
           {role === 'admin' && (
             <button
               onClick={() => router.push('/admin/configuracion')}
-              className="text-white/40 hover:text-white transition-colors p-1"
+              className="transition-colors p-1"
+              style={{ color: 'rgba(255,255,255,.4)', background: 'rgba(255,255,255,.06)', borderRadius: '8px' }}
               title="Configuracion"
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,.4)'; }}
             >
               <Settings className="w-4 h-4" />
             </button>

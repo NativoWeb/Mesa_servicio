@@ -51,13 +51,13 @@ export default function LiderReportesPage() {
   ];
 
   const renderSummaryTable = (title: string, data: Record<string, number>, labelMap: Record<string, { label: string }>) => (
-    <div className="bg-white rounded-xl border p-6">
-      <h3 className="font-semibold text-gray-900 mb-4">{title}</h3>
+    <div className="bg-[var(--surface)] rounded-xl border p-6">
+      <h3 className="font-semibold text-[var(--ink)] mb-4">{title}</h3>
       <div className="space-y-2">
         {Object.entries(data).map(([key, count]) => (
           <div key={key} className="flex items-center justify-between py-2 border-b last:border-b-0">
-            <span className="text-sm text-gray-700">{(labelMap as Record<string, { label: string }>)[key]?.label || key}</span>
-            <span className="text-sm font-bold text-gray-900">{count}</span>
+            <span className="text-sm text-[var(--ink-2)]">{(labelMap as Record<string, { label: string }>)[key]?.label || key}</span>
+            <span className="text-sm font-bold text-[var(--ink)]">{count}</span>
           </div>
         ))}
       </div>
@@ -66,15 +66,15 @@ export default function LiderReportesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Reportes y Metricas</h1>
-      <p className="text-gray-500 mb-6">Datos en tiempo real de la Mesa de Servicio e Inventario TI</p>
+      <h1 className="text-2xl font-bold text-[var(--ink)]">Reportes y Metricas</h1>
+      <p className="text-[var(--muted)] mb-6">Datos en tiempo real de la Mesa de Servicio e Inventario TI</p>
 
       <div className="flex flex-wrap items-center gap-2 mb-6">
         {reports.map(r => (
           <button
             key={r.key}
             onClick={() => setActiveReport(r.key)}
-            className={`px-4 py-2 text-sm rounded-lg border transition-colors ${activeReport === r.key ? 'bg-green-50 border-green-300 text-green-800 font-medium' : 'hover:bg-gray-50'}`}
+            className={`px-4 py-2 text-sm rounded-lg border transition-colors ${activeReport === r.key ? 'bg-[var(--low-bg)] border-[var(--selva-500)] text-[var(--selva-500)] font-medium' : 'hover:bg-[var(--surface-2)]'}`}
           >
             {r.title}
           </button>
@@ -83,7 +83,7 @@ export default function LiderReportesPage() {
           <button
             onClick={async () => { setExporting('pdf'); await handleExport('pdf', activeReport); setExporting(null); }}
             disabled={exporting === 'pdf'}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium border border-red-200 text-red-700 bg-red-50 rounded-lg hover:bg-red-100 disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium border border-[var(--crit)] text-[var(--crit)] bg-[var(--crit-bg)] rounded-lg hover:bg-[var(--crit-bg)] disabled:opacity-50 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
             {exporting === 'pdf' ? 'Exportando...' : 'Exportar PDF'}
@@ -91,7 +91,7 @@ export default function LiderReportesPage() {
           <button
             onClick={async () => { setExporting('excel'); await handleExport('excel', activeReport); setExporting(null); }}
             disabled={exporting === 'excel'}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium border border-green-200 text-green-700 bg-green-50 rounded-lg hover:bg-green-100 disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium border border-[var(--selva-500)] text-[var(--selva-500)] bg-[var(--low-bg)] rounded-lg hover:bg-[var(--low-bg)] disabled:opacity-50 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
             {exporting === 'excel' ? 'Exportando...' : 'Exportar Excel'}
@@ -100,11 +100,11 @@ export default function LiderReportesPage() {
       </div>
 
       {activeReport === 'tickets' && (
-        loadingTickets ? <div className="h-40 bg-gray-100 rounded-xl animate-pulse" /> : ticketsReport ? (
+        loadingTickets ? <div className="h-40 bg-[var(--surface-3)] rounded-xl animate-pulse" /> : ticketsReport ? (
           <div className="space-y-6">
-            <div className="bg-green-50 rounded-xl border border-green-200 p-6 text-center">
-              <p className="text-xs text-green-600 uppercase">Total Tickets</p>
-              <p className="text-4xl font-bold text-green-800">{ticketsReport.total}</p>
+            <div className="bg-[var(--low-bg)] rounded-xl border border-[var(--selva-500)] p-6 text-center">
+              <p className="text-xs text-[var(--selva-500)] uppercase">Total Tickets</p>
+              <p className="text-4xl font-bold text-[var(--selva-500)]">{ticketsReport.total}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {renderSummaryTable('Por Estado', ticketsReport.by_status, STATUS_CONFIG)}
@@ -115,11 +115,11 @@ export default function LiderReportesPage() {
       )}
 
       {activeReport === 'assets' && (
-        loadingAssets ? <div className="h-40 bg-gray-100 rounded-xl animate-pulse" /> : assetsReport ? (
+        loadingAssets ? <div className="h-40 bg-[var(--surface-3)] rounded-xl animate-pulse" /> : assetsReport ? (
           <div className="space-y-6">
-            <div className="bg-blue-50 rounded-xl border border-blue-200 p-6 text-center">
-              <p className="text-xs text-blue-600 uppercase">Total Activos</p>
-              <p className="text-4xl font-bold text-blue-800">{assetsReport.total}</p>
+            <div className="bg-[var(--info-bg)] rounded-xl border border-[var(--info)] p-6 text-center">
+              <p className="text-xs text-[var(--info)] uppercase">Total Activos</p>
+              <p className="text-4xl font-bold text-[var(--info)]">{assetsReport.total}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {renderSummaryTable('Por Estado', assetsReport.by_status, ASSET_STATUS_CONFIG)}
@@ -130,11 +130,11 @@ export default function LiderReportesPage() {
       )}
 
       {activeReport === 'maintenances' && (
-        loadingMaint ? <div className="h-40 bg-gray-100 rounded-xl animate-pulse" /> : maintenancesReport ? (
+        loadingMaint ? <div className="h-40 bg-[var(--surface-3)] rounded-xl animate-pulse" /> : maintenancesReport ? (
           <div className="space-y-6">
-            <div className="bg-yellow-50 rounded-xl border border-yellow-200 p-6 text-center">
-              <p className="text-xs text-yellow-600 uppercase">Total Mantenimientos</p>
-              <p className="text-4xl font-bold text-yellow-800">{maintenancesReport.total}</p>
+            <div className="bg-[var(--med-bg)] rounded-xl border border-[var(--med)] p-6 text-center">
+              <p className="text-xs text-[var(--med)] uppercase">Total Mantenimientos</p>
+              <p className="text-4xl font-bold text-[var(--med)]">{maintenancesReport.total}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {maintenancesReport.by_type && renderSummaryTable('Por Tipo', maintenancesReport.by_type, Object.fromEntries(Object.entries(MAINTENANCE_TYPE_LABELS).map(([k, v]) => [k, { label: v }])))}

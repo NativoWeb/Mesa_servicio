@@ -30,8 +30,8 @@ export default function UsuariosRolesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Usuarios y Roles</h1>
-          <p className="text-gray-500">Gestiona los usuarios de la Mesa de Servicio</p>
+          <h1 className="text-2xl font-bold text-[var(--ink)]">Usuarios y Roles</h1>
+          <p className="text-[var(--muted)]">Gestiona los usuarios de la Mesa de Servicio</p>
         </div>
       </div>
 
@@ -42,25 +42,25 @@ export default function UsuariosRolesPage() {
           { label: 'En Progreso', value: dashboard?.tickets.in_progress ?? '-' },
           { label: 'Cerrados', value: dashboard?.tickets.closed ?? '-' },
         ].map((s) => (
-          <div key={s.label} className="bg-white rounded-xl border p-4">
-            <p className="text-xs text-gray-500 uppercase">{s.label}</p>
+          <div key={s.label} className="bg-[var(--surface)] rounded-xl border p-4">
+            <p className="text-xs text-[var(--muted)] uppercase">{s.label}</p>
             <p className="text-2xl font-bold mt-1">{s.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border">
+      <div className="bg-[var(--surface)] rounded-xl border">
         <div className="p-4 flex flex-wrap items-center gap-3 border-b">
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             placeholder="Buscar por nombre o email..."
-            className="flex-1 max-w-xs px-4 py-2 bg-white border rounded-lg text-sm outline-none focus:ring-2 focus:ring-green-500/20"
+            className="flex-1 max-w-xs px-4 py-2 bg-[var(--surface)] border rounded-lg text-sm outline-none focus:shadow-[var(--focus)]"
           />
           <select
             value={roleFilter}
             onChange={(e) => { setRoleFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 bg-white border rounded-lg text-sm outline-none"
+            className="px-3 py-2 bg-[var(--surface)] border rounded-lg text-sm outline-none"
           >
             <option value="">Todos los roles</option>
             {Object.entries(ROLE_LABELS).map(([k, v]) => (
@@ -72,40 +72,40 @@ export default function UsuariosRolesPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b bg-gray-50/50">
-                <th className="text-left p-3 pl-6 font-medium text-gray-500 text-xs uppercase">Nombre</th>
-                <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Email</th>
-                <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Rol</th>
-                <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Sede</th>
-                <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Departamento</th>
+              <tr className="border-b bg-[var(--surface-2)]">
+                <th className="text-left p-3 pl-6 font-semibold text-[var(--muted)] text-xs">Nombre</th>
+                <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Email</th>
+                <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Rol</th>
+                <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Sede</th>
+                <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Departamento</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b"><td colSpan={5} className="p-3"><div className="h-4 bg-gray-100 rounded animate-pulse" /></td></tr>
+                  <tr key={i} className="border-b"><td colSpan={5} className="p-3"><div className="h-4 bg-[var(--surface-3)] rounded animate-pulse" /></td></tr>
                 ))
               ) : !data?.data.length ? (
-                <tr><td colSpan={5} className="text-center py-12 text-gray-400">No se encontraron usuarios</td></tr>
+                <tr><td colSpan={5} className="text-center py-12 text-[var(--faint)]">No se encontraron usuarios</td></tr>
               ) : (
                 data.data.map(u => (
-                  <tr key={u.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                  <tr key={u.id} className="border-b hover:bg-[var(--surface-2)] transition-colors">
                     <td className="p-3 pl-6">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-800 text-xs font-bold">
+                        <div className="w-8 h-8 rounded-full bg-[var(--low-bg)] flex items-center justify-center text-[var(--selva-500)] text-xs font-bold">
                           {u.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                         </div>
-                        <span className="font-medium text-gray-900">{u.name}</span>
+                        <span className="font-medium text-[var(--ink)]">{u.name}</span>
                       </div>
                     </td>
-                    <td className="p-3 text-gray-600">{u.email}</td>
+                    <td className="p-3 text-[var(--ink-2)]">{u.email}</td>
                     <td className="p-3">
-                      <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-700">
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[var(--surface-3)] text-[var(--ink-2)]">
                         {ROLE_LABELS[u.role] || u.role}
                       </span>
                     </td>
-                    <td className="p-3 text-gray-600">{u.campus || '-'}</td>
-                    <td className="p-3 text-gray-600">{u.department || '-'}</td>
+                    <td className="p-3 text-[var(--ink-2)]">{u.campus || '-'}</td>
+                    <td className="p-3 text-[var(--ink-2)]">{u.department || '-'}</td>
                   </tr>
                 ))
               )}
@@ -114,11 +114,11 @@ export default function UsuariosRolesPage() {
         </div>
 
         {data && data.last_page > 1 && (
-          <div className="px-6 py-3 border-t flex items-center justify-between text-xs text-gray-500">
+          <div className="px-6 py-3 border-t flex items-center justify-between text-xs text-[var(--muted)]">
             <span>Página {data.current_page} de {data.last_page} ({data.total} usuarios)</span>
             <div className="flex gap-1">
-              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50">Anterior</button>
-              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50">Siguiente</button>
+              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50">Anterior</button>
+              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50">Siguiente</button>
             </div>
           </div>
         )}

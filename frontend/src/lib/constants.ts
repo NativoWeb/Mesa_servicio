@@ -1,33 +1,33 @@
 export const STATUS_CONFIG = {
-  open: { label: 'Abierto', color: 'bg-yellow-100 text-yellow-800', dot: 'bg-yellow-500' },
-  in_progress: { label: 'En Progreso', color: 'bg-blue-100 text-blue-800', dot: 'bg-blue-500' },
-  pending: { label: 'Pendiente', color: 'bg-orange-100 text-orange-800', dot: 'bg-orange-500' },
-  escalated: { label: 'Escalado', color: 'bg-red-100 text-red-800', dot: 'bg-red-500' },
-  closed: { label: 'Cerrado', color: 'bg-green-100 text-green-800', dot: 'bg-green-500' },
+  open: { label: 'Abierto', color: 'bg-[#e6f0f8] text-[#2d76b0]', dot: 'bg-[#2d76b0]' },
+  in_progress: { label: 'En Progreso', color: 'bg-[#fdf0e6] text-[#e2742a]', dot: 'bg-[#e2742a]' },
+  pending: { label: 'Pendiente', color: 'bg-[#efecfa] text-[#6b55c4]', dot: 'bg-[#6b55c4]' },
+  escalated: { label: 'Escalado', color: 'bg-[#fdeceb] text-[#cf3b35]', dot: 'bg-[#cf3b35]' },
+  closed: { label: 'Cerrado', color: 'bg-[#eef2ec] text-[#66756c]', dot: 'bg-[#66756c]' },
 } as const;
 
 export const PRIORITY_CONFIG = {
-  low: { label: 'Baja', color: 'bg-slate-100 text-slate-800' },
-  medium: { label: 'Media', color: 'bg-yellow-100 text-yellow-800' },
-  high: { label: 'Alta', color: 'bg-orange-100 text-orange-800' },
-  critical: { label: 'Critica', color: 'bg-red-100 text-red-800' },
+  low: { label: 'Baja', color: 'bg-[#e5f4ea] text-[#2f8f57]' },
+  medium: { label: 'Media', color: 'bg-[#fbf5dc] text-[#c99a0e]' },
+  high: { label: 'Alta', color: 'bg-[#fdf0e6] text-[#e2742a]' },
+  critical: { label: 'Critica', color: 'bg-[#fdeceb] text-[#cf3b35]' },
 } as const;
 
 export const ASSET_STATUS_CONFIG = {
-  new: { label: 'Nuevo', color: 'bg-blue-100 text-blue-800' },
-  operational: { label: 'Operativo', color: 'bg-green-100 text-green-800' },
-  damaged: { label: 'Averiado', color: 'bg-red-100 text-red-800' },
-  decommissioned: { label: 'Dado de Baja', color: 'bg-gray-100 text-gray-800' },
-  retired: { label: 'Retirado', color: 'bg-gray-100 text-gray-500' },
+  new: { label: 'Nuevo', color: 'bg-[#e6f0f8] text-[#2d76b0]' },
+  operational: { label: 'Operativo', color: 'bg-[#e5f4ea] text-[#2f8f57]' },
+  damaged: { label: 'Averiado', color: 'bg-[#fdeceb] text-[#cf3b35]' },
+  decommissioned: { label: 'Dado de Baja', color: 'bg-[#eef2ec] text-[#66756c]' },
+  retired: { label: 'Retirado', color: 'bg-[#eef2ec] text-[#94a199]' },
 } as const;
 
 export const CAMPUSES = [
-  'Sede Central',
-  'Sede Norte',
-  'Sede Sur',
-  'Sede Este',
-  'Sede Oeste',
-  'Sede Regional',
+  'Bucaramanga',
+  'Piedecuesta',
+  'Barrancabermeja',
+  'Yopal',
+  'Velez',
+  'Charala',
 ] as const;
 
 export const PERMISSION_LABELS: Record<string, string> = {

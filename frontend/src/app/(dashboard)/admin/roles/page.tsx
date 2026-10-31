@@ -27,14 +27,14 @@ import {
 } from 'lucide-react';
 
 const ROLE_BADGE_COLORS = [
-  'bg-red-100 text-red-700',
-  'bg-blue-100 text-blue-700',
-  'bg-green-100 text-green-700',
-  'bg-purple-100 text-purple-700',
-  'bg-yellow-100 text-yellow-700',
-  'bg-orange-100 text-orange-700',
-  'bg-pink-100 text-pink-700',
-  'bg-teal-100 text-teal-700',
+  'bg-[var(--crit-bg)] text-[var(--crit)]',
+  'bg-[var(--info-bg)] text-[var(--info)]',
+  'bg-[var(--low-bg)] text-[var(--selva-500)]',
+  'bg-[var(--violet-bg)] text-[var(--violet)]',
+  'bg-[var(--med-bg)] text-[var(--med)]',
+  'bg-[var(--high-bg)] text-[var(--high)]',
+  'bg-[var(--crit-bg)] text-[var(--crit)]',
+  'bg-[var(--info-bg)] text-[var(--info)]',
 ];
 
 function getPermissionLabel(name: string): string {
@@ -166,8 +166,8 @@ export default function AdminRolesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Configuracion de Roles y Permisos</h1>
-          <p className="text-gray-500 text-sm">Gestiona los roles del sistema y sus permisos</p>
+          <h1 className="text-2xl font-bold text-[var(--ink)]">Configuracion de Roles y Permisos</h1>
+          <p className="text-[var(--muted)] text-sm">Gestiona los roles del sistema y sus permisos</p>
         </div>
         <button
           onClick={openCreate}
@@ -182,49 +182,49 @@ export default function AdminRolesPage() {
       <div className="grid gap-4">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border p-5">
+            <div key={i} className="bg-[var(--surface)] rounded-xl border p-5">
               <div className="space-y-3">
-                <div className="h-5 w-48 bg-gray-100 rounded animate-pulse" />
-                <div className="h-4 w-full bg-gray-100 rounded animate-pulse" />
+                <div className="h-5 w-48 bg-[var(--surface-3)] rounded animate-pulse" />
+                <div className="h-4 w-full bg-[var(--surface-3)] rounded animate-pulse" />
                 <div className="flex gap-2">
                   {Array.from({ length: 3 }).map((_, j) => (
-                    <div key={j} className="h-6 w-20 bg-gray-100 rounded animate-pulse" />
+                    <div key={j} className="h-6 w-20 bg-[var(--surface-3)] rounded animate-pulse" />
                   ))}
                 </div>
               </div>
             </div>
           ))
         ) : !roles?.length ? (
-          <div className="bg-white rounded-xl border p-12 text-center">
-            <Shield className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">No hay roles configurados</p>
+          <div className="bg-[var(--surface)] rounded-xl border p-12 text-center">
+            <Shield className="w-12 h-12 text-[var(--faint)] mx-auto mb-3" />
+            <p className="text-[var(--muted)]">No hay roles configurados</p>
           </div>
         ) : (
           roles.map((role, idx) => (
-            <div key={role.id} className="bg-white rounded-xl border p-5">
+            <div key={role.id} className="bg-[var(--surface)] rounded-xl border p-5">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h3 className="font-semibold text-gray-900">{role.name}</h3>
+                    <h3 className="font-semibold text-[var(--ink)]">{role.name}</h3>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_BADGE_COLORS[idx % ROLE_BADGE_COLORS.length]}`}>
                       {role.name}
                     </span>
                     {role.is_system && (
-                      <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-200 text-gray-600">
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[var(--surface-3)] text-[var(--ink-2)]">
                         Sistema
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-500">{role.description || 'Sin descripcion'}</p>
+                  <p className="text-sm text-[var(--muted)]">{role.description || 'Sin descripcion'}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-4">
-                  <span className="flex items-center gap-1 text-xs text-gray-500" title="Usuarios asignados">
+                  <span className="flex items-center gap-1 text-xs text-[var(--muted)]" title="Usuarios asignados">
                     <Users className="w-3.5 h-3.5" />
                     {role.users_count}
                   </span>
                   <button
                     onClick={() => openEdit(role)}
-                    className="p-1.5 text-gray-400 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    className="p-1.5 text-[var(--faint)] hover:text-[var(--selva-500)] hover:bg-[var(--low-bg)] rounded-lg transition-colors"
                     title="Editar rol"
                   >
                     <Pencil className="w-4 h-4" />
@@ -232,7 +232,7 @@ export default function AdminRolesPage() {
                   {!role.is_system && (
                     <button
                       onClick={() => openDelete(role)}
-                      className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-1.5 text-[var(--faint)] hover:text-[var(--crit)] hover:bg-[var(--crit-bg)] rounded-lg transition-colors"
                       title="Eliminar rol"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -244,13 +244,13 @@ export default function AdminRolesPage() {
                 {role.permissions.map(perm => (
                   <span
                     key={perm.id}
-                    className="text-xs bg-gray-100 text-gray-700 px-2.5 py-1 rounded-lg font-medium"
+                    className="text-xs bg-[var(--surface-3)] text-[var(--ink-2)] px-2.5 py-1 rounded-lg font-medium"
                   >
                     {getPermissionLabel(perm.name)}
                   </span>
                 ))}
                 {role.permissions.length === 0 && (
-                  <span className="text-xs text-gray-400 italic">Sin permisos asignados</span>
+                  <span className="text-xs text-[var(--faint)] italic">Sin permisos asignados</span>
                 )}
               </div>
             </div>
@@ -272,7 +272,7 @@ export default function AdminRolesPage() {
 
           <div className="max-h-[60vh] overflow-y-auto space-y-4 pr-1">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">
                 Nombre del rol *
               </label>
               <input
@@ -280,12 +280,12 @@ export default function AdminRolesPage() {
                 onChange={e => setFormName(e.target.value)}
                 disabled={editingRole?.is_system}
                 placeholder="Ej: Supervisor de soporte"
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-green-500/20 disabled:bg-gray-100 disabled:text-gray-500"
+                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:shadow-[var(--focus)] disabled:bg-[var(--surface-3)] disabled:text-[var(--muted)]"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">
                 Descripcion
               </label>
               <textarea
@@ -293,21 +293,21 @@ export default function AdminRolesPage() {
                 onChange={e => setFormDescription(e.target.value)}
                 rows={2}
                 placeholder="Describe las responsabilidades de este rol..."
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-green-500/20 resize-none"
+                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:shadow-[var(--focus)] resize-none"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-2">
                 Permisos
               </label>
               {!groupedPermissions ? (
-                <div className="flex items-center gap-2 text-sm text-gray-400 py-4">
+                <div className="flex items-center gap-2 text-sm text-[var(--faint)] py-4">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Cargando permisos...
                 </div>
               ) : Object.keys(groupedPermissions).length === 0 ? (
-                <p className="text-sm text-gray-400 py-4">No hay permisos disponibles</p>
+                <p className="text-sm text-[var(--faint)] py-4">No hay permisos disponibles</p>
               ) : (
                 <div className="space-y-1 border rounded-lg p-3">
                   {Object.entries(groupedPermissions).map(([group, perms]) => {
@@ -322,7 +322,7 @@ export default function AdminRolesPage() {
                           <button
                             type="button"
                             onClick={() => toggleGroup(group)}
-                            className="text-gray-500 hover:text-gray-700 shrink-0"
+                            className="text-[var(--muted)] hover:text-[var(--ink-2)] shrink-0"
                           >
                             {isExpanded
                               ? <ChevronDown className="w-4 h-4" />
@@ -336,10 +336,10 @@ export default function AdminRolesPage() {
                           <button
                             type="button"
                             onClick={() => toggleGroup(group)}
-                            className="text-sm font-medium text-gray-800 hover:text-gray-900 select-none"
+                            className="text-sm font-medium text-[var(--ink)] hover:text-[var(--ink)] select-none"
                           >
                             {groupLabel}
-                            <span className="ml-1 text-xs text-gray-400 font-normal">
+                            <span className="ml-1 text-xs text-[var(--faint)] font-normal">
                               ({selectedCount}/{perms.length})
                             </span>
                           </button>
@@ -356,7 +356,7 @@ export default function AdminRolesPage() {
                                     aria-label={getPermissionLabel(perm.name)}
                                   />
                                   <span
-                                    className="text-sm text-gray-600 cursor-pointer select-none"
+                                    className="text-sm text-[var(--ink-2)] cursor-pointer select-none"
                                     onClick={() => togglePermission(perm.name)}
                                   >
                                     {getPermissionLabel(perm.name)}
@@ -375,13 +375,13 @@ export default function AdminRolesPage() {
           </div>
 
           <DialogFooter>
-            <DialogClose className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
+            <DialogClose className="px-4 py-2 text-sm font-medium text-[var(--ink-2)] bg-[var(--surface)] border rounded-lg hover:bg-[var(--surface-2)] transition-colors">
               Cancelar
             </DialogClose>
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1B5E20] hover:bg-[#2E7D32] rounded-lg disabled:bg-gray-300 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1B5E20] hover:bg-[#2E7D32] rounded-lg disabled:bg-[var(--surface-3)] transition-colors"
             >
               {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingRole ? 'Guardar cambios' : 'Crear rol'}
@@ -400,13 +400,13 @@ export default function AdminRolesPage() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <DialogClose className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
+            <DialogClose className="px-4 py-2 text-sm font-medium text-[var(--ink-2)] bg-[var(--surface)] border rounded-lg hover:bg-[var(--surface-2)] transition-colors">
               Cancelar
             </DialogClose>
             <button
               onClick={handleDelete}
               disabled={deleteRole.isPending}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:bg-gray-300 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[var(--crit)] hover:bg-[var(--crit)] rounded-lg disabled:bg-[var(--surface-3)] transition-colors"
             >
               {deleteRole.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
               Eliminar

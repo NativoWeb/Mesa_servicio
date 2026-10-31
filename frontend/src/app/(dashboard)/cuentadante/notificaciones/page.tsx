@@ -13,10 +13,10 @@ function subjectIcon(subjectType: string) {
 }
 
 function subjectColor(subjectType: string) {
-  if (subjectType.includes('Asset')) return 'bg-green-100 text-green-700';
-  if (subjectType.includes('Maintenance')) return 'bg-orange-100 text-orange-700';
-  if (subjectType.includes('Ticket')) return 'bg-blue-100 text-blue-700';
-  return 'bg-gray-100 text-gray-700';
+  if (subjectType.includes('Asset')) return 'bg-[var(--low-bg)] text-[var(--selva-500)]';
+  if (subjectType.includes('Maintenance')) return 'bg-[var(--high-bg)] text-[var(--high)]';
+  if (subjectType.includes('Ticket')) return 'bg-[var(--info-bg)] text-[var(--info)]';
+  return 'bg-[var(--surface-3)] text-[var(--ink-2)]';
 }
 
 function subjectLabel(subjectType: string) {
@@ -32,27 +32,27 @@ export default function CuentadanteNotificacionesPage() {
 
   return (
     <div>
-      <p className="text-xs text-gray-500 uppercase tracking-wider">Centro de Alertas</p>
-      <h1 className="text-2xl font-bold text-gray-900">Notificaciones</h1>
-      <p className="text-gray-500 mb-6">Alertas sobre tus equipos asignados</p>
+      <p className="text-xs text-[var(--muted)] uppercase tracking-wider">Centro de Alertas</p>
+      <h1 className="text-2xl font-bold text-[var(--ink)]">Notificaciones</h1>
+      <p className="text-[var(--muted)] mb-6">Alertas sobre tus equipos asignados</p>
 
       <div className="space-y-3">
         {isLoading ? (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border p-5">
-              <div className="h-4 bg-gray-100 rounded animate-pulse w-3/4" />
-              <div className="h-3 bg-gray-100 rounded animate-pulse w-1/2 mt-2" />
+            <div key={i} className="bg-[var(--surface)] rounded-xl border p-5">
+              <div className="h-4 bg-[var(--surface-3)] rounded animate-pulse w-3/4" />
+              <div className="h-3 bg-[var(--surface-3)] rounded animate-pulse w-1/2 mt-2" />
             </div>
           ))
         ) : !data?.data.length ? (
-          <div className="bg-white rounded-xl border p-6">
-            <div className="text-center py-12 text-gray-400">No tienes alertas por el momento</div>
+          <div className="bg-[var(--surface)] rounded-xl border p-6">
+            <div className="text-center py-12 text-[var(--faint)]">No tienes alertas por el momento</div>
           </div>
         ) : (
           data.data.map((n: Notification) => (
             <div
               key={n.id}
-              className="bg-white rounded-xl border border-l-4 border-l-green-600 p-5 flex items-start gap-4 hover:shadow-sm transition-shadow"
+              className="bg-[var(--surface)] rounded-xl border border-l-4 border-l-green-600 p-5 flex items-start gap-4 hover:shadow-[var(--sh-1)] transition-shadow"
             >
               {/* Icono */}
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${subjectColor(n.subject_type)}`}>
@@ -62,15 +62,15 @@ export default function CuentadanteNotificacionesPage() {
               {/* Contenido */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-3)] text-[var(--ink-2)] font-medium">
                     {subjectLabel(n.subject_type)}
                   </span>
                 </div>
-                <p className="text-sm font-semibold text-gray-900 mt-1">{n.description}</p>
+                <p className="text-sm font-semibold text-[var(--ink)] mt-1">{n.description}</p>
                 {n.causer && (
-                  <p className="text-xs text-gray-500 mt-1">Realizado por: {n.causer.name}</p>
+                  <p className="text-xs text-[var(--muted)] mt-1">Realizado por: {n.causer.name}</p>
                 )}
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-[var(--faint)] mt-2">
                   {formatDistanceToNow(new Date(n.created_at), { locale: es, addSuffix: true })}
                 </p>
               </div>
@@ -81,20 +81,20 @@ export default function CuentadanteNotificacionesPage() {
 
       {/* Paginacion */}
       {data && data.last_page > 1 && (
-        <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+        <div className="mt-4 flex items-center justify-between text-xs text-[var(--muted)]">
           <span>Pagina {data.current_page} de {data.last_page} ({data.total} alertas)</span>
           <div className="flex gap-1">
             <button
               disabled={data.current_page <= 1}
               onClick={() => setPage(p => p - 1)}
-              className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50"
+              className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50"
             >
               Anterior
             </button>
             <button
               disabled={data.current_page >= data.last_page}
               onClick={() => setPage(p => p + 1)}
-              className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50"
+              className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50"
             >
               Siguiente
             </button>

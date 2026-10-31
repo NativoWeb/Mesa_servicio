@@ -91,18 +91,18 @@ export default function AdminTenantsPage() {
     }
   };
 
-  const inputClass = 'w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-green-500/20';
+  const inputClass = 'w-full px-3 py-2 border rounded-lg text-sm outline-none focus:shadow-[var(--focus)]';
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tenants (Instituciones)</h1>
-          <p className="text-gray-500">Gestion de instituciones registradas en el sistema multitenant</p>
+          <h1 className="text-2xl font-bold text-[var(--ink)]">Tenants (Instituciones)</h1>
+          <p className="text-[var(--muted)]">Gestion de instituciones registradas en el sistema multitenant</p>
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium"
+          className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium"
         >
           {showCreate ? 'Cancelar' : 'Crear Tenant'}
         </button>
@@ -110,21 +110,21 @@ export default function AdminTenantsPage() {
 
       {/* Create form */}
       {showCreate && (
-        <div className="bg-white rounded-xl border p-6 mb-6">
+        <div className="bg-[var(--surface)] rounded-xl border p-6 mb-6">
           <h2 className="font-semibold mb-4">Nuevo Tenant</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ID (slug)*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">ID (slug)*</label>
               <input
                 value={form.id}
                 onChange={e => setForm(p => ({ ...p, id: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '') }))}
                 placeholder="uts-bucaramanga"
                 className={inputClass}
               />
-              <p className="text-[10px] text-gray-400 mt-1">Solo minusculas, numeros, guiones</p>
+              <p className="text-[10px] text-[var(--faint)] mt-1">Solo minusculas, numeros, guiones</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nombre*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Nombre*</label>
               <input
                 value={form.name}
                 onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
@@ -133,7 +133,7 @@ export default function AdminTenantsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Dominio*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Dominio*</label>
               <input
                 value={form.domain}
                 onChange={e => setForm(p => ({ ...p, domain: e.target.value }))}
@@ -142,7 +142,7 @@ export default function AdminTenantsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Plan</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Plan</label>
               <select
                 value={form.plan}
                 onChange={e => setForm(p => ({ ...p, plan: e.target.value }))}
@@ -157,7 +157,7 @@ export default function AdminTenantsPage() {
           <button
             onClick={handleCreate}
             disabled={createTenant.isPending}
-            className="bg-green-700 hover:bg-green-600 disabled:bg-gray-300 text-white px-6 py-2 rounded-lg text-sm font-medium"
+            className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2 rounded-lg text-sm font-medium"
           >
             {createTenant.isPending ? 'Creando...' : 'Crear'}
           </button>
@@ -165,16 +165,16 @@ export default function AdminTenantsPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-xl border overflow-hidden">
+      <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-gray-50/50">
-              <th className="text-left p-3 pl-6 font-medium text-gray-500 text-xs uppercase">ID</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Nombre</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Dominio</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Plan</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Creado</th>
-              <th className="text-left p-3 pr-6 font-medium text-gray-500 text-xs uppercase">Acciones</th>
+            <tr className="border-b bg-[var(--surface-2)]">
+              <th className="text-left p-3 pl-6 font-semibold text-[var(--muted)] text-xs">ID</th>
+              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Nombre</th>
+              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Dominio</th>
+              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Plan</th>
+              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Creado</th>
+              <th className="text-left p-3 pr-6 font-semibold text-[var(--muted)] text-xs">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -182,34 +182,34 @@ export default function AdminTenantsPage() {
               Array.from({ length: 3 }).map((_, i) => (
                 <tr key={i} className="border-b">
                   <td colSpan={6} className="p-3">
-                    <div className="h-4 bg-gray-100 rounded animate-pulse" />
+                    <div className="h-4 bg-[var(--surface-3)] rounded animate-pulse" />
                   </td>
                 </tr>
               ))
             ) : !tenants?.length ? (
               <tr>
-                <td colSpan={6} className="text-center py-12 text-gray-400">
+                <td colSpan={6} className="text-center py-12 text-[var(--faint)]">
                   No hay tenants registrados
                 </td>
               </tr>
             ) : (
               tenants.map(tenant => (
-                <tr key={tenant.id} className="border-b hover:bg-gray-50/50 transition-colors">
-                  <td className="p-3 pl-6 font-mono text-xs text-gray-700">{tenant.id}</td>
-                  <td className="p-3 font-medium text-gray-900">{tenant.data?.name || '-'}</td>
-                  <td className="p-3 text-gray-600">
+                <tr key={tenant.id} className="border-b hover:bg-[var(--surface-2)] transition-colors">
+                  <td className="p-3 pl-6 font-mono text-xs text-[var(--ink-2)]">{tenant.id}</td>
+                  <td className="p-3 font-medium text-[var(--ink)]">{tenant.data?.name || '-'}</td>
+                  <td className="p-3 text-[var(--ink-2)]">
                     {tenant.domains?.map(d => d.domain).join(', ') || '-'}
                   </td>
                   <td className="p-3">
-                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-green-100 text-green-700">
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[var(--low-bg)] text-[var(--selva-500)]">
                       {PLAN_LABELS[tenant.data?.plan || 'basic'] || tenant.data?.plan || 'Basico'}
                     </span>
                   </td>
-                  <td className="p-3 text-gray-500 text-xs">{formatDate(tenant.created_at)}</td>
+                  <td className="p-3 text-[var(--muted)] text-xs">{formatDate(tenant.created_at)}</td>
                   <td className="p-3 pr-6">
                     <button
                       onClick={() => handleDelete(tenant.id, tenant.data?.name || tenant.id)}
-                      className="text-red-600 hover:text-red-800 text-xs font-medium"
+                      className="text-[var(--crit)] hover:text-[var(--crit)] text-xs font-medium"
                     >
                       Eliminar
                     </button>

@@ -33,19 +33,19 @@ export function Breadcrumbs() {
   if (segments.length <= 1) return null;
 
   return (
-    <nav className="text-xs text-gray-500 mb-4 flex items-center gap-1">
-      <Link href="/" className="hover:text-gray-700">Inicio</Link>
+    <nav className="text-xs text-[var(--muted)] mb-4 flex items-center gap-1">
+      <Link href="/" className="hover:text-[var(--ink-2)]">Inicio</Link>
       {segments.map((segment, i) => {
         const href = "/" + segments.slice(0, i + 1).join("/");
         const isLast = i === segments.length - 1;
         const label = pathLabels[segment] || segment;
         return (
           <span key={href} className="flex items-center gap-1">
-            <span className="text-gray-300">›</span>
+            <span className="text-[var(--faint)]">›</span>
             {isLast ? (
-              <span className="text-gray-700 font-medium">{label}</span>
+              <span className="text-[var(--ink-2)] font-medium">{label}</span>
             ) : (
-              <Link href={href} className="hover:text-gray-700">{label}</Link>
+              <Link href={href} className="hover:text-[var(--ink-2)]">{label}</Link>
             )}
           </span>
         );

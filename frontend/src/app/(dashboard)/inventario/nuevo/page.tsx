@@ -14,14 +14,14 @@ function Section({ num, title, desc, children, isOpen, onToggle }: {
   isOpen: boolean; onToggle: () => void;
 }) {
   return (
-    <div className="bg-white rounded-xl border overflow-hidden">
-      <button onClick={onToggle} className="w-full flex items-center gap-3 p-5 text-left hover:bg-gray-50/50 transition-colors">
-        <span className="w-7 h-7 bg-green-800 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">{num}</span>
+    <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
+      <button onClick={onToggle} className="w-full flex items-center gap-3 p-5 text-left hover:bg-[var(--surface-2)] transition-colors">
+        <span className="w-7 h-7 bg-[var(--lima-500)] text-[var(--lima-ink)] rounded-full flex items-center justify-center text-xs font-bold shrink-0">{num}</span>
         <div className="flex-1">
-          <h2 className="font-semibold text-gray-900 text-sm">{title}</h2>
-          <p className="text-xs text-gray-500">{desc}</p>
+          <h2 className="font-semibold text-[var(--ink)] text-sm">{title}</h2>
+          <p className="text-xs text-[var(--muted)]">{desc}</p>
         </div>
-        <span className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}>&#x25BE;</span>
+        <span className={`text-[var(--faint)] transition-transform ${isOpen ? 'rotate-180' : ''}`}>&#x25BE;</span>
       </button>
       {isOpen && <div className="px-5 pb-5 pt-0 border-t">{children}</div>}
     </div>
@@ -91,28 +91,28 @@ export default function NuevoEquipoPage() {
 
   const toggleSection = (num: number) => setOpenSection(openSection === num ? 0 : num);
 
-  const inputClass = "w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600";
+  const inputClass = "w-full px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)] focus:border-[var(--selva-500)]";
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <nav className="text-xs text-gray-500 flex items-center gap-1 mb-1">
-          <Link href="/inventario" className="hover:text-gray-700">Inventario</Link>
-          <span className="text-gray-300">&rsaquo;</span>
-          <span className="text-gray-700 font-medium">Registrar nuevo equipo</span>
+        <nav className="text-xs text-[var(--muted)] flex items-center gap-1 mb-1">
+          <Link href="/inventario" className="hover:text-[var(--ink-2)]">Inventario</Link>
+          <span className="text-[var(--faint)]">&rsaquo;</span>
+          <span className="text-[var(--ink-2)] font-medium">Registrar nuevo equipo</span>
         </nav>
-        <h1 className="text-2xl font-bold text-gray-900">Registrar nuevo equipo</h1>
+        <h1 className="text-2xl font-bold text-[var(--ink)]">Registrar nuevo equipo</h1>
       </div>
 
       <Section num={1} title="Identificación" desc="Datos básicos y seriales únicos del activo" isOpen={openSection === 1} onToggle={() => toggleSection(1)}>
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Nombre del Equipo*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Nombre del Equipo*</label>
               <input value={form.name} onChange={e => set('name', e.target.value)} placeholder="Ej: Workstation Diseno 01" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Categoría*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Categoría*</label>
               <select value={form.category} onChange={e => set('category', e.target.value)} className={inputClass}>
                 <option value="">Seleccionar</option>
                 {['pc', 'laptop', 'printer', 'server', 'router', 'switch', 'monitor', 'projector', 'other'].map(c => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
@@ -121,16 +121,16 @@ export default function NuevoEquipoPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Marca*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Marca*</label>
               <input value={form.brand} onChange={e => set('brand', e.target.value)} placeholder="Apple, Dell, HP..." className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Modelo*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Modelo*</label>
               <input value={form.model} onChange={e => set('model', e.target.value)} placeholder="Ej: MacBook Pro M2" className={inputClass} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Serial*</label>
+            <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Serial*</label>
             <input value={form.serial} onChange={e => set('serial', e.target.value)} placeholder="Ej: SN-2024-00412" className={inputClass} />
           </div>
         </div>
@@ -140,11 +140,11 @@ export default function NuevoEquipoPage() {
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Fecha de Compra</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Fecha de Compra</label>
               <input type="date" value={form.purchase_date} onChange={e => set('purchase_date', e.target.value)} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Garantía hasta</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Garantía hasta</label>
               <input type="date" value={form.warranty_expiry} onChange={e => set('warranty_expiry', e.target.value)} className={inputClass} />
             </div>
           </div>
@@ -155,19 +155,19 @@ export default function NuevoEquipoPage() {
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Sede*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Sede*</label>
               <select value={form.campus} onChange={e => set('campus', e.target.value)} className={inputClass}>
                 <option value="">Seleccionar</option>
                 {CAMPUSES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Piso / Edificio</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Piso / Edificio</label>
               <input value={form.floor} onChange={e => set('floor', e.target.value)} placeholder="Ej: Piso 3, Edificio A" className={inputClass} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Ubicación específica</label>
+            <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Ubicación específica</label>
             <input value={form.location} onChange={e => set('location', e.target.value)} placeholder="Ej: Lab. Informatica 3, Puesto 12" className={inputClass} />
           </div>
         </div>
@@ -177,14 +177,14 @@ export default function NuevoEquipoPage() {
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Cuentadante</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Cuentadante</label>
               <select value={form.holder_id} onChange={e => set('holder_id', e.target.value)} className={inputClass}>
                 <option value="">Seleccionar</option>
                 {holdersData?.data.map(u => <option key={u.id} value={u.id}>{u.name} ({u.email})</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Estado Inicial</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Estado Inicial</label>
               <select value={form.status} onChange={e => set('status', e.target.value)} className={inputClass}>
                 <option value="new">Nuevo</option>
                 <option value="operational">Operativo</option>
@@ -197,7 +197,7 @@ export default function NuevoEquipoPage() {
       <Section num={5} title="Información adicional" desc="Notas" isOpen={openSection === 5} onToggle={() => toggleSection(5)}>
         <div className="space-y-4 mt-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Notas</label>
+            <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Notas</label>
             <textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={3} placeholder="Observaciones adicionales..." className={inputClass + ' resize-none'} />
           </div>
         </div>
@@ -207,18 +207,18 @@ export default function NuevoEquipoPage() {
         <div className="space-y-4 mt-4">
           <div
             onClick={() => fileRef.current?.click()}
-            className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-green-500 hover:bg-green-50/30 transition-all"
+            className="border-2 border-dashed border-[var(--line-2)] rounded-xl p-6 text-center cursor-pointer hover:border-[var(--selva-500)] hover:bg-[var(--low-bg)] transition-all"
           >
-            <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar archivos</p>
-            <p className="text-xs text-gray-400 mt-1">PNG, JPG, PDF (Max. 10 MB por archivo)</p>
+            <p className="text-sm font-medium text-[var(--ink-2)]">Haz clic para seleccionar archivos</p>
+            <p className="text-xs text-[var(--faint)] mt-1">PNG, JPG, PDF (Max. 10 MB por archivo)</p>
           </div>
           <input ref={fileRef} type="file" multiple accept="image/*,.pdf" onChange={e => { if (e.target.files) setFiles(prev => [...prev, ...Array.from(e.target.files!)]); }} className="hidden" />
           {files.length > 0 && (
             <div className="space-y-2">
               {files.map((f, i) => (
-                <div key={i} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
-                  <span className="text-gray-700 truncate">{f.name}</span>
-                  <button onClick={() => setFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 text-xs ml-2">Eliminar</button>
+                <div key={i} className="flex items-center justify-between bg-[var(--canvas)] rounded-lg px-3 py-2 text-sm">
+                  <span className="text-[var(--ink-2)] truncate">{f.name}</span>
+                  <button onClick={() => setFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-[var(--crit)] hover:text-[var(--crit)] text-xs ml-2">Eliminar</button>
                 </div>
               ))}
             </div>
@@ -227,11 +227,11 @@ export default function NuevoEquipoPage() {
       </Section>
 
       <div className="flex justify-end gap-3 pb-6">
-        <Link href="/inventario" className="px-5 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50">Cancelar</Link>
+        <Link href="/inventario" className="px-5 py-2.5 border rounded-xl text-sm font-medium hover:bg-[var(--surface-2)]">Cancelar</Link>
         <button
           onClick={handleSubmit}
           disabled={createAsset.isPending}
-          className="bg-green-700 hover:bg-green-600 disabled:bg-gray-300 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
+          className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
         >
           {createAsset.isPending ? 'Guardando...' : 'Guardar equipo'}
         </button>

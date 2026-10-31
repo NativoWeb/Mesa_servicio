@@ -15,7 +15,6 @@ export default function LoginPage() {
   const router = useRouter();
   const { isAuthenticated, user, isHydrated } = useAuthStore();
 
-  // Redirigir si ya está autenticado
   useEffect(() => {
     if (isHydrated && isAuthenticated && user) {
       router.replace(getRoleRoute(user.role));
@@ -36,7 +35,7 @@ export default function LoginPage() {
       } else if (axiosError.response?.data?.message) {
         setError(axiosError.response.data.message);
       } else {
-        setError('Error de conexión. Verifica que el servidor esté activo.');
+        setError('Error de conexion. Verifica que el servidor este activo.');
       }
     } finally {
       setLoading(false);
@@ -46,20 +45,37 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Panel izquierdo — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-950 via-green-900 to-green-800 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-green-400/10 rounded-full blur-3xl" />
-        </div>
+      <div
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
+        style={{ background: 'linear-gradient(140deg, #0f3d2b, #08261b)' }}
+      >
+        {/* Dot pattern */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px)',
+            backgroundSize: '18px 18px',
+          }}
+        />
+        {/* Decorative orb */}
+        <div
+          className="absolute w-[500px] h-[500px] -bottom-32 -right-32 animate-pulse"
+          style={{
+            background: 'radial-gradient(circle, rgba(184,212,50,.35), transparent 65%)',
+          }}
+        />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">SD</span>
+              <div
+                className="w-10 h-10 flex items-center justify-center font-bold text-sm"
+                style={{ background: '#b8d432', color: '#0c3324', borderRadius: '11px' }}
+              >
+                SD
               </div>
               <div>
                 <h2 className="text-white font-semibold text-lg leading-tight">Service Desk</h2>
-                <p className="text-green-300 text-sm">Mesa de Servicio TI</p>
+                <p style={{ color: '#b6cfbf' }} className="text-sm">Mesa de Servicio TI</p>
               </div>
             </div>
           </div>
@@ -68,8 +84,8 @@ export default function LoginPage() {
             <h1 className="text-white text-4xl font-bold leading-tight mb-4">
               Mesa de Servicio TI
             </h1>
-            <p className="text-green-200/80 text-lg leading-relaxed max-w-md">
-              Plataforma de gestión de soporte técnico e inventario de activos tecnológicos institucionales.
+            <p style={{ color: '#b6cfbf' }} className="text-lg leading-relaxed max-w-md">
+              Plataforma de gestion de soporte tecnico e inventario de activos tecnologicos institucionales.
             </p>
             <div className="mt-8 grid grid-cols-3 gap-4">
               {[
@@ -77,42 +93,68 @@ export default function LoginPage() {
                 { value: '6', label: 'Sedes' },
                 { value: 'SLA', label: 'Monitoreo' },
               ].map((stat) => (
-                <div key={stat.label} className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
-                  <p className="text-white text-2xl font-bold">{stat.value}</p>
-                  <p className="text-green-300 text-xs mt-1">{stat.label}</p>
+                <div
+                  key={stat.label}
+                  className="backdrop-blur p-4 text-center"
+                  style={{
+                    background: 'rgba(255,255,255,.08)',
+                    borderRadius: '14px',
+                    border: '1px solid rgba(255,255,255,.1)',
+                  }}
+                >
+                  <p className="text-white text-2xl font-bold tabular-nums">{stat.value}</p>
+                  <p style={{ color: '#b6cfbf' }} className="text-xs mt-1">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <p className="text-green-400/60 text-xs">
+          <p style={{ color: 'rgba(184,212,50,.45)' }} className="text-xs">
             &copy; 2026 Mesa de Servicio TI
           </p>
         </div>
       </div>
 
       {/* Panel derecho — formulario */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8" style={{ background: 'var(--canvas)' }}>
         <div className="w-full max-w-md">
-          {/* Logo móvil */}
+          {/* Logo movil */}
           <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-green-900 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SD</span>
+              <div
+                className="w-10 h-10 flex items-center justify-center font-bold text-sm"
+                style={{ background: '#b8d432', color: '#0c3324', borderRadius: '11px' }}
+              >
+                SD
               </div>
-              <span className="text-xl font-bold text-gray-900">Mesa de Servicio TI</span>
+              <span className="text-xl font-bold" style={{ color: 'var(--ink)' }}>Mesa de Servicio TI</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border p-8">
+          <div
+            className="p-8"
+            style={{
+              background: 'var(--surface)',
+              borderRadius: '16px',
+              boxShadow: 'var(--sh-2)',
+              border: '1px solid var(--line)',
+            }}
+          >
+            {/* Brand mark */}
             <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Iniciar sesión</h1>
-              <p className="text-gray-500 text-sm mt-1">Ingresa con tu cuenta institucional</p>
+              <div
+                className="w-10 h-10 flex items-center justify-center font-bold text-sm mb-4 hidden lg:flex"
+                style={{ background: '#b8d432', color: '#0c3324', borderRadius: '11px' }}
+              >
+                SD
+              </div>
+              <h1 className="text-2xl font-bold" style={{ color: 'var(--ink)' }}>Iniciar sesion</h1>
+              <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>Ingresa con tu cuenta institucional</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label htmlFor="email" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--ink-2)' }}>
                   Correo institucional
                 </label>
                 <input
@@ -123,17 +165,36 @@ export default function LoginPage() {
                   placeholder="usuario@ejemplo.com"
                   required
                   autoComplete="email"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full px-4 text-sm outline-none transition-all"
+                  style={{
+                    height: '42px',
+                    borderRadius: '11px',
+                    border: '1px solid var(--line-2)',
+                    background: 'var(--surface)',
+                    color: 'var(--ink)',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--selva-500)';
+                    e.currentTarget.style.boxShadow = 'var(--focus)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--line-2)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Contraseña
+                  <label htmlFor="password" className="block text-sm font-medium" style={{ color: 'var(--ink-2)' }}>
+                    Contrasena
                   </label>
-                  <Link href="/forgot-password" className="text-xs text-green-700 hover:text-green-800 font-medium">
-                    Olvidé mi contraseña
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs font-medium"
+                    style={{ color: 'var(--selva-500)' }}
+                  >
+                    Olvide mi contrasena
                   </Link>
                 </div>
                 <input
@@ -141,15 +202,38 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="********"
                   required
                   autoComplete="current-password"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full px-4 text-sm outline-none transition-all"
+                  style={{
+                    height: '42px',
+                    borderRadius: '11px',
+                    border: '1px solid var(--line-2)',
+                    background: 'var(--surface)',
+                    color: 'var(--ink)',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--selva-500)';
+                    e.currentTarget.style.boxShadow = 'var(--focus)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--line-2)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
               </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+                <div
+                  className="px-4 py-3 text-sm"
+                  style={{
+                    background: 'var(--crit-bg)',
+                    color: 'var(--crit)',
+                    borderRadius: '11px',
+                    border: '1px solid rgba(207,59,53,.2)',
+                  }}
+                >
                   {error}
                 </div>
               )}
@@ -157,7 +241,20 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-800 hover:bg-green-700 disabled:bg-green-800/60 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-xl transition-colors text-sm"
+                className="w-full font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                style={{
+                  height: '42px',
+                  borderRadius: '11px',
+                  background: '#b8d432',
+                  color: '#1d3a0a',
+                  boxShadow: '0 8px 20px -10px rgba(140,170,20,.8)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading) e.currentTarget.style.background = '#c9e25a';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#b8d432';
+                }}
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -168,20 +265,20 @@ export default function LoginPage() {
                     Verificando...
                   </span>
                 ) : (
-                  'Iniciar sesión'
+                  'Iniciar sesion'
                 )}
               </button>
             </form>
 
-            {/* Accesos rápidos para dev */}
+            {/* Accesos rapidos para dev */}
             {process.env.NODE_ENV === 'development' && (
-              <div className="mt-6 pt-4 border-t border-dashed">
-                <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">Accesos rápidos (dev)</p>
+              <div className="mt-6 pt-4" style={{ borderTop: '1px dashed var(--line)' }}>
+                <p className="text-[10px] uppercase tracking-wider mb-2" style={{ color: 'var(--faint)' }}>Accesos rapidos (dev)</p>
                 <div className="grid grid-cols-3 gap-1.5">
                   {[
                     { label: 'Admin', email: 'admin@demo.servicedesk.com' },
-                    { label: 'Líder', email: 'lider@demo.servicedesk.com' },
-                    { label: 'Técnico', email: 'tecnico@demo.servicedesk.com' },
+                    { label: 'Lider', email: 'lider@demo.servicedesk.com' },
+                    { label: 'Tecnico', email: 'tecnico@demo.servicedesk.com' },
                     { label: 'Inventario', email: 'inventario@demo.servicedesk.com' },
                     { label: 'Usuario', email: 'usuario@demo.servicedesk.com' },
                     { label: 'Cuentadante', email: 'cuentadante@demo.servicedesk.com' },
@@ -194,7 +291,12 @@ export default function LoginPage() {
                         setEmail(acc.email);
                         setPassword('password');
                       }}
-                      className="text-[11px] px-2 py-1.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-gray-600 transition-colors"
+                      className="text-[11px] px-2 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      style={{
+                        background: 'var(--surface-3)',
+                        color: 'var(--ink-2)',
+                        borderRadius: '8px',
+                      }}
                     >
                       {acc.label}
                     </button>
@@ -204,7 +306,7 @@ export default function LoginPage() {
             )}
           </div>
 
-          <p className="text-center text-xs text-gray-400 mt-6">
+          <p className="text-center text-xs mt-6" style={{ color: 'var(--faint)' }}>
             Mesa de Servicio TI
           </p>
         </div>

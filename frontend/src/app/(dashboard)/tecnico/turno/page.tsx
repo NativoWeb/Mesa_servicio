@@ -30,33 +30,33 @@ export default function MiTurnoPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Mi Turno</h1>
-        <p className="text-gray-500 text-sm">Consulta tu horario semanal asignado</p>
+        <h1 className="text-2xl font-bold text-[var(--ink)]">Mi Turno</h1>
+        <p className="text-[var(--muted)] text-sm">Consulta tu horario semanal asignado</p>
       </div>
 
       {/* Active Shift Card */}
       {activeShift ? (
-        <div className="bg-white rounded-xl border-2 border-green-200 p-6">
+        <div className="bg-[var(--surface)] rounded-xl border-2 border-[var(--line)] p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
-                <svg className="w-6 h-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <div className="w-12 h-12 bg-[var(--low-bg)] rounded-xl flex items-center justify-center shrink-0">
+                <svg className="w-6 h-6 text-[var(--selva-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <span className="text-xs font-bold text-green-700 uppercase tracking-wider bg-green-100 px-2 py-0.5 rounded">Turno Activo</span>
-                <p className="text-lg font-bold text-gray-900 mt-1">
+                <span className="text-xs font-bold text-[var(--selva-500)] uppercase tracking-wider bg-[var(--low-bg)] px-2 py-0.5 rounded">Turno Activo</span>
+                <p className="text-lg font-bold text-[var(--ink)] mt-1">
                   {format(new Date(activeShift.date), "EEEE d 'de' MMMM", { locale: es })}
                   {activeShift.start_time && activeShift.end_time && ` · ${activeShift.start_time} - ${activeShift.end_time}`}
                 </p>
-                <p className="text-sm text-gray-500">{activeShift.campus || 'Sin sede'}{activeShift.building ? ` · ${activeShift.building}` : ''}</p>
+                <p className="text-sm text-[var(--muted)]">{activeShift.campus || 'Sin sede'}{activeShift.building ? ` · ${activeShift.building}` : ''}</p>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-xl border p-6 text-center text-gray-500">
+        <div className="bg-[var(--canvas)] rounded-xl border border-[var(--line)] p-6 text-center text-[var(--muted)]">
           No tienes turno activo hoy
         </div>
       )}
@@ -68,24 +68,24 @@ export default function MiTurnoPage() {
           { label: 'Total turnos', value: shifts.length, sub: 'Registrados' },
           { label: 'Sede principal', value: user?.campus || '-', sub: 'Asignada' },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white rounded-xl border p-5 hover:shadow-sm transition-shadow">
-            <p className="text-xl font-bold text-gray-900">{stat.value}</p>
-            <p className="text-sm text-gray-700">{stat.label}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{stat.sub}</p>
+          <div key={stat.label} className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5 hover:shadow-[var(--sh-1)] transition-shadow">
+            <p className="text-xl font-bold text-[var(--ink)]">{stat.value}</p>
+            <p className="text-sm text-[var(--ink-2)]">{stat.label}</p>
+            <p className="text-xs text-[var(--faint)] mt-0.5">{stat.sub}</p>
           </div>
         ))}
       </div>
 
       {/* Weekly Calendar */}
-      <div className="bg-white rounded-xl border p-6">
-        <h2 className="font-semibold text-gray-900 mb-1">Calendario Semanal</h2>
-        <p className="text-sm text-gray-500 mb-5">
+      <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+        <h2 className="font-semibold text-[var(--ink)] mb-1">Calendario Semanal</h2>
+        <p className="text-sm text-[var(--muted)] mb-5">
           Semana del {format(weekStart, "d 'de' MMMM", { locale: es })}
         </p>
 
         {isLoading ? (
           <div className="grid grid-cols-7 gap-2">
-            {Array.from({ length: 7 }).map((_, i) => <div key={i} className="h-32 bg-gray-100 rounded-xl animate-pulse" />)}
+            {Array.from({ length: 7 }).map((_, i) => <div key={i} className="h-32 bg-[var(--surface-3)] rounded-xl animate-pulse" />)}
           </div>
         ) : (
           <div className="grid grid-cols-7 gap-2">
@@ -95,29 +95,29 @@ export default function MiTurnoPage() {
                 className={`rounded-xl p-3 text-center transition-colors ${
                   shift
                     ? isTodayDate
-                      ? 'bg-green-50 border-2 border-green-300 ring-2 ring-green-100'
-                      : 'bg-white border hover:border-green-200'
-                    : 'bg-gray-50 border border-gray-200'
+                      ? 'bg-[var(--low-bg)] border-2 border-[var(--line-2)] ring-2 ring-[var(--low-bg)]'
+                      : 'bg-[var(--surface)] border border-[var(--line)] hover:border-[var(--line-2)]'
+                    : 'bg-[var(--canvas)] border border-[var(--line)]'
                 }`}
               >
-                <p className={`text-xs font-semibold uppercase ${shift ? 'text-gray-700' : 'text-gray-400'}`}>
+                <p className={`text-xs font-semibold uppercase ${shift ? 'text-[var(--ink-2)]' : 'text-[var(--faint)]'}`}>
                   {format(date, 'EEE', { locale: es })}
                 </p>
                 <p className={`text-2xl font-bold my-1 ${
-                  shift ? (isTodayDate ? 'text-green-700' : 'text-gray-900') : 'text-gray-300'
+                  shift ? (isTodayDate ? 'text-[var(--selva-500)]' : 'text-[var(--ink)]') : 'text-[var(--faint)]'
                 }`}>
                   {format(date, 'd')}
                 </p>
                 {shift ? (
                   <div className="space-y-1">
                     {shift.start_time && shift.end_time && (
-                      <p className="text-[11px] font-medium text-gray-700">{shift.start_time} - {shift.end_time}</p>
+                      <p className="text-[11px] font-medium text-[var(--ink-2)]">{shift.start_time} - {shift.end_time}</p>
                     )}
-                    <p className="text-[10px] text-gray-500">{shift.campus}</p>
-                    {shift.building && <p className="text-[10px] text-gray-400">{shift.building}</p>}
+                    <p className="text-[10px] text-[var(--muted)]">{shift.campus}</p>
+                    {shift.building && <p className="text-[10px] text-[var(--faint)]">{shift.building}</p>}
                   </div>
                 ) : (
-                  <p className="text-[11px] text-gray-400 mt-2">Sin turno</p>
+                  <p className="text-[11px] text-[var(--faint)] mt-2">Sin turno</p>
                 )}
               </div>
             ))}

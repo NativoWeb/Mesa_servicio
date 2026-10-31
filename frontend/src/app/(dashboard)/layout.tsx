@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [isHydrated, isAuthenticated, router]);
 
-  // Proteger rutas por rol: redirigir si el usuario accede a un prefijo que no le corresponde
+  // Proteger rutas por rol
   useEffect(() => {
     if (!isHydrated || !isAuthenticated || !user) return;
     const allowedPrefix = ROLE_PREFIXES[user.role];
@@ -42,28 +42,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     loadBranding();
   }, [loadBranding]);
 
-  // Mostrar loading mientras se hidrata el store
   if (!isHydrated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--canvas)' }}>
         <div className="flex flex-col items-center gap-3">
-          <svg className="animate-spin h-8 w-8 text-green-700" viewBox="0 0 24 24" fill="none">
+          <svg className="animate-spin h-8 w-8" style={{ color: 'var(--selva-500, #1f6a4c)' }} viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          <p className="text-sm text-gray-500">Cargando...</p>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>Cargando...</p>
         </div>
       </div>
     );
   }
 
-  // No renderizar si no está autenticado (el redirect ya se disparó)
   if (!isAuthenticated || !user) {
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'var(--canvas)' }}>
       <div className="flex">
         <div className="hidden lg:block">
           <AppSidebar />
@@ -71,10 +69,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="flex-1 flex flex-col min-h-screen">
           <Header />
           <div className="flex-1 p-6">{children}</div>
-          <footer className="px-6 py-3 border-t bg-white text-xs text-gray-400 flex items-center justify-between">
+          <footer
+            className="px-6 py-3 text-xs flex items-center justify-between"
+            style={{
+              background: 'var(--surface)',
+              borderTop: '1px solid var(--line)',
+              color: 'var(--faint)',
+            }}
+          >
             <span>&copy; 2026 Mesa de Servicio TI</span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--low, #2f8f57)' }} />
               Sistema Operativo
             </span>
           </footer>

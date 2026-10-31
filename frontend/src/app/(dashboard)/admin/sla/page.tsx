@@ -12,10 +12,10 @@ const priorityLabels: Record<string, string> = {
 };
 
 const priorityColors: Record<string, string> = {
-  critical: 'bg-red-100 text-red-700',
-  high: 'bg-orange-100 text-orange-700',
-  medium: 'bg-yellow-100 text-yellow-700',
-  low: 'bg-gray-100 text-gray-700',
+  critical: 'bg-[var(--crit-bg)] text-[var(--crit)]',
+  high: 'bg-[var(--high-bg)] text-[var(--high)]',
+  medium: 'bg-[var(--med-bg)] text-[var(--med)]',
+  low: 'bg-[var(--surface-3)] text-[var(--ink-2)]',
 };
 
 interface EditableRow {
@@ -115,11 +115,11 @@ export default function AdminSlaPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Configuracion de Tiempos SLA</h1>
-            <p className="text-gray-500 text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
+            <h1 className="text-2xl font-bold text-[var(--ink)]">Configuracion de Tiempos SLA</h1>
+            <p className="text-[var(--muted)] text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl border p-8 text-center text-gray-500">Cargando configuracion SLA...</div>
+        <div className="bg-[var(--surface)] rounded-xl border p-8 text-center text-[var(--muted)]">Cargando configuracion SLA...</div>
       </div>
     );
   }
@@ -129,11 +129,11 @@ export default function AdminSlaPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Configuracion de Tiempos SLA</h1>
-            <p className="text-gray-500 text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
+            <h1 className="text-2xl font-bold text-[var(--ink)]">Configuracion de Tiempos SLA</h1>
+            <p className="text-[var(--muted)] text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl border p-8 text-center text-red-500">Error al cargar la configuracion SLA.</div>
+        <div className="bg-[var(--surface)] rounded-xl border p-8 text-center text-[var(--crit)]">Error al cargar la configuracion SLA.</div>
       </div>
     );
   }
@@ -142,32 +142,32 @@ export default function AdminSlaPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Configuracion de Tiempos SLA</h1>
-          <p className="text-gray-500 text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
+          <h1 className="text-2xl font-bold text-[var(--ink)]">Configuracion de Tiempos SLA</h1>
+          <p className="text-[var(--muted)] text-sm">Define los tiempos de respuesta y resolucion por prioridad</p>
         </div>
         <button
           onClick={handleToggleEdit}
           disabled={saving}
-          className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50"
+          className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50"
         >
           {saving ? 'Guardando...' : editing ? 'Guardar cambios' : 'Editar parametros SLA'}
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border overflow-hidden">
+      <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-gray-50/50">
-              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Prioridad del Ticket</th>
-              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Respuesta (hrs)</th>
-              <th className="text-left p-4 font-medium text-gray-500 text-xs uppercase">Tiempo Resolución (hrs)</th>
+            <tr className="border-b bg-[var(--surface-2)]">
+              <th className="text-left p-4 font-semibold text-[var(--muted)] text-xs">Prioridad del Ticket</th>
+              <th className="text-left p-4 font-semibold text-[var(--muted)] text-xs">Tiempo Respuesta (hrs)</th>
+              <th className="text-left p-4 font-semibold text-[var(--muted)] text-xs">Tiempo Resolución (hrs)</th>
             </tr>
           </thead>
           <tbody>
             {editableRows.map((row, index) => (
-              <tr key={row.id} className="border-b hover:bg-gray-50/50">
+              <tr key={row.id} className="border-b hover:bg-[var(--surface-2)]">
                 <td className="p-4">
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${priorityColors[row.priority] || 'bg-gray-100 text-gray-700'}`}>
+                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${priorityColors[row.priority] || 'bg-[var(--surface-3)] text-[var(--ink-2)]'}`}>
                     {priorityLabels[row.priority] || row.priority}
                   </span>
                 </td>
@@ -201,7 +201,7 @@ export default function AdminSlaPage() {
             ))}
             {editableRows.length === 0 && (
               <tr>
-                <td colSpan={3} className="p-8 text-center text-gray-400">
+                <td colSpan={3} className="p-8 text-center text-[var(--faint)]">
                   No hay configuraciones SLA definidas.
                 </td>
               </tr>

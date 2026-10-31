@@ -91,53 +91,53 @@ export default function AdminUsuariosPage() {
     }
   };
 
-  const inputClass = "w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-green-500/20";
+  const inputClass = "w-full px-3 py-2 border rounded-lg text-sm outline-none focus:shadow-[var(--focus)]";
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
-          <p className="text-gray-500">Administración centralizada de usuarios del sistema</p>
+          <h1 className="text-2xl font-bold text-[var(--ink)]">Gestión de Usuarios</h1>
+          <p className="text-[var(--muted)]">Administración centralizada de usuarios del sistema</p>
         </div>
-        <button onClick={handleCancel} className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium">
+        <button onClick={handleCancel} className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium">
           {showCreate ? 'Cancelar' : 'Crear usuario'}
         </button>
       </div>
 
       {/* Create form */}
       {showCreate && (
-        <div className="bg-white rounded-xl border p-6 mb-6">
+        <div className="bg-[var(--surface)] rounded-xl border p-6 mb-6">
           <h2 className="font-semibold mb-4">Nuevo Usuario</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nombre*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Nombre*</label>
               <input value={newUser.name} onChange={e => setNewUser(p => ({ ...p, name: e.target.value }))} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Email*</label>
               <input type="email" value={newUser.email} onChange={e => setNewUser(p => ({ ...p, email: e.target.value }))} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Password*</label>
               <input type="password" value={newUser.password} onChange={e => setNewUser(p => ({ ...p, password: e.target.value }))} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Rol</label>
               <select value={newUser.role} onChange={e => setNewUser(p => ({ ...p, role: e.target.value }))} className={inputClass}>
                 {Object.entries(ROLE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sede</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Sede</label>
               <input value={newUser.campus} onChange={e => setNewUser(p => ({ ...p, campus: e.target.value }))} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Departamento</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Departamento</label>
               <input value={newUser.department} onChange={e => setNewUser(p => ({ ...p, department: e.target.value }))} className={inputClass} />
             </div>
           </div>
-          <button onClick={handleCreate} disabled={createUser.isPending} className="bg-green-700 hover:bg-green-600 disabled:bg-gray-300 text-white px-6 py-2 rounded-lg text-sm font-medium">
+          <button onClick={handleCreate} disabled={createUser.isPending} className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2 rounded-lg text-sm font-medium">
             {createUser.isPending ? 'Creando...' : 'Crear'}
           </button>
         </div>
@@ -145,40 +145,40 @@ export default function AdminUsuariosPage() {
 
       {/* Edit form */}
       {editingUser && (
-        <div className="bg-white rounded-xl border p-6 mb-6">
+        <div className="bg-[var(--surface)] rounded-xl border p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Editar Usuario</h2>
-            <button onClick={() => setEditingUser(null)} className="text-gray-400 hover:text-gray-600 text-sm">Cancelar</button>
+            <button onClick={() => setEditingUser(null)} className="text-[var(--faint)] hover:text-[var(--ink-2)] text-sm">Cancelar</button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nombre*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Nombre*</label>
               <input value={editingUser.name} onChange={e => setEditingUser(p => p ? { ...p, name: e.target.value } : p)} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email*</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Email*</label>
               <input type="email" value={editingUser.email} onChange={e => setEditingUser(p => p ? { ...p, email: e.target.value } : p)} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nueva contraseña</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Nueva contraseña</label>
               <input type="password" value={editingUser.password} onChange={e => setEditingUser(p => p ? { ...p, password: e.target.value } : p)} placeholder="Dejar vacío para no cambiar" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Rol</label>
               <select value={editingUser.role} onChange={e => setEditingUser(p => p ? { ...p, role: e.target.value } : p)} className={inputClass}>
                 {Object.entries(ROLE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sede</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Sede</label>
               <input value={editingUser.campus} onChange={e => setEditingUser(p => p ? { ...p, campus: e.target.value } : p)} className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Departamento</label>
+              <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Departamento</label>
               <input value={editingUser.department} onChange={e => setEditingUser(p => p ? { ...p, department: e.target.value } : p)} className={inputClass} />
             </div>
           </div>
-          <button onClick={handleUpdate} disabled={updateUser.isPending} className="bg-green-700 hover:bg-green-600 disabled:bg-gray-300 text-white px-6 py-2 rounded-lg text-sm font-medium">
+          <button onClick={handleUpdate} disabled={updateUser.isPending} className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2 rounded-lg text-sm font-medium">
             {updateUser.isPending ? 'Guardando...' : 'Guardar cambios'}
           </button>
         </div>
@@ -186,44 +186,44 @@ export default function AdminUsuariosPage() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Buscar por nombre o email..." className="flex-1 max-w-xs px-4 py-2 bg-white border rounded-lg text-sm outline-none focus:ring-2 focus:ring-green-500/20" />
-        <select value={roleFilter} onChange={e => { setRoleFilter(e.target.value); setPage(1); }} className="px-3 py-2 bg-white border rounded-lg text-sm outline-none">
+        <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Buscar por nombre o email..." className="flex-1 max-w-xs px-4 py-2 bg-[var(--surface)] border rounded-lg text-sm outline-none focus:shadow-[var(--focus)]" />
+        <select value={roleFilter} onChange={e => { setRoleFilter(e.target.value); setPage(1); }} className="px-3 py-2 bg-[var(--surface)] border rounded-lg text-sm outline-none">
           <option value="">Todos los roles</option>
           {Object.entries(ROLE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border overflow-hidden">
+      <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-gray-50/50">
-              <th className="text-left p-3 pl-6 font-medium text-gray-500 text-xs uppercase">Nombre</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Email</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Rol</th>
-              <th className="text-left p-3 font-medium text-gray-500 text-xs uppercase">Sede</th>
-              <th className="text-left p-3 pr-6 font-medium text-gray-500 text-xs uppercase">Acciones</th>
+            <tr className="border-b bg-[var(--surface-2)]">
+              <th className="text-left p-3 pl-6 font-semibold text-[var(--muted)] text-xs">Nombre</th>
+              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Email</th>
+              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Rol</th>
+              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Sede</th>
+              <th className="text-left p-3 pr-6 font-semibold text-[var(--muted)] text-xs">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-b"><td colSpan={5} className="p-3"><div className="h-4 bg-gray-100 rounded animate-pulse" /></td></tr>
+                <tr key={i} className="border-b"><td colSpan={5} className="p-3"><div className="h-4 bg-[var(--surface-3)] rounded animate-pulse" /></td></tr>
               ))
             ) : !data?.data.length ? (
-              <tr><td colSpan={5} className="text-center py-12 text-gray-400">No se encontraron usuarios</td></tr>
+              <tr><td colSpan={5} className="text-center py-12 text-[var(--faint)]">No se encontraron usuarios</td></tr>
             ) : (
               data.data.map(u => (
-                <tr key={u.id} className="border-b hover:bg-gray-50/50 transition-colors">
-                  <td className="p-3 pl-6 font-medium text-gray-900">{u.name}</td>
-                  <td className="p-3 text-gray-600">{u.email}</td>
+                <tr key={u.id} className="border-b hover:bg-[var(--surface-2)] transition-colors">
+                  <td className="p-3 pl-6 font-medium text-[var(--ink)]">{u.name}</td>
+                  <td className="p-3 text-[var(--ink-2)]">{u.email}</td>
                   <td className="p-3">
-                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-700">{ROLE_LABELS[u.role] || u.role}</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[var(--surface-3)] text-[var(--ink-2)]">{ROLE_LABELS[u.role] || u.role}</span>
                   </td>
-                  <td className="p-3 text-gray-600">{u.campus || '-'}</td>
+                  <td className="p-3 text-[var(--ink-2)]">{u.campus || '-'}</td>
                   <td className="p-3 pr-6 flex items-center gap-3">
-                    <button onClick={() => handleEdit(u)} className="text-green-700 hover:text-green-900 text-xs font-medium">Editar</button>
-                    <button onClick={() => handleDelete(u.id, u.name)} className="text-red-600 hover:text-red-800 text-xs font-medium">Eliminar</button>
+                    <button onClick={() => handleEdit(u)} className="text-[var(--selva-500)] hover:text-[var(--selva-500)] text-xs font-medium">Editar</button>
+                    <button onClick={() => handleDelete(u.id, u.name)} className="text-[var(--crit)] hover:text-[var(--crit)] text-xs font-medium">Eliminar</button>
                   </td>
                 </tr>
               ))
@@ -231,11 +231,11 @@ export default function AdminUsuariosPage() {
           </tbody>
         </table>
         {data && data.last_page > 1 && (
-          <div className="px-6 py-3 border-t flex items-center justify-between text-xs text-gray-500">
+          <div className="px-6 py-3 border-t flex items-center justify-between text-xs text-[var(--muted)]">
             <span>Página {data.current_page} de {data.last_page} ({data.total} usuarios)</span>
             <div className="flex gap-1">
-              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50">Anterior</button>
-              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50">Siguiente</button>
+              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50">Anterior</button>
+              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50">Siguiente</button>
             </div>
           </div>
         )}

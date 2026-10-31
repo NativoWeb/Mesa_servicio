@@ -33,30 +33,30 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--canvas)] p-8">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-sm border p-8">
+        <div className="bg-[var(--surface)] rounded-2xl shadow-[var(--sh-1)] border p-8">
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-green-900 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-[var(--selva-900)] rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-sm">SD</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">Mesa de Servicio TI</span>
+              <span className="text-xl font-bold text-[var(--ink)]">Mesa de Servicio TI</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Recuperar contrasena</h1>
-            <p className="text-gray-500 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-[var(--ink)]">Recuperar contrasena</h1>
+            <p className="text-[var(--muted)] text-sm mt-1">
               Ingresa tu correo institucional y te enviaremos un enlace para restablecer tu contrasena.
             </p>
           </div>
 
           {success ? (
             <div className="space-y-4">
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">
+              <div className="bg-[var(--low-bg)] border border-[var(--line)] text-[var(--selva-500)] px-4 py-3 rounded-xl text-sm">
                 Se ha enviado un enlace de restablecimiento a tu correo. Revisa tu bandeja de entrada.
               </div>
               <Link
                 href="/login"
-                className="block w-full text-center bg-green-800 hover:bg-green-700 text-white font-medium py-2.5 rounded-xl transition-colors text-sm"
+                className="block w-full text-center bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] font-medium py-2.5 rounded-xl transition-colors text-sm"
               >
                 Volver al inicio de sesion
               </Link>
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">
                   Correo institucional
                 </label>
                 <input
@@ -75,12 +75,12 @@ export default function ForgotPasswordPage() {
                   placeholder="usuario@ejemplo.com"
                   required
                   autoComplete="email"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm focus:ring-2 focus:shadow-[var(--focus)] focus:border-[var(--selva-500)] outline-none transition-all placeholder:text-[var(--faint)]"
                 />
               </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+                <div className="bg-[var(--crit-bg)] border border-[var(--line)] text-[var(--crit)] px-4 py-3 rounded-xl text-sm">
                   {error}
                 </div>
               )}
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-800 hover:bg-green-700 disabled:bg-green-800/60 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-xl transition-colors text-sm"
+                className="w-full bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:opacity-60 disabled:cursor-not-allowed text-[var(--lima-ink)] font-medium py-2.5 rounded-xl transition-colors text-sm"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -105,7 +105,7 @@ export default function ForgotPasswordPage() {
 
               <Link
                 href="/login"
-                className="block text-center text-sm text-green-700 hover:text-green-800 font-medium"
+                className="block text-center text-sm text-[var(--selva-500)] hover:text-[var(--selva-500)] font-medium"
               >
                 Volver al inicio de sesion
               </Link>
