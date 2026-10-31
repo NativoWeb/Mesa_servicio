@@ -260,8 +260,8 @@ function AppSidebarInner() {
         style={{ background: 'radial-gradient(circle at 100% 100%, rgba(184,212,50,.16), transparent 65%)' }}
       />
 
-      {/* Header */}
-      <div className="p-4 border-b" style={{ borderColor: 'rgba(255,255,255,.07)' }}>
+      {/* Header — brand */}
+      <div style={{ padding: '20px 20px 14px', borderBottom: '1px solid rgba(255,255,255,.07)' }}>
         <div className="flex items-center gap-3">
           {config.logo_url ? (
             <img
@@ -272,40 +272,44 @@ function AppSidebarInner() {
             />
           ) : (
             <div
-              className="w-10 h-10 flex items-center justify-center text-sm font-bold"
-              style={{ background: '#b8d432', color: '#0c3324', borderRadius: '11px' }}
+              className="w-10 h-10 flex items-center justify-center font-[800] text-[15px]"
+              style={{ background: '#b8d432', color: '#0c3324', borderRadius: '11px', letterSpacing: '-0.04em', boxShadow: '0 6px 18px -6px rgba(184,212,50,.6)' }}
             >
               {logoInitials}
             </div>
           )}
           <div>
-            <p className="text-sm font-semibold leading-tight">{config.short_name || 'SD'}</p>
-            <p className="text-[10px] uppercase tracking-wider" style={{ color: 'rgba(255,255,255,.6)' }}>
+            <p className="text-[15px] font-bold leading-tight text-white">{config.short_name || 'SD'}</p>
+            <p className="text-[12px]" style={{ color: '#9fbcab' }}>
               {config.name}
             </p>
           </div>
         </div>
         <div
-          className="mt-3 px-2.5 py-1 text-xs inline-block uppercase tracking-wide font-medium"
+          className="mt-2.5 inline-flex items-center gap-1.5"
           style={{
             background: 'rgba(184,212,50,.14)',
-            color: '#c9e25a',
+            color: 'var(--lima-400)',
             border: '1px solid rgba(184,212,50,.28)',
-            borderRadius: '8px',
+            borderRadius: '99px',
+            padding: '4px 10px',
+            fontSize: '12px',
+            fontWeight: 700,
           }}
         >
+          <i style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--lima-500)', boxShadow: '0 0 0 3px rgba(184,212,50,.2)', display: 'inline-block' }} />
           {roleLabel}
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-4 overflow-y-auto text-sm relative z-10">
+      <nav className="flex-1 overflow-y-auto relative z-10" style={{ padding: '6px 12px 20px', scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,.15) transparent' }}>
         {nav.map((group) => (
-          <div key={group.group}>
-            <p className="text-[10px] uppercase tracking-wider mb-1 px-2" style={{ color: 'rgba(255,255,255,.4)' }}>
+          <div key={group.group} style={{ marginTop: 14 }}>
+            <span className="block" style={{ padding: '0 10px 6px', fontSize: '11.5px', fontWeight: 600, color: '#7f9e8c', letterSpacing: '0.02em' }}>
               {group.group}
-            </p>
-            <div className="space-y-0.5">
+            </span>
+            <div>
               {group.items.map((item) => {
                 const [itemPath, itemQuery] = item.href.split("?");
                 let isActive: boolean;
@@ -323,34 +327,47 @@ function AppSidebarInner() {
                   <Link
                     key={item.href + item.label}
                     href={item.href}
-                    className="flex items-center gap-2 px-3 py-1.5 transition-colors relative"
+                    className="flex items-center relative"
                     style={{
-                      borderRadius: '8px',
+                      gap: '11px',
+                      padding: '9px 10px',
+                      margin: '1px 0',
+                      borderRadius: '10px',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      fontWeight: isActive ? 650 : 500,
                       background: isActive ? 'rgba(184,212,50,.14)' : undefined,
-                      color: isActive ? '#ffffff' : 'rgba(255,255,255,.7)',
+                      color: isActive ? '#ffffff' : '#c9dbcf',
+                      transition: 'background .18s, color .18s',
                     }}
                     onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,.06)';
+                      if (!isActive) {
+                        e.currentTarget.style.background = 'rgba(255,255,255,.06)';
+                        e.currentTarget.style.color = '#fff';
+                      }
                     }}
                     onMouseLeave={(e) => {
-                      if (!isActive) e.currentTarget.style.background = '';
+                      if (!isActive) {
+                        e.currentTarget.style.background = '';
+                        e.currentTarget.style.color = '#c9dbcf';
+                      }
                     }}
                   >
                     {isActive && (
                       <span
-                        className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4"
-                        style={{ background: '#b8d432', borderRadius: '0 4px 4px 0' }}
+                        className="absolute"
+                        style={{ left: '-12px', top: '8px', bottom: '8px', width: '4px', background: 'var(--lima-500)', borderRadius: '0 4px 4px 0' }}
                       />
                     )}
                     <item.icon
-                      className="w-4 h-4 shrink-0"
-                      style={{ color: isActive ? '#b8d432' : undefined }}
+                      className="w-[18px] h-[18px] shrink-0"
+                      style={{ color: isActive ? 'var(--lima-500)' : undefined }}
                     />
                     <span>{item.label}</span>
                     {item.badge && item.badge > 0 && (
                       <span
-                        className="ml-auto text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold"
-                        style={{ background: '#cf3b35' }}
+                        className="ml-auto"
+                        style={{ minWidth: 22, height: 20, padding: '0 6px', borderRadius: '99px', background: 'var(--crit)', color: '#fff', fontSize: '11.5px', fontWeight: 700, display: 'grid', placeItems: 'center' }}
                       >
                         {item.badge}
                       </span>
@@ -364,17 +381,16 @@ function AppSidebarInner() {
       </nav>
 
       {/* User footer */}
-      <div className="p-3 relative z-10" style={{ borderTop: '1px solid rgba(255,255,255,.07)' }}>
-        <div className="flex items-center gap-2 px-2">
+      <div className="relative z-10 flex items-center" style={{ padding: '14px 16px 18px', borderTop: '1px solid rgba(255,255,255,.07)', gap: '10px' }}>
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
             style={{ background: 'rgba(255,255,255,.1)' }}
           >
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium truncate">{user?.name}</p>
-            <p className="text-[10px] truncate" style={{ color: 'rgba(255,255,255,.6)' }}>{roleLabel}</p>
+            <p className="text-[13.5px] font-bold text-white truncate">{user?.name}</p>
+            <p className="text-[12px] truncate" style={{ color: '#8fae9c' }}>{roleLabel}</p>
           </div>
           {role === 'admin' && (
             <button
@@ -388,7 +404,6 @@ function AppSidebarInner() {
               <Settings className="w-4 h-4" />
             </button>
           )}
-        </div>
       </div>
     </aside>
   );

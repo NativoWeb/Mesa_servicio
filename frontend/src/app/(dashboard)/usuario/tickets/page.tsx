@@ -82,19 +82,19 @@ export default function MisTicketsPage() {
           <h1 className="text-2xl font-bold text-[var(--ink)]">Mis Tickets</h1>
           <p className="text-[var(--muted)] text-sm">Tienes {activeCount} tickets activos</p>
         </div>
-        <Link href="/usuario/tickets/nuevo" className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5">
+        <Link href="/usuario/tickets/nuevo" className="nw-btn primary">
           <span className="text-lg leading-none">+</span> Crear nuevo ticket
         </Link>
       </div>
 
       {/* Filters + Search */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex bg-[var(--surface)] rounded-xl border border-[var(--line)] p-1 gap-0.5">
+        <div className="seg">
           {filters.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-colors ${filter === f.key ? 'bg-[var(--lima-500)] text-[var(--lima-ink)]' : 'text-[var(--ink-2)] hover:bg-[var(--surface-3)]'}`}
+              className={filter === f.key ? 'on' : ''}
             >
               {f.label}
             </button>
@@ -105,7 +105,7 @@ export default function MisTicketsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por ID o descripción..."
-            className="w-full px-4 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)]"
+            className="nw-input"
           />
         </div>
       </div>
@@ -132,19 +132,18 @@ export default function MisTicketsPage() {
               <Link
                 key={t.id}
                 href={`/usuario/tickets/${t.id}`}
-                className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5 hover:shadow-md hover:border-[var(--line-2)] transition-all group"
+                className="nw-card p-5 hover:shadow-md hover:border-[var(--line-2)] transition-all group block"
               >
                 <div className="flex items-start justify-between mb-2">
                   <span className="font-mono font-bold text-[var(--ink)]">{displayId}</span>
-                  <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium flex items-center gap-1 ${pConfig.color}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${pConfig.dot}`} />
+                  <span className={`nw-badge ${pConfig.color}`}>
                     {pConfig.label}
                   </span>
                 </div>
                 <p className="text-[10px] text-[var(--faint)] uppercase tracking-wider">{t.category}</p>
                 <h3 className="font-medium text-[var(--ink)] mt-1 text-sm leading-snug group-hover:text-[var(--selva-500)] transition-colors">{t.title}</h3>
                 <div className="flex items-center justify-between mt-4 pt-3 border-t">
-                  <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${sConfig.color}`}>
+                  <span className={`nw-badge ${sConfig.color}`}>
                     {sConfig.label}
                   </span>
                   <span className="text-xs text-[var(--faint)]">{dateStr}</span>
@@ -168,7 +167,7 @@ export default function MisTicketsPage() {
         <div className="text-center py-12 text-[var(--faint)]">
           <p className="text-lg">No se encontraron tickets</p>
           <p className="text-sm mt-1">Intenta con otro filtro o término de búsqueda</p>
-          <Link href="/usuario/tickets/nuevo" className="inline-block mt-4 bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium transition-colors">
+          <Link href="/usuario/tickets/nuevo" className="nw-btn primary mt-4 inline-flex">
             Crear tu primer ticket
           </Link>
         </div>
@@ -176,25 +175,23 @@ export default function MisTicketsPage() {
 
       {/* Pagination */}
       {!loading && lastPage > 1 && (
-        <div className="flex items-center justify-between text-sm text-[var(--muted)]">
+        <div className="pager" style={{ border: 0 }}>
           <span>Página {currentPage} de {lastPage} ({total} tickets)</span>
-          <div className="flex items-center gap-1">
+          <div className="pages">
             <button
               onClick={() => currentPage > 1 && fetchTickets(currentPage - 1)}
               disabled={currentPage <= 1}
-              className="w-8 h-8 rounded-lg border border-[var(--line)] flex items-center justify-center hover:bg-[var(--surface-2)] disabled:opacity-40"
             >‹</button>
             {Array.from({ length: lastPage }, (_, i) => i + 1).slice(0, 5).map((p) => (
               <button
                 key={p}
                 onClick={() => fetchTickets(p)}
-                className={`w-8 h-8 rounded-lg flex items-center justify-center font-medium ${p === currentPage ? 'bg-[var(--lima-500)] text-[var(--lima-ink)]' : 'border border-[var(--line)] hover:bg-[var(--surface-2)]'}`}
+                className={p === currentPage ? 'on' : ''}
               >{p}</button>
             ))}
             <button
               onClick={() => currentPage < lastPage && fetchTickets(currentPage + 1)}
               disabled={currentPage >= lastPage}
-              className="w-8 h-8 rounded-lg border border-[var(--line)] flex items-center justify-center hover:bg-[var(--surface-2)] disabled:opacity-40"
             >›</button>
           </div>
         </div>

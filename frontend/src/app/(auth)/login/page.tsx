@@ -43,10 +43,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen grid" style={{ gridTemplateColumns: '1.1fr 1fr' }}>
       {/* Panel izquierdo — branding */}
       <div
-        className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
+        className="hidden lg:flex relative overflow-hidden"
         style={{ background: 'linear-gradient(140deg, #0f3d2b, #08261b)' }}
       >
         {/* Dot pattern */}
@@ -81,7 +81,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <h1 className="text-white text-4xl font-bold leading-tight mb-4">
+            <h1 className="text-white leading-tight mb-4" style={{ fontSize: 'clamp(34px, 4vw, 54px)', fontWeight: 850 }}>
               Mesa de Servicio TI
             </h1>
             <p style={{ color: '#b6cfbf' }} className="text-lg leading-relaxed max-w-md">
@@ -116,7 +116,7 @@ export default function LoginPage() {
       </div>
 
       {/* Panel derecho — formulario */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8" style={{ background: 'var(--canvas)' }}>
+      <div className="w-full flex items-center justify-center p-8" style={{ background: 'var(--canvas)' }}>
         <div className="w-full max-w-md">
           {/* Logo movil */}
           <div className="lg:hidden text-center mb-8">
@@ -148,7 +148,7 @@ export default function LoginPage() {
               >
                 SD
               </div>
-              <h1 className="text-2xl font-bold" style={{ color: 'var(--ink)' }}>Iniciar sesion</h1>
+              <h1 className="font-[800] text-[28px]" style={{ color: 'var(--ink)' }}>Iniciar sesion</h1>
               <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>Ingresa con tu cuenta institucional</p>
             </div>
 
@@ -241,10 +241,10 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full font-[650] text-[15px] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 style={{
-                  height: '42px',
-                  borderRadius: '11px',
+                  height: '48px',
+                  borderRadius: '13px',
                   background: '#b8d432',
                   color: '#1d3a0a',
                   boxShadow: '0 8px 20px -10px rgba(140,170,20,.8)',

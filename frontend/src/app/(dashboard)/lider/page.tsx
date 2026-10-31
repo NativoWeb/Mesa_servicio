@@ -6,6 +6,7 @@ import { STATUS_CONFIG, PRIORITY_CONFIG } from '@/lib/constants';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Ticket, AlertTriangle, CheckCircle, TrendingUp, Clock } from 'lucide-react';
 
 const PRIORITY_HEX: Record<string, string> = {
   critical: '#cf3b35',
@@ -20,10 +21,10 @@ export default function LiderDashboardPage() {
   if (isLoading || !data) {
     return (
       <div className="space-y-6">
-        <div className="h-8 bg-[var(--line)] rounded w-1/3 animate-pulse" />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="hero-strip animate-pulse" style={{ height: 140 }} />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[18px]">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="bg-[var(--surface)] rounded-xl border p-4 h-28 animate-pulse" />
+            <div key={i} className="nw-card p-5 h-32 animate-pulse" />
           ))}
         </div>
       </div>
@@ -43,41 +44,62 @@ export default function LiderDashboardPage() {
   const slaRate = tickets.total > 0 ? Math.round(((tickets.closed) / Math.max(tickets.total, 1)) * 100) : 0;
 
   const kpis = [
-    { label: 'Tickets Abiertos', value: tickets.open, color: 'text-[var(--info)]', bg: 'bg-[var(--info-bg)]' },
-    { label: 'En Progreso', value: tickets.in_progress, color: 'text-[var(--med)]', bg: 'bg-[var(--med-bg)]' },
-    { label: 'Resueltos', value: tickets.closed, color: 'text-[var(--selva-500)]', bg: 'bg-[var(--low-bg)]' },
-    { label: 'Tasa Resolución', value: `${slaRate}%`, color: 'text-[var(--selva-500)]', bg: 'bg-[var(--low-bg)]' },
-    { label: 'Críticos/Altos Abiertos', value: criticalOpen, color: 'text-[var(--crit)]', bg: 'bg-[var(--crit-bg)]' },
+    { label: 'Tickets Abiertos', value: tickets.open, icon: Ticket, bg: 'bg-[var(--info-bg)]', iconColor: 'text-[var(--info)]', valueColor: 'text-[var(--info)]' },
+    { label: 'En Progreso', value: tickets.in_progress, icon: Clock, bg: 'bg-[var(--med-bg)]', iconColor: 'text-[var(--med)]', valueColor: 'text-[var(--med)]' },
+    { label: 'Resueltos', value: tickets.closed, icon: CheckCircle, bg: 'bg-[var(--low-bg)]', iconColor: 'text-[var(--selva-500)]', valueColor: 'text-[var(--selva-500)]' },
+    { label: 'Tasa Resolución', value: `${slaRate}%`, icon: TrendingUp, bg: 'bg-[var(--low-bg)]', iconColor: 'text-[var(--selva-500)]', valueColor: 'text-[var(--selva-500)]' },
+    { label: 'Críticos/Altos', value: criticalOpen, icon: AlertTriangle, bg: 'bg-[var(--crit-bg)]', iconColor: 'text-[var(--crit)]', valueColor: 'text-[var(--crit)]' },
   ];
 
   const maxCapacity = 20;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--ink)]">Panel de Control — Mesa de Servicio TI</h1>
-        <p className="text-[var(--muted)] text-sm">Semana Actual</p>
+    <div className="space-y-6 view-anim">
+      {/* Hero Strip */}
+      <div className="hero-strip">
+        <div className="flex items-center justify-between flex-wrap gap-5">
+          <div>
+            <h1 className="text-[clamp(24px,2.6vw,32px)] font-[800] tracking-[-0.035em] text-white">
+              Panel de Control
+            </h1>
+            <p className="text-[#b5cdbe] mt-1.5 max-w-[62ch] text-[15.5px]">
+              Mesa de Servicio TI &middot; Unidades Tecnológicas de Santander
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-2.5 flex-wrap mt-[18px]">
+          <div className="focus-chip">
+            <b>{tickets.open}</b> Abiertos
+          </div>
+          <div className="focus-chip hot">
+            <b>{criticalOpen}</b> Críticos/Altos
+          </div>
+          <div className="focus-chip">
+            <b>{slaRate}%</b> Resolución
+          </div>
+        </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[18px]">
         {kpis.map((stat) => (
-          <div key={stat.label} className="bg-[var(--surface)] rounded-xl border p-4 hover:shadow-[var(--sh-1)] transition-shadow">
-            <div className={`w-9 h-9 ${stat.bg} rounded-lg flex items-center justify-center text-sm mb-1`}>
-              <div className={`w-3 h-3 rounded-full ${stat.bg}`} />
+          <div key={stat.label} className="nw-card kpi">
+            <div className="flex items-center justify-between">
+              <div className={`kpi-ico ${stat.bg} ${stat.iconColor}`}>
+                <stat.icon className="w-[18px] h-[18px]" />
+              </div>
             </div>
-            <p className={`text-3xl font-bold mt-2 ${stat.color}`}>{stat.value}</p>
-            <p className="text-[11px] text-[var(--muted)] uppercase tracking-wider mt-0.5">{stat.label}</p>
+            <p className={`kpi-value ${stat.valueColor}`}>{stat.value}</p>
+            <p className="kpi-label">{stat.label}</p>
           </div>
         ))}
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[18px]">
         {/* Priority Donut */}
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
-          <h2 className="font-semibold text-[var(--ink)] mb-4">Tickets por prioridad</h2>
+        <div className="nw-card card-pad">
+          <h2 className="font-[720] text-[16px] text-[var(--ink)] mb-4">Tickets por prioridad</h2>
           {totalPriority > 0 ? (
             <div className="flex items-center gap-6">
               <div className="relative">
@@ -113,10 +135,10 @@ export default function LiderDashboardPage() {
         </div>
 
         {/* Weekly Bar Chart */}
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
+        <div className="nw-card card-pad">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-[var(--ink)]">Tickets (Ultimos 7 dias)</h2>
-            <span className="text-xs text-[var(--muted)] bg-[var(--surface-3)] px-2 py-1 rounded">Semana Actual</span>
+            <h2 className="font-[720] text-[16px] text-[var(--ink)]">Tickets (Últimos 7 días)</h2>
+            <span className="nw-badge">Semana Actual</span>
           </div>
           {tickets_weekly && tickets_weekly.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
@@ -136,18 +158,18 @@ export default function LiderDashboardPage() {
       </div>
 
       {/* Technician Workload + Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[18px]">
         {/* Technician Workload */}
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
-          <h2 className="font-semibold text-[var(--ink)] mb-4">Carga Operativa por Técnico</h2>
+        <div className="nw-card card-pad">
+          <h2 className="font-[720] text-[16px] text-[var(--ink)] mb-4">Carga Operativa por Técnico</h2>
           {technician_workload && technician_workload.length > 0 ? (
             <div className="space-y-3">
               {technician_workload.map((tech) => {
                 const pct = Math.min(Math.round((tech.open_tickets / maxCapacity) * 100), 100);
-                const barColor = pct > 80 ? 'bg-[var(--crit)]' : pct > 50 ? 'bg-[var(--med)]' : 'bg-[var(--selva-500)]';
+                const fillClass = pct > 80 ? 'load-fill hi' : pct > 50 ? 'load-fill mid' : 'load-fill';
                 return (
                   <div key={tech.id} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[var(--low-bg)] flex items-center justify-center text-[var(--selva-500)] text-xs font-bold shrink-0">
+                    <div className="nw-avatar sm" style={{ background: 'var(--low-bg)', color: 'var(--selva-500)' }}>
                       {tech.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -155,11 +177,11 @@ export default function LiderDashboardPage() {
                         <span className="text-sm font-medium text-[var(--ink)] truncate">{tech.name}</span>
                         <span className="text-xs text-[var(--muted)]">{tech.open_tickets} Tickets</span>
                       </div>
-                      <div className="w-full bg-[var(--surface-3)] rounded-full h-2">
-                        <div className={`h-2 rounded-full ${barColor} transition-all`} style={{ width: `${pct}%` }} />
+                      <div className="load-track">
+                        <div className={fillClass} style={{ width: `${pct}%` }} />
                       </div>
                     </div>
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded ${pct > 80 ? 'bg-[var(--crit-bg)] text-[var(--crit)]' : pct > 50 ? 'bg-[var(--med-bg)] text-[var(--med)]' : 'bg-[var(--low-bg)] text-[var(--selva-500)]'}`}>
+                    <span className={`text-xs font-[700] px-2 py-0.5 rounded-full ${pct > 80 ? 'bg-[var(--crit-bg)] text-[var(--crit)]' : pct > 50 ? 'bg-[var(--med-bg)] text-[var(--med)]' : 'bg-[var(--low-bg)] text-[var(--selva-500)]'}`}>
                       {pct}%
                     </span>
                   </div>
@@ -167,28 +189,28 @@ export default function LiderDashboardPage() {
               })}
             </div>
           ) : (
-            <p className="text-[var(--faint)] text-center py-8">No hay tecnicos registrados</p>
+            <p className="text-[var(--faint)] text-center py-8">No hay técnicos registrados</p>
           )}
         </div>
 
         {/* General Stats */}
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
-          <h2 className="font-semibold text-[var(--ink)] mb-4">Resumen General</h2>
+        <div className="nw-card card-pad">
+          <h2 className="font-[720] text-[16px] text-[var(--ink)] mb-4">Resumen General</h2>
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[var(--info-bg)] rounded-lg p-4">
-              <p className="text-xs text-[var(--info)] uppercase">Total Activos</p>
+            <div className="bg-[var(--info-bg)] rounded-[var(--r-sm)] p-4">
+              <p className="text-xs text-[var(--info)] uppercase font-[550]">Total Activos</p>
               <p className="text-2xl font-bold text-[var(--info)]">{data.assets.total}</p>
             </div>
-            <div className="bg-[var(--low-bg)] rounded-lg p-4">
-              <p className="text-xs text-[var(--selva-500)] uppercase">Activos Operativos</p>
+            <div className="bg-[var(--low-bg)] rounded-[var(--r-sm)] p-4">
+              <p className="text-xs text-[var(--selva-500)] uppercase font-[550]">Activos Operativos</p>
               <p className="text-2xl font-bold text-[var(--selva-500)]">{data.assets.operational}</p>
             </div>
-            <div className="bg-[var(--med-bg)] rounded-lg p-4">
-              <p className="text-xs text-[var(--med)] uppercase">Mantenimientos Mes</p>
+            <div className="bg-[var(--med-bg)] rounded-[var(--r-sm)] p-4">
+              <p className="text-xs text-[var(--med)] uppercase font-[550]">Mantenimientos Mes</p>
               <p className="text-2xl font-bold text-[var(--med)]">{data.maintenances.pending_this_month}</p>
             </div>
-            <div className="bg-[var(--violet-bg)] rounded-lg p-4">
-              <p className="text-xs text-[var(--violet)] uppercase">Usuarios</p>
+            <div className="bg-[var(--violet-bg)] rounded-[var(--r-sm)] p-4">
+              <p className="text-xs text-[var(--violet)] uppercase font-[550]">Usuarios</p>
               <p className="text-2xl font-bold text-[var(--violet)]">{data.users.total}</p>
             </div>
           </div>
@@ -196,67 +218,69 @@ export default function LiderDashboardPage() {
       </div>
 
       {/* Unassigned Queue */}
-      <div className="bg-[var(--surface)] rounded-xl border p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="nw-card">
+        <div className="card-head">
           <div>
-            <h2 className="font-semibold text-[var(--ink)]">Cola de Espera: Tickets sin asignar</h2>
-            <p className="text-xs text-[var(--muted)]">Priorizacion por tiempo de espera</p>
+            <h3>Cola de Espera: Tickets sin asignar</h3>
+            <p className="text-[13px] text-[var(--muted)] mt-0.5">Priorización por tiempo de espera</p>
           </div>
           {unassigned_tickets && unassigned_tickets.length > 0 && (
-            <span className="text-sm font-semibold text-[var(--crit)] bg-[var(--crit-bg)] px-3 py-1 rounded-full">
+            <span className="nw-badge" style={{ background: 'var(--crit-bg)', color: 'var(--crit)' }}>
               {unassigned_tickets.length} sin asignar
             </span>
           )}
         </div>
-        {unassigned_tickets && unassigned_tickets.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-[var(--surface-2)]">
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">ID Ticket</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Solicitante / Sede</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Asunto</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Prioridad</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Esperando</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Accion</th>
-                </tr>
-              </thead>
-              <tbody>
-                {unassigned_tickets.map((t) => {
-                  const priorityCfg = PRIORITY_CONFIG[t.priority as keyof typeof PRIORITY_CONFIG];
-                  return (
-                    <tr key={t.id} className="border-b hover:bg-[var(--surface-2)] transition-colors">
-                      <td className="p-3 font-mono font-medium text-[var(--ink)]">#{t.id}</td>
-                      <td className="p-3">
-                        <p className="font-medium text-[var(--ink)]">{t.requester?.name || 'N/A'}</p>
-                        <p className="text-xs text-[var(--muted)]">{t.campus}</p>
-                      </td>
-                      <td className="p-3 text-[var(--ink-2)] max-w-xs truncate">{t.title}</td>
-                      <td className="p-3">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityCfg?.color || 'bg-[var(--surface-3)] text-[var(--ink-2)]'}`}>
-                          {priorityCfg?.label || t.priority}
-                        </span>
-                      </td>
-                      <td className="p-3 text-sm text-[var(--ink-2)]">
-                        {formatDistanceToNow(new Date(t.created_at), { locale: es, addSuffix: false })}
-                      </td>
-                      <td className="p-3">
-                        <Link
-                          href={`/lider/tickets?assign=${t.id}`}
-                          className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
-                        >
-                          Asignar
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-[var(--faint)] text-center py-8">No hay tickets sin asignar</p>
-        )}
+        <div className="card-body p-0">
+          {unassigned_tickets && unassigned_tickets.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="nw-table">
+                <thead>
+                  <tr>
+                    <th>ID Ticket</th>
+                    <th>Solicitante / Sede</th>
+                    <th>Asunto</th>
+                    <th>Prioridad</th>
+                    <th>Esperando</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {unassigned_tickets.map((t) => {
+                    const priorityCfg = PRIORITY_CONFIG[t.priority as keyof typeof PRIORITY_CONFIG];
+                    return (
+                      <tr key={t.id}>
+                        <td className="font-mono font-medium text-[var(--ink)]">#{t.id}</td>
+                        <td>
+                          <p className="font-medium text-[var(--ink)]">{t.requester?.name || 'N/A'}</p>
+                          <p className="text-xs text-[var(--muted)]">{t.campus}</p>
+                        </td>
+                        <td className="text-[var(--ink-2)] max-w-xs truncate">{t.title}</td>
+                        <td>
+                          <span className={`nw-badge ${priorityCfg?.color || ''}`}>
+                            {priorityCfg?.label || t.priority}
+                          </span>
+                        </td>
+                        <td className="text-[var(--ink-2)]">
+                          {formatDistanceToNow(new Date(t.created_at), { locale: es, addSuffix: false })}
+                        </td>
+                        <td>
+                          <Link
+                            href={`/lider/tickets?assign=${t.id}`}
+                            className="nw-btn primary sm"
+                          >
+                            Asignar
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-[var(--faint)] text-center py-8">No hay tickets sin asignar</p>
+          )}
+        </div>
       </div>
     </div>
   );

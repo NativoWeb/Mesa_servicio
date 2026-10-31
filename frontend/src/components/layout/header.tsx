@@ -23,9 +23,10 @@ export function Header() {
 
   return (
     <header
-      className="px-6 flex items-center justify-between sticky top-0 z-20 transition-[border-color] duration-200"
+      className="flex items-center justify-between sticky top-0 z-20 transition-[border-color] duration-200"
       style={{
         height: '68px',
+        padding: '0 28px',
         background: 'color-mix(in srgb, var(--canvas) 82%, transparent)',
         backdropFilter: 'saturate(1.6) blur(14px)',
         WebkitBackdropFilter: 'saturate(1.6) blur(14px)',
