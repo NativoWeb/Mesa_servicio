@@ -31,6 +31,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('auth-storage');
+        document.cookie = 'auth-token=; path=/; max-age=0';
         window.location.href = '/login';
       }
     }

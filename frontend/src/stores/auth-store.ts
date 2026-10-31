@@ -46,15 +46,14 @@ export const useAuthStore = create<AuthState>()(
       setAuth: (user, token) => {
         set({ user, token, isAuthenticated: true });
         if (typeof document !== 'undefined') {
-          const secure = window.location.protocol === 'https:' ? '; Secure; SameSite=None' : '';
-          document.cookie = `auth-token=1; path=/; max-age=31536000${secure}`;
+          const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+          document.cookie = `auth-token=1; path=/; max-age=28800; SameSite=Lax${secure}`;
         }
       },
       logout: () => {
         set({ user: null, token: null, isAuthenticated: false });
         if (typeof document !== 'undefined') {
-          const secure = window.location.protocol === 'https:' ? '; Secure; SameSite=None' : '';
-          document.cookie = `auth-token=; path=/; max-age=0${secure}`;
+          document.cookie = 'auth-token=; path=/; max-age=0; SameSite=Lax';
         }
       },
       setHydrated: () => {

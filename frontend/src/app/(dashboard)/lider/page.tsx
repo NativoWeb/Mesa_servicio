@@ -7,11 +7,11 @@ import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-const PRIORITY_COLORS: Record<string, string> = {
-  critical: '#D32F2F',
-  high: '#F57C00',
-  medium: '#F9A825',
-  low: '#388E3C',
+const PRIORITY_HEX: Record<string, string> = {
+  critical: '#cf3b35',
+  high: '#e2742a',
+  medium: '#c99a0e',
+  low: '#2f8f57',
 };
 
 export default function LiderDashboardPage() {
@@ -35,7 +35,7 @@ export default function LiderDashboardPage() {
   const priorityData = Object.entries(tickets_by_priority || {}).map(([key, value]) => ({
     name: PRIORITY_CONFIG[key as keyof typeof PRIORITY_CONFIG]?.label || key,
     value,
-    color: PRIORITY_COLORS[key] || '#9CA3AF',
+    color: PRIORITY_HEX[key] || '#9CA3AF',
   }));
   const totalPriority = priorityData.reduce((s, d) => s + d.value, 0);
 

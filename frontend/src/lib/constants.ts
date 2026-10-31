@@ -7,10 +7,10 @@ export const STATUS_CONFIG = {
 } as const;
 
 export const PRIORITY_CONFIG = {
-  low: { label: 'Baja', color: 'bg-[#e5f4ea] text-[#2f8f57]' },
-  medium: { label: 'Media', color: 'bg-[#fbf5dc] text-[#c99a0e]' },
-  high: { label: 'Alta', color: 'bg-[#fdf0e6] text-[#e2742a]' },
-  critical: { label: 'Critica', color: 'bg-[#fdeceb] text-[#cf3b35]' },
+  low: { label: 'Baja', color: 'bg-[#e5f4ea] text-[#2f8f57]', dot: 'bg-[#2f8f57]' },
+  medium: { label: 'Media', color: 'bg-[#fbf5dc] text-[#c99a0e]', dot: 'bg-[#c99a0e]' },
+  high: { label: 'Alta', color: 'bg-[#fdf0e6] text-[#e2742a]', dot: 'bg-[#e2742a]' },
+  critical: { label: 'Critica', color: 'bg-[#fdeceb] text-[#cf3b35]', dot: 'bg-[#cf3b35]' },
 } as const;
 
 export const ASSET_STATUS_CONFIG = {

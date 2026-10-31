@@ -8,7 +8,7 @@ const DEFAULT_BRANDING: TenantBranding = {
   primary: '#1B5E20',
   primary_light: '#4CAF50',
   primary_dark: '#0D3B0D',
-  accent: '#F9A825',
+  accent: '#b8d432',
   sidebar_from: '#1B3A1B',
   sidebar_to: '#2E5A2E',
   background: '#FAFAFA',

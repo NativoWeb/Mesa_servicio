@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
+import { PRIORITY_CONFIG, STATUS_CONFIG } from '@/lib/constants';
 
 type FilterStatus = 'all' | 'open' | 'in_progress' | 'pending' | 'closed';
 
@@ -22,19 +23,6 @@ interface Ticket {
   created_at: string;
 }
 
-const priorityConfig = {
-  low: { label: 'Baja', color: 'bg-[var(--surface-3)] text-[var(--ink-2)]', dot: 'bg-[var(--faint)]' },
-  medium: { label: 'Media', color: 'bg-[var(--med-bg)] text-[var(--med)]', dot: 'bg-[var(--med)]' },
-  high: { label: 'Alta', color: 'bg-[var(--high-bg)] text-[var(--high)]', dot: 'bg-[var(--high)]' },
-  critical: { label: 'Crítica', color: 'bg-[var(--crit-bg)] text-[var(--crit)]', dot: 'bg-[var(--crit)]' },
-};
-
-const statusConfig = {
-  open: { label: 'Abierto', color: 'bg-[var(--med-bg)] text-[var(--med)]' },
-  in_progress: { label: 'En Progreso', color: 'bg-[var(--info-bg)] text-[var(--info)]' },
-  pending: { label: 'Pendiente', color: 'bg-[var(--high-bg)] text-[var(--high)]' },
-  closed: { label: 'Cerrado', color: 'bg-[var(--low-bg)] text-[var(--selva-500)]' },
-};
 
 const filters: { key: FilterStatus; label: string }[] = [
   { key: 'all', label: 'Todos' },
@@ -137,8 +125,8 @@ export default function MisTicketsPage() {
             const displayId = `#${t.ticket_number || `T-${String(t.id).padStart(4, '0')}`}`;
             const assigneeName = t.assigned_user?.name || null;
             const dateStr = new Date(t.created_at).toLocaleDateString('es-CO');
-            const pConfig = priorityConfig[t.priority] || priorityConfig.medium;
-            const sConfig = statusConfig[t.status] || statusConfig.open;
+            const pConfig = PRIORITY_CONFIG[t.priority] || PRIORITY_CONFIG.medium;
+            const sConfig = STATUS_CONFIG[t.status] || STATUS_CONFIG.open;
 
             return (
               <Link
