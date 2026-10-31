@@ -550,4 +550,256 @@ table.nw-table tbody tr:last-child td { border-bottom: 0; }
   .kpi-value { font-size: 25px; }
 }
 
+/* Tabs — prototype style */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button {
+  position: relative;
+  height: 44px;
+  padding: 0 14px;
+  border: 0;
+  background: none;
+  font-weight: 650;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color .15s;
+}
+.tabs button:hover { color: var(--ink); }
+.tabs button.on { color: var(--ink); }
+.tabs button.on::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--selva-500);
+  animation: tabin .3s var(--ease-out);
+}
+.tabs, [data-slot="tabs"] {
+  gap: 0;
+}
+.tabs-line, [data-slot="tabs-list"][data-variant="line"] {
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+  height: auto;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Timeline */
+.timeline { position: relative; padding-left: 26px; }
+.timeline::before { content: ""; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+.tl { position: relative; padding: 0 0 18px; }
+.tl:last-child { padding-bottom: 0; }
+.tl::before { content: ""; position: absolute; left: -23px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 3px solid var(--selva-500); }
+.tl b { font-size: 13.5px; font-weight: 700; display: block; }
+.tl p { color: var(--ink-2); font-size: 13px; margin-top: 2px; }
+.tl small { color: var(--muted); font-size: 12px; }
+
+/* Banner */
+.banner { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 14px; border: 1px solid; font-size: 13.5px; }
+.banner .grow { flex: 1; }
+.banner b { display: block; font-size: 14px; }
+.banner.info { background: var(--info-bg); border-color: color-mix(in srgb, var(--info) 25%, transparent); color: color-mix(in srgb, var(--info) 70%, var(--ink)); }
+.banner.warn { background: var(--med-bg); border-color: color-mix(in srgb, var(--med) 35%, transparent); color: color-mix(in srgb, var(--med) 55%, var(--ink)); }
+.banner.ok { background: var(--low-bg); border-color: color-mix(in srgb, var(--low) 25%, transparent); color: color-mix(in srgb, var(--low) 70%, var(--ink)); }
+.banner.crit { background: var(--crit-bg); border-color: color-mix(in srgb, var(--crit) 30%, transparent); color: color-mix(in srgb, var(--crit) 80%, var(--ink)); }
+
+/* Form grid */
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.form-grid .full { grid-column: 1 / -1; }
+
+/* Field label */
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > label, .nw-label { font-size: 13px; font-weight: 650; color: var(--ink-2); }
+
+/* Grid helpers */
+.g-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+
+/* Content area padding matching prototype */
+.nw-main { padding: 8px 28px 56px; max-width: 1480px; width: 100%; margin: 0 auto; }
+
 } /* end @layer components */
+
+/* =========================================================
+   shadcn component overrides — NativoWeb prototype alignment
+   These override shadcn defaults via data-slot selectors
+   ========================================================= */
+
+/* Card → match .card from prototype */
+[data-slot="card"] {
+  border-radius: var(--r-lg) !important;
+  box-shadow: var(--sh-1) !important;
+  border-color: var(--line) !important;
+  --card-spacing: 20px !important;
+}
+[data-slot="card-header"] {
+  padding: 18px 22px 0 !important;
+}
+[data-slot="card-title"] {
+  font-size: 16px !important;
+  font-weight: 720 !important;
+}
+[data-slot="card-content"] {
+  padding: 16px 22px 20px !important;
+}
+
+/* Input → match .input from prototype */
+[data-slot="input"] {
+  height: 42px !important;
+  border-radius: 11px !important;
+  border-color: var(--line-2) !important;
+  padding: 0 13px !important;
+  font-size: 14.5px !important;
+  background: var(--surface) !important;
+}
+[data-slot="input"]:hover {
+  border-color: var(--faint) !important;
+}
+[data-slot="input"]:focus {
+  border-color: var(--selva-500) !important;
+  box-shadow: var(--focus) !important;
+}
+
+/* Select trigger → match .select from prototype */
+[data-slot="select-trigger"] {
+  height: 42px !important;
+  border-radius: 11px !important;
+  border-color: var(--line-2) !important;
+  padding: 0 34px 0 13px !important;
+  font-size: 14.5px !important;
+  background: var(--surface) !important;
+}
+[data-slot="select-trigger"]:hover {
+  border-color: var(--faint) !important;
+}
+
+/* Textarea */
+textarea[data-slot="input"] {
+  height: auto !important;
+  min-height: 110px !important;
+  padding: 11px 13px !important;
+}
+
+/* Button → match .btn from prototype */
+[data-slot="button"] {
+  height: 40px !important;
+  border-radius: 11px !important;
+  font-weight: 650 !important;
+  font-size: 13.5px !important;
+  transition: transform .14s, background .2s, border-color .2s, box-shadow .2s !important;
+}
+[data-slot="button"]:active {
+  transform: scale(.97) !important;
+}
+
+/* Tabs → match .tabs from prototype */
+[data-slot="tabs-list"] {
+  height: auto !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  border-bottom: 1px solid var(--line) !important;
+  gap: 4px !important;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+[data-slot="tabs-trigger"] {
+  height: 44px !important;
+  padding: 0 14px !important;
+  border-radius: 0 !important;
+  font-weight: 650 !important;
+  color: var(--muted) !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+[data-slot="tabs-trigger"]:hover {
+  color: var(--ink) !important;
+}
+[data-slot="tabs-trigger"][data-active] {
+  color: var(--ink) !important;
+  background: transparent !important;
+}
+[data-slot="tabs-trigger"][data-active]::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 10px !important;
+  right: 10px !important;
+  bottom: -1px !important;
+  height: 3px !important;
+  border-radius: 3px 3px 0 0 !important;
+  background: var(--selva-500) !important;
+  opacity: 1 !important;
+  animation: tabin .3s var(--ease-out) !important;
+}
+@keyframes tabin { from { transform: scaleX(.3); opacity: 0; } }
+
+/* Table → match table.t from prototype */
+[data-slot="table"] {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  font-size: 13.5px !important;
+}
+[data-slot="table-head"] {
+  position: sticky !important;
+  top: 0 !important;
+  font-weight: 650 !important;
+  font-size: 12.5px !important;
+  color: var(--muted) !important;
+  padding: 11px 14px !important;
+  background: var(--surface-2) !important;
+  border-bottom: 1px solid var(--line) !important;
+  height: auto !important;
+}
+[data-slot="table-cell"] {
+  padding: 13px 14px !important;
+  border-bottom: 1px solid var(--line) !important;
+  vertical-align: middle !important;
+}
+[data-slot="table-row"] {
+  transition: background .15s !important;
+}
+[data-slot="table-row"]:hover {
+  background: var(--surface-2) !important;
+}
+[data-slot="table-row"]:last-child [data-slot="table-cell"] {
+  border-bottom: 0 !important;
+}
+
+/* Badge → match .badge from prototype */
+[data-slot="badge"] {
+  height: 24px !important;
+  padding: 0 9px !important;
+  border-radius: 99px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  gap: 6px !important;
+}
+
+/* Dialog/Modal → match .modal from prototype */
+[data-slot="dialog-content"] {
+  border-radius: var(--r-xl) !important;
+  box-shadow: var(--sh-3) !important;
+  border: 1px solid var(--line) !important;
+}
+
+/* Checkbox → match prototype accent */
+[data-slot="checkbox"] {
+  accent-color: var(--selva-500);
+}

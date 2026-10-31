@@ -171,7 +171,7 @@ export default function AdminRolesPage() {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 bg-[#1B5E20] hover:bg-[#2E7D32] text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+          className="nw-btn primary flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
           Crear Rol
@@ -182,7 +182,7 @@ export default function AdminRolesPage() {
       <div className="grid gap-4">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-[var(--surface)] rounded-xl border p-5">
+            <div key={i} className="nw-card card-pad">
               <div className="space-y-3">
                 <div className="h-5 w-48 bg-[var(--surface-3)] rounded animate-pulse" />
                 <div className="h-4 w-full bg-[var(--surface-3)] rounded animate-pulse" />
@@ -195,13 +195,13 @@ export default function AdminRolesPage() {
             </div>
           ))
         ) : !roles?.length ? (
-          <div className="bg-[var(--surface)] rounded-xl border p-12 text-center">
+          <div className="nw-card card-pad text-center">
             <Shield className="w-12 h-12 text-[var(--faint)] mx-auto mb-3" />
             <p className="text-[var(--muted)]">No hay roles configurados</p>
           </div>
         ) : (
           roles.map((role, idx) => (
-            <div key={role.id} className="bg-[var(--surface)] rounded-xl border p-5">
+            <div key={role.id} className="nw-card card-pad">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -280,7 +280,7 @@ export default function AdminRolesPage() {
                 onChange={e => setFormName(e.target.value)}
                 disabled={editingRole?.is_system}
                 placeholder="Ej: Supervisor de soporte"
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:shadow-[var(--focus)] disabled:bg-[var(--surface-3)] disabled:text-[var(--muted)]"
+                className="nw-input disabled:bg-[var(--surface-3)] disabled:text-[var(--muted)]"
               />
             </div>
 
@@ -293,7 +293,7 @@ export default function AdminRolesPage() {
                 onChange={e => setFormDescription(e.target.value)}
                 rows={2}
                 placeholder="Describe las responsabilidades de este rol..."
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:shadow-[var(--focus)] resize-none"
+                className="nw-input resize-none"
               />
             </div>
 
@@ -381,7 +381,7 @@ export default function AdminRolesPage() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1B5E20] hover:bg-[#2E7D32] rounded-lg disabled:bg-[var(--surface-3)] transition-colors"
+              className="nw-btn primary flex items-center gap-2 disabled:bg-[var(--surface-3)]"
             >
               {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingRole ? 'Guardar cambios' : 'Crear rol'}

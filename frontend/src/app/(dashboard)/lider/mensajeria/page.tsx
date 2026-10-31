@@ -28,9 +28,13 @@ export default function MensajeriaPage() {
 function TemplatesPlaceholder() {
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[var(--ink)]">Plantillas de Mensajes</h1>
-      <p className="text-[var(--muted)] mb-6">Crea y gestiona plantillas reutilizables para tus comunicaciones</p>
-      <div className="bg-[var(--surface)] rounded-xl border p-12 text-center">
+      <div className="page-head">
+        <div>
+          <h1>Plantillas de Mensajes</h1>
+          <p>Crea y gestiona plantillas reutilizables para tus comunicaciones</p>
+        </div>
+      </div>
+      <div className="nw-card p-12 text-center">
         <div className="w-16 h-16 bg-[var(--surface-3)] rounded-2xl flex items-center justify-center mx-auto mb-4">
           <FileText className="w-8 h-8 text-[var(--faint)]" />
         </div>
@@ -95,21 +99,25 @@ function MensajeriaForm() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[var(--ink)]">Mensajeria Masiva</h1>
-      <p className="text-[var(--muted)] mb-6">Envia comunicaciones a usuarios de la plataforma</p>
+      <div className="page-head">
+        <div>
+          <h1>Mensajeria Masiva</h1>
+          <p>Envia comunicaciones a usuarios de la plataforma</p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2 bg-[var(--surface)] rounded-xl border p-6">
+        <div className="lg:col-span-2 nw-card card-pad">
           <h2 className="font-semibold mb-4">Configuracion del Mensaje</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Canal de envio</label>
-              <div className="flex gap-2">
+              <div className="seg">
                 {([['email', 'Correo'], ['sms', 'SMS'], ['both', 'Ambos']] as const).map(([val, label]) => (
                   <button
                     key={val}
                     onClick={() => setChannel(val)}
-                    className={`px-4 py-2 border rounded-lg text-sm transition-colors ${channel === val ? 'bg-[var(--low-bg)] border-[var(--selva-500)] text-[var(--selva-500)] font-medium' : 'hover:bg-[var(--surface-2)]'}`}
+                    className={channel === val ? 'on' : ''}
                   >
                     {label}
                   </button>
@@ -118,35 +126,35 @@ function MensajeriaForm() {
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Asunto del mensaje</label>
-              <input value={subject} onChange={e => setSubject(e.target.value)} className="w-full px-4 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)]" placeholder="Ej: Actualizacion obligatoria de plataforma" />
+              <input value={subject} onChange={e => setSubject(e.target.value)} className="nw-input" placeholder="Ej: Actualizacion obligatoria de plataforma" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Cuerpo del mensaje</label>
-              <textarea value={body} onChange={e => setBody(e.target.value)} className="w-full px-4 py-2 border rounded-lg h-32 text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)] resize-none" placeholder="Escribe el contenido institucional aqui..." />
+              <textarea value={body} onChange={e => setBody(e.target.value)} className="nw-input h-32 resize-none" placeholder="Escribe el contenido institucional aqui..." />
             </div>
             <button
               onClick={handleSend}
               disabled={isSending}
-              className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
+              className="nw-btn primary disabled:bg-[var(--surface-3)]"
             >
               {isSending ? 'Enviando...' : 'Enviar mensaje'}
             </button>
           </div>
         </div>
 
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold mb-4">Segmentacion de Audiencia</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Filtrar por rol</label>
-              <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+              <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} className="nw-input">
                 <option value="">Todos los roles</option>
                 {ROLE_OPTIONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--ink-2)] mb-1">Filtrar por sede</label>
-              <select value={campusFilter} onChange={e => setCampusFilter(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+              <select value={campusFilter} onChange={e => setCampusFilter(e.target.value)} className="nw-input">
                 <option value="">Todas las sedes</option>
                 {CAMPUSES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -156,7 +164,7 @@ function MensajeriaForm() {
       </div>
 
       {/* Historial de mensajes */}
-      <div className="bg-[var(--surface)] rounded-xl border p-6">
+      <div className="nw-card card-pad">
         <h2 className="font-semibold mb-4">Historial de Mensajes</h2>
         {isLoading ? (
           <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-12 bg-[var(--surface-3)] rounded animate-pulse" />)}</div>

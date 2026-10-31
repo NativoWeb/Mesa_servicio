@@ -106,16 +106,12 @@ export default function AdminConfigPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b pb-2">
+      <div className="tabs">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 text-sm rounded-t-lg border-b-2 transition-colors ${
-              activeTab === tab.key
-                ? 'border-[var(--selva-500)] text-[var(--selva-500)] font-medium bg-[var(--low-bg)]'
-                : 'border-transparent hover:bg-[var(--surface-2)] text-[var(--ink-2)]'
-            }`}
+            className={activeTab === tab.key ? 'on' : ''}
           >
             {tab.label}
           </button>
@@ -124,9 +120,9 @@ export default function AdminConfigPage() {
 
       {/* General */}
       {activeTab === 'general' && (
-        <div className="bg-[var(--surface)] rounded-xl border p-6 space-y-4">
+        <div className="nw-card card-pad space-y-4">
           <h2 className="font-semibold text-[var(--ink)] mb-2">Configuración General</h2>
-          <div className="bg-[var(--med-bg)] border border-[var(--med)] rounded-lg p-3 text-sm text-[var(--med)]">
+          <div className="banner warn">
             Estos ajustes aplican a notificaciones y correos del sistema. El logo, nombre y colores del sidebar se configuran en <strong>Tenants</strong>.
           </div>
           {GENERAL_KEYS.map(({ key, label, placeholder }) => (
@@ -137,7 +133,7 @@ export default function AdminConfigPage() {
                 value={form[key] || ''}
                 onChange={(e) => handleChange(key, e.target.value)}
                 placeholder={placeholder}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
+                className="nw-input"
               />
             </div>
           ))}
@@ -146,7 +142,7 @@ export default function AdminConfigPage() {
             <select
               value={form['default_campus'] || ''}
               onChange={(e) => handleChange('default_campus', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
+              className="nw-input"
             >
               <option value="">Seleccionar sede</option>
               {CAMPUS_OPTIONS.map((campus) => (
@@ -159,7 +155,7 @@ export default function AdminConfigPage() {
 
       {/* SMTP */}
       {activeTab === 'smtp' && (
-        <div className="bg-[var(--surface)] rounded-xl border p-6 space-y-4">
+        <div className="nw-card card-pad space-y-4">
           <h2 className="font-semibold text-[var(--ink)] mb-2">Configuración SMTP</h2>
           <p className="text-sm text-[var(--muted)] mb-4">
             Configure el servidor de correo para notificaciones y reportes programados.
@@ -173,7 +169,7 @@ export default function AdminConfigPage() {
                   value={form[key] || ''}
                   onChange={(e) => handleChange(key, e.target.value)}
                   placeholder={placeholder}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
+                  className="nw-input"
                 />
               </div>
             ))}
@@ -182,7 +178,7 @@ export default function AdminConfigPage() {
               <select
                 value={form['smtp_encryption'] || 'tls'}
                 onChange={(e) => handleChange('smtp_encryption', e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
+                className="nw-input"
               >
                 {SMTP_ENCRYPTION_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>{opt.toUpperCase()}</option>
@@ -195,11 +191,11 @@ export default function AdminConfigPage() {
 
       {/* Backup */}
       {activeTab === 'backup' && (
-        <div className="bg-[var(--surface)] rounded-xl border p-6 space-y-4">
+        <div className="nw-card card-pad space-y-4">
           <h2 className="font-semibold text-[var(--ink)] mb-2">Backup y Restauración</h2>
-          <div className="bg-[var(--info-bg)] border border-[var(--info)] rounded-lg p-4">
-            <p className="text-sm text-[var(--info)] font-medium mb-1">Información</p>
-            <p className="text-sm text-[var(--info)]">
+          <div className="banner info">
+            <p className="font-medium mb-1">Información</p>
+            <p>
               La configuración de backups automáticos se gestiona a nivel de servidor.
               Contacte al administrador del sistema para programar backups de la base de datos PostgreSQL.
             </p>
@@ -224,7 +220,7 @@ export default function AdminConfigPage() {
           <button
             onClick={handleSave}
             disabled={mutation.isPending}
-            className="px-6 py-2 bg-[var(--lima-500)] text-[var(--lima-ink)] text-sm font-medium rounded-lg hover:bg-[var(--lima-400)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="nw-btn primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {mutation.isPending ? 'Guardando...' : 'Guardar cambios'}
           </button>

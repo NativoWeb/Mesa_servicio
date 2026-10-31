@@ -45,7 +45,7 @@ export default function AdminDashboardPage() {
           { label: 'Total Activos', value: assets.total, color: 'text-[var(--selva-500)]' },
           { label: 'Mantenimientos Mes', value: maintenances.pending_this_month, color: 'text-[var(--violet)]' },
         ].map((s) => (
-          <div key={s.label} className="bg-[var(--surface)] rounded-xl border p-4 hover:shadow-[var(--sh-1)] transition-shadow">
+          <div key={s.label} className="nw-card card-pad hover:shadow-[var(--sh-1)] transition-shadow">
             <p className="text-xs text-[var(--muted)] uppercase tracking-wider">{s.label}</p>
             <p className={`text-2xl font-bold mt-1 ${s.color}`}>{s.value}</p>
           </div>
@@ -54,7 +54,7 @@ export default function AdminDashboardPage() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold text-[var(--ink)] mb-4">Tickets: Creados vs. Resueltos (7 dias)</h2>
           {tickets_weekly && tickets_weekly.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
           )}
         </div>
 
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold text-[var(--ink)] mb-4">Estado de Tickets</h2>
           <div className="grid grid-cols-2 gap-4">
             {[
@@ -93,7 +93,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Assets Summary */}
-      <div className="bg-[var(--surface)] rounded-xl border p-6">
+      <div className="nw-card card-pad">
         <h2 className="font-semibold text-[var(--ink)] mb-4">Estado de Activos</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
@@ -115,7 +115,7 @@ export default function AdminDashboardPage() {
         <h2 className="font-semibold text-[var(--ink)] mb-4">Acciones Rapidas</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {quickActions.map((a) => (
-            <Link key={a.label} href={a.href} className="bg-[var(--surface)] rounded-xl border p-4 text-center hover:shadow-[var(--sh-1)] hover:border-[var(--lima-500)] transition-all group">
+            <Link key={a.label} href={a.href} className="nw-card card-pad text-center hover:shadow-[var(--sh-1)] hover:border-[var(--lima-500)] transition-all group">
               <p className="text-sm font-medium text-[var(--ink)] group-hover:text-[var(--selva-500)]">{a.label}</p>
             </Link>
           ))}

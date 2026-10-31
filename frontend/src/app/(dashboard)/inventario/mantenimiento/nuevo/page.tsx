@@ -81,7 +81,7 @@ export default function NuevoMantenimientoPage() {
     }
   };
 
-  const inputClass = "w-full px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)] focus:border-[var(--selva-500)]";
+  const inputClass = "nw-input";
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -94,11 +94,12 @@ export default function NuevoMantenimientoPage() {
           <span className="text-[var(--ink-2)] font-medium">Registrar</span>
         </nav>
         <h1 className="text-2xl font-bold text-[var(--ink)]">Registrar Mantenimiento</h1>
+
       </div>
 
       {/* Asset Info */}
       {asset && (
-        <div className="bg-[var(--surface)] rounded-xl border p-4 flex items-center gap-4">
+        <div className="nw-card card-pad flex items-center gap-4">
           <div className="w-10 h-10 bg-[var(--low-bg)] rounded-lg flex items-center justify-center">
             <Monitor className="w-5 h-5 text-[var(--selva-500)]" />
           </div>
@@ -116,7 +117,7 @@ export default function NuevoMantenimientoPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6">
           {/* Type */}
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-4">Tipo de Mantenimiento</h2>
             <div className="grid grid-cols-2 gap-2">
               {Object.entries(typeConfig).map(([key, cfg]) => (
@@ -133,7 +134,7 @@ export default function NuevoMantenimientoPage() {
           </div>
 
           {/* Dates */}
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-4">Ejecución</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -164,7 +165,7 @@ export default function NuevoMantenimientoPage() {
 
         <div className="space-y-6">
           {/* Result */}
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-4">Resultado Final</h2>
             <div className="space-y-4">
               <div>
@@ -187,7 +188,7 @@ export default function NuevoMantenimientoPage() {
           </div>
 
           {/* Attachments */}
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-4">Adjuntos y Evidencia</h2>
             <div
               onClick={() => fileRef.current?.click()}
@@ -212,8 +213,8 @@ export default function NuevoMantenimientoPage() {
       </div>
 
       <div className="flex justify-end gap-3 pb-6">
-        <Link href="/inventario/mantenimiento" className="px-5 py-2.5 border rounded-xl text-sm font-medium hover:bg-[var(--surface-2)]">Cancelar</Link>
-        <button onClick={handleSubmit} disabled={createMaintenance.isPending} className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2.5 rounded-xl text-sm font-medium transition-colors">
+        <Link href="/inventario/mantenimiento" className="nw-btn">Cancelar</Link>
+        <button onClick={handleSubmit} disabled={createMaintenance.isPending} className="nw-btn primary">
           {createMaintenance.isPending ? 'Registrando...' : 'Registrar mantenimiento'}
         </button>
       </div>

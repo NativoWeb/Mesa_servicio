@@ -108,8 +108,8 @@ export default function NuevoTicketPage() {
         <h1 className="text-2xl font-bold text-[var(--ink)] mb-2">Solicitud enviada exitosamente</h1>
         <p className="text-[var(--muted)] mb-6">Tu ticket ha sido registrado y será asignado a un técnico. Recibirás notificaciones sobre su estado.</p>
         <div className="flex justify-center gap-3">
-          <Link href="/usuario" className="px-4 py-2 border border-[var(--line)] rounded-lg text-sm font-medium hover:bg-[var(--surface-2)]">Volver al inicio</Link>
-          <Link href="/usuario/tickets" className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-lg text-sm font-medium">Ver mis tickets</Link>
+          <Link href="/usuario" className="nw-btn">Volver al inicio</Link>
+          <Link href="/usuario/tickets" className="nw-btn primary">Ver mis tickets</Link>
         </div>
       </div>
     );
@@ -126,12 +126,16 @@ export default function NuevoTicketPage() {
         <span className="text-[var(--ink-2)] font-medium">Crear Ticket</span>
       </nav>
 
-      <h1 className="text-2xl font-bold text-[var(--ink)]">Nueva Solicitud de Soporte</h1>
-      <p className="text-[var(--muted)] text-sm mb-6">Completa la información detallada para que nuestro equipo académico pueda resolver tu incidencia o requerimiento con la mayor agilidad posible.</p>
+      <div className="page-head">
+        <div>
+          <h1>Nueva Solicitud de Soporte</h1>
+          <p>Completa la información detallada para que nuestro equipo académico pueda resolver tu incidencia o requerimiento con la mayor agilidad posible.</p>
+        </div>
+      </div>
 
       <div className="space-y-6">
         {/* 1. Classification */}
-        <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold text-[var(--ink)] mb-1 flex items-center gap-2">
             <span className="w-6 h-6 bg-[var(--lima-500)] text-[var(--lima-ink)] rounded-full flex items-center justify-center text-xs font-bold">1</span>
             Clasificación de la Solicitud
@@ -153,7 +157,7 @@ export default function NuevoTicketPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
               <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Categoría</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)]">
+              <select value={category} onChange={(e) => setCategory(e.target.value)} className="nw-input">
                 <option value="">Seleccione una opción</option>
                 {categories.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -174,7 +178,7 @@ export default function NuevoTicketPage() {
         </div>
 
         {/* 2. Details */}
-        <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold text-[var(--ink)] mb-1 flex items-center gap-2">
             <span className="w-6 h-6 bg-[var(--lima-500)] text-[var(--lima-ink)] rounded-full flex items-center justify-center text-xs font-bold">2</span>
             Detalle del Problema
@@ -186,7 +190,7 @@ export default function NuevoTicketPage() {
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Fallo en conexión Wi-Fi"
-                className={`w-full px-4 py-2.5 bg-[var(--canvas)] border rounded-xl text-sm outline-none focus:shadow-[var(--focus)] ${subject && subject.length < 6 ? 'border-[var(--crit)] bg-[var(--crit-bg)]' : 'border-[var(--line)]'}`}
+                className={`nw-input ${subject && subject.length < 6 ? 'border-[var(--crit)] bg-[var(--crit-bg)]' : ''}`}
               />
               {subject && subject.length < 6 && (
                 <p className="text-xs text-[var(--crit)] mt-1">El asunto es demasiado corto. Proporciona más contexto.</p>
@@ -200,14 +204,14 @@ export default function NuevoTicketPage() {
                 maxLength={500}
                 rows={4}
                 placeholder="Describa el problema con el mayor detalle posible, incluyendo códigos de error si los hay."
-                className="w-full px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)] resize-none"
+                className="nw-input resize-none"
               />
             </div>
           </div>
         </div>
 
         {/* 3. Related Asset */}
-        <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold text-[var(--ink)] mb-1 flex items-center gap-2">
             <span className="w-6 h-6 bg-[var(--lima-500)] text-[var(--lima-ink)] rounded-full flex items-center justify-center text-xs font-bold">3</span>
             Equipo Relacionado
@@ -217,7 +221,7 @@ export default function NuevoTicketPage() {
         </div>
 
         {/* 4. Location */}
-        <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold text-[var(--ink)] mb-1 flex items-center gap-2">
             <span className="w-6 h-6 bg-[var(--lima-500)] text-[var(--lima-ink)] rounded-full flex items-center justify-center text-xs font-bold">4</span>
             Ubicación Física
@@ -225,7 +229,7 @@ export default function NuevoTicketPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
               <label className="block text-sm font-medium text-[var(--ink-2)] mb-1.5">Sede</label>
-              <select value={campus} onChange={(e) => setCampus(e.target.value)} className="w-full px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)]">
+              <select value={campus} onChange={(e) => setCampus(e.target.value)} className="nw-input">
                 <option value="">Seleccione sede</option>
                 {CAMPUSES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -236,14 +240,14 @@ export default function NuevoTicketPage() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Ej: Laboratorio de Cómputo B-305, Cubículo 5"
-                className="w-full px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)]"
+                className="nw-input"
               />
             </div>
           </div>
         </div>
 
         {/* 5. Attachments */}
-        <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold text-[var(--ink)] mb-1 flex items-center gap-2">
             <span className="w-6 h-6 bg-[var(--lima-500)] text-[var(--lima-ink)] rounded-full flex items-center justify-center text-xs font-bold">5</span>
             Adjuntos y Evidencia
@@ -275,7 +279,7 @@ export default function NuevoTicketPage() {
 
         {/* Upload progress */}
         {uploadProgress && (
-          <div className="bg-[var(--info-bg)] border border-[var(--line)] rounded-xl p-4 text-sm text-[var(--info)] flex items-center gap-2">
+          <div className="banner info flex items-center gap-2">
             <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
             {uploadProgress}
           </div>
@@ -283,7 +287,7 @@ export default function NuevoTicketPage() {
 
         {/* Error message */}
         {error && (
-          <div className="bg-[var(--crit-bg)] border border-[var(--line)] rounded-xl p-4 text-sm text-[var(--crit)]">
+          <div className="banner crit">
             {error}
           </div>
         )}
@@ -293,13 +297,13 @@ export default function NuevoTicketPage() {
           Al enviar esta solicitud, usted acepta que el personal de TI acceda a la información técnica necesaria para la resolución de su caso bajo las directivas de la institución.
         </div>
         <div className="flex justify-end gap-3 pb-4">
-          <Link href="/usuario/tickets" className="px-5 py-2.5 border border-[var(--line-2)] rounded-xl text-sm font-medium hover:bg-[var(--surface-2)] transition-colors">
+          <Link href="/usuario/tickets" className="nw-btn">
             Cancelar
           </Link>
           <button
             onClick={handleSubmit}
             disabled={!isValid || submitting}
-            className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--lima-ink)] px-6 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
+            className="nw-btn primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {submitting ? (
               <>

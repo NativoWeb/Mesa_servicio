@@ -126,20 +126,20 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Description */}
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-3">Descripción del problema</h2>
             <p className="text-sm text-[var(--ink-2)] whitespace-pre-line leading-relaxed">{ticket.description}</p>
           </div>
 
           {/* Status Update */}
           {ticket.status !== 'closed' && (
-            <div className="bg-[var(--surface)] rounded-xl border p-5">
+            <div className="nw-card p-5">
               <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Cambiar Estado</h3>
               <div className="flex gap-2">
                 <select
                   value={selectedStatus || ticket.status}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="flex-1 border rounded-lg px-3 py-2 text-sm bg-[var(--surface)] outline-none focus:shadow-[var(--focus)]"
+                  className="nw-input flex-1"
                 >
                   <option value="open">Abierto</option>
                   <option value="in_progress">En Progreso</option>
@@ -150,7 +150,7 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
                 <button
                   onClick={handleStatusUpdate}
                   disabled={updateTicket.isPending}
-                  className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--line)] text-[var(--lima-ink)] px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  className="nw-btn primary disabled:bg-[var(--line)]"
                 >
                   {updateTicket.isPending ? 'Actualizando...' : 'Actualizar'}
                 </button>
@@ -160,13 +160,13 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
 
           {/* Reassign */}
           {ticket.status !== 'closed' && (
-            <div className="bg-[var(--surface)] rounded-xl border p-5">
+            <div className="nw-card p-5">
               <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Reasignar Técnico</h3>
               <div className="flex gap-2">
                 <select
                   value={selectedTech}
                   onChange={(e) => setSelectedTech(e.target.value)}
-                  className="flex-1 border rounded-lg px-3 py-2 text-sm bg-[var(--surface)] outline-none focus:shadow-[var(--focus)]"
+                  className="nw-input flex-1"
                 >
                   <option value="">Seleccionar técnico</option>
                   {technicians?.data.map(t => (
@@ -178,7 +178,7 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
                 <button
                   onClick={handleReassign}
                   disabled={!selectedTech || updateTicket.isPending}
-                  className="bg-[var(--info)] hover:bg-[var(--info)] disabled:bg-[var(--line)] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  className="nw-btn bg-[var(--info)] text-white hover:bg-[var(--info)] disabled:bg-[var(--line)]"
                 >
                   Reasignar
                 </button>
@@ -193,7 +193,7 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
 
           {/* Timeline */}
           {ticket.events && ticket.events.length > 0 && (
-            <div className="bg-[var(--surface)] rounded-xl border p-6">
+            <div className="nw-card card-pad">
               <h2 className="font-semibold text-[var(--ink)] mb-4">Historial de Eventos</h2>
               <div className="space-y-4">
                 {ticket.events.map((e, i) => (
@@ -215,7 +215,7 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
           )}
 
           {/* Comments */}
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-4">Seguimiento</h2>
             {(() => {
               const allComments = commentsData?.data || ticket.comments || [];
@@ -263,12 +263,12 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
                 onChange={(e) => setComment(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
                 placeholder={isInternal ? 'Escribe una nota interna para el equipo...' : 'Escribe una respuesta visible para el usuario...'}
-                className="flex-1 px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)]"
+                className="nw-input flex-1"
               />
               <button
                 onClick={handleSendComment}
                 disabled={createComment.isPending || !comment.trim()}
-                className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--line)] text-[var(--lima-ink)] px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
+                className="nw-btn primary disabled:bg-[var(--line)] whitespace-nowrap"
               >
                 {createComment.isPending ? 'Enviando...' : 'Enviar'}
               </button>
@@ -278,7 +278,7 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
 
         {/* Right Column */}
         <div className="space-y-4">
-          <div className="bg-[var(--surface)] rounded-xl border p-5">
+          <div className="nw-card p-5">
             <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Detalles del Ticket</h3>
             <div className="space-y-3 text-sm">
               {[
@@ -297,7 +297,7 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
           </div>
 
           {ticket.assignee && (
-            <div className="bg-[var(--surface)] rounded-xl border p-5">
+            <div className="nw-card p-5">
               <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Técnico Asignado</h3>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[var(--low-bg)] flex items-center justify-center text-[var(--selva-500)] text-sm font-bold">
@@ -314,7 +314,7 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
           {ticket.asset ? (
             <LinkedAssetCard asset={ticket.asset} />
           ) : ticket.status !== 'closed' && (
-            <div className="bg-[var(--surface)] rounded-xl border p-5">
+            <div className="nw-card p-5">
               {showLinkAsset ? (
                 <div>
                   <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Vincular Equipo</h3>
@@ -357,7 +357,7 @@ export default function LiderTicketDetailPage({ params }: { params: Promise<{ id
           )}
 
           {ticket.attachments && ticket.attachments.length > 0 && (
-            <div className="bg-[var(--surface)] rounded-xl border p-5">
+            <div className="nw-card p-5">
               <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Adjuntos ({ticket.attachments.length})</h3>
               <div className="space-y-2">
                 {ticket.attachments.map((a) => (

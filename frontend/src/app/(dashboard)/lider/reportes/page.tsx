@@ -51,7 +51,7 @@ export default function LiderReportesPage() {
   ];
 
   const renderSummaryTable = (title: string, data: Record<string, number>, labelMap: Record<string, { label: string }>) => (
-    <div className="bg-[var(--surface)] rounded-xl border p-6">
+    <div className="nw-card card-pad">
       <h3 className="font-semibold text-[var(--ink)] mb-4">{title}</h3>
       <div className="space-y-2">
         {Object.entries(data).map(([key, count]) => (
@@ -66,24 +66,30 @@ export default function LiderReportesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[var(--ink)]">Reportes y Metricas</h1>
-      <p className="text-[var(--muted)] mb-6">Datos en tiempo real de la Mesa de Servicio e Inventario TI</p>
+      <div className="page-head">
+        <div>
+          <h1>Reportes y Metricas</h1>
+          <p>Datos en tiempo real de la Mesa de Servicio e Inventario TI</p>
+        </div>
+      </div>
 
       <div className="flex flex-wrap items-center gap-2 mb-6">
-        {reports.map(r => (
-          <button
-            key={r.key}
-            onClick={() => setActiveReport(r.key)}
-            className={`px-4 py-2 text-sm rounded-lg border transition-colors ${activeReport === r.key ? 'bg-[var(--low-bg)] border-[var(--selva-500)] text-[var(--selva-500)] font-medium' : 'hover:bg-[var(--surface-2)]'}`}
-          >
-            {r.title}
-          </button>
-        ))}
+        <div className="seg">
+          {reports.map(r => (
+            <button
+              key={r.key}
+              onClick={() => setActiveReport(r.key)}
+              className={activeReport === r.key ? 'on' : ''}
+            >
+              {r.title}
+            </button>
+          ))}
+        </div>
         <div className="ml-auto flex gap-2">
           <button
             onClick={async () => { setExporting('pdf'); await handleExport('pdf', activeReport); setExporting(null); }}
             disabled={exporting === 'pdf'}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium border border-[var(--crit)] text-[var(--crit)] bg-[var(--crit-bg)] rounded-lg hover:bg-[var(--crit-bg)] disabled:opacity-50 transition-colors"
+            className="nw-btn inline-flex items-center gap-1.5 border-[var(--crit)] text-[var(--crit)] bg-[var(--crit-bg)] disabled:opacity-50"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
             {exporting === 'pdf' ? 'Exportando...' : 'Exportar PDF'}
@@ -91,7 +97,7 @@ export default function LiderReportesPage() {
           <button
             onClick={async () => { setExporting('excel'); await handleExport('excel', activeReport); setExporting(null); }}
             disabled={exporting === 'excel'}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium border border-[var(--selva-500)] text-[var(--selva-500)] bg-[var(--low-bg)] rounded-lg hover:bg-[var(--low-bg)] disabled:opacity-50 transition-colors"
+            className="nw-btn inline-flex items-center gap-1.5 border-[var(--selva-500)] text-[var(--selva-500)] bg-[var(--low-bg)] disabled:opacity-50"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
             {exporting === 'excel' ? 'Exportando...' : 'Exportar Excel'}

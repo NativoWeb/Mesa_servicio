@@ -52,7 +52,7 @@ export default function AdminReportesPage() {
   ];
 
   const renderTable = (title: string, data: Record<string, number>, labelMap: Record<string, { label: string }>) => (
-    <div className="bg-[var(--surface)] rounded-xl border p-6">
+    <div className="nw-card card-pad">
       <h3 className="font-semibold text-[var(--ink)] mb-4">{title}</h3>
       {Object.keys(data).length === 0 ? (
         <p className="text-[var(--faint)] text-center py-4">Sin datos</p>
@@ -77,12 +77,14 @@ export default function AdminReportesPage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {reports.map(r => (
-          <button key={r.key} onClick={() => setActiveReport(r.key)}
-            className={`px-4 py-2 text-sm rounded-lg border transition-colors ${activeReport === r.key ? 'bg-[var(--low-bg)] border-[var(--selva-500)] text-[var(--selva-500)] font-medium' : 'hover:bg-[var(--surface-2)]'}`}>
-            {r.title}
-          </button>
-        ))}
+        <div className="seg">
+          {reports.map(r => (
+            <button key={r.key} onClick={() => setActiveReport(r.key)}
+              className={activeReport === r.key ? 'on' : ''}>
+              {r.title}
+            </button>
+          ))}
+        </div>
         <div className="ml-auto flex gap-2">
           <button
             onClick={async () => { setExporting('pdf'); await handleExport('pdf', activeReport); setExporting(null); }}
@@ -241,7 +243,7 @@ function ScheduledReportsSection() {
 
       <div className="space-y-4">
         {REPORT_TYPES.map(({ key, label, description }) => (
-          <div key={key} className="bg-[var(--surface)] rounded-xl border p-5">
+          <div key={key} className="nw-card card-pad">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
@@ -267,7 +269,7 @@ function ScheduledReportsSection() {
                   value={configs[key]?.email || ''}
                   onChange={(e) => updateConfig(key, 'email', e.target.value)}
                   placeholder="admin@uts.edu.co"
-                  className="w-full max-w-md border rounded-lg px-3 py-2 text-sm focus:outline-none focus:shadow-[var(--focus)]"
+                  className="nw-input max-w-md"
                 />
               </div>
             )}
@@ -279,7 +281,7 @@ function ScheduledReportsSection() {
         <button
           onClick={handleSave}
           disabled={mutation.isPending}
-          className="px-6 py-2 bg-[var(--lima-500)] text-[var(--lima-ink)] text-sm font-medium rounded-lg hover:bg-[var(--lima-400)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="nw-btn primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {mutation.isPending ? 'Guardando...' : 'Guardar reportes programados'}
         </button>

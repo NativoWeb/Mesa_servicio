@@ -14,7 +14,7 @@ function Section({ num, title, desc, children, isOpen, onToggle }: {
   isOpen: boolean; onToggle: () => void;
 }) {
   return (
-    <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
+    <div className="nw-card overflow-hidden">
       <button onClick={onToggle} className="w-full flex items-center gap-3 p-5 text-left hover:bg-[var(--surface-2)] transition-colors">
         <span className="w-7 h-7 bg-[var(--lima-500)] text-[var(--lima-ink)] rounded-full flex items-center justify-center text-xs font-bold shrink-0">{num}</span>
         <div className="flex-1">
@@ -91,7 +91,7 @@ export default function NuevoEquipoPage() {
 
   const toggleSection = (num: number) => setOpenSection(openSection === num ? 0 : num);
 
-  const inputClass = "w-full px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)] focus:border-[var(--selva-500)]";
+  const inputClass = "nw-input";
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -102,6 +102,7 @@ export default function NuevoEquipoPage() {
           <span className="text-[var(--ink-2)] font-medium">Registrar nuevo equipo</span>
         </nav>
         <h1 className="text-2xl font-bold text-[var(--ink)]">Registrar nuevo equipo</h1>
+
       </div>
 
       <Section num={1} title="Identificación" desc="Datos básicos y seriales únicos del activo" isOpen={openSection === 1} onToggle={() => toggleSection(1)}>
@@ -227,11 +228,11 @@ export default function NuevoEquipoPage() {
       </Section>
 
       <div className="flex justify-end gap-3 pb-6">
-        <Link href="/inventario" className="px-5 py-2.5 border rounded-xl text-sm font-medium hover:bg-[var(--surface-2)]">Cancelar</Link>
+        <Link href="/inventario" className="nw-btn">Cancelar</Link>
         <button
           onClick={handleSubmit}
           disabled={createAsset.isPending}
-          className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
+          className="nw-btn primary"
         >
           {createAsset.isPending ? 'Guardando...' : 'Guardar equipo'}
         </button>

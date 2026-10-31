@@ -148,19 +148,19 @@ export default function AdminSlaPage() {
         <button
           onClick={handleToggleEdit}
           disabled={saving}
-          className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50"
+          className="nw-btn primary disabled:opacity-50"
         >
           {saving ? 'Guardando...' : editing ? 'Guardar cambios' : 'Editar parametros SLA'}
         </button>
       </div>
 
-      <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="nw-card overflow-hidden">
+        <table className="nw-table">
           <thead>
-            <tr className="border-b bg-[var(--surface-2)]">
-              <th className="text-left p-4 font-semibold text-[var(--muted)] text-xs">Prioridad del Ticket</th>
-              <th className="text-left p-4 font-semibold text-[var(--muted)] text-xs">Tiempo Respuesta (hrs)</th>
-              <th className="text-left p-4 font-semibold text-[var(--muted)] text-xs">Tiempo Resolución (hrs)</th>
+            <tr>
+              <th>Prioridad del Ticket</th>
+              <th>Tiempo Respuesta (hrs)</th>
+              <th>Tiempo Resolución (hrs)</th>
             </tr>
           </thead>
           <tbody>

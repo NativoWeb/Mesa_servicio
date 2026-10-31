@@ -48,7 +48,7 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
 
       {/* Maintenance Alert */}
       {asset.next_maintenance && new Date(asset.next_maintenance) <= new Date(Date.now() + 30 * 86400000) && (
-        <div className="bg-[var(--med-bg)] border border-[var(--line)] rounded-xl p-4 mb-6 flex items-center gap-3">
+        <div className="banner warn mb-6 flex items-center gap-3">
           <span className="text-[var(--med)] text-xl">&#9888;</span>
           <div>
             <p className="text-sm font-semibold text-[var(--med)]">Mantenimiento Programado</p>
@@ -58,7 +58,7 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
       )}
 
       {/* Header Card */}
-      <div className="bg-[var(--surface)] rounded-xl border p-6 mb-6 flex items-center justify-between">
+      <div className="nw-card card-pad mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-[var(--low-bg)] rounded-lg flex items-center justify-center">
             <Monitor className="w-6 h-6 text-[var(--selva-500)]" />
@@ -77,7 +77,7 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Technical Info */}
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold mb-4 text-lg">Información Técnica</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
@@ -114,7 +114,7 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
 
         {/* Right Column */}
         <div className="space-y-6">
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold mb-4">Estado & Responsabilidad</h2>
             <div className="space-y-4">
               <div>
@@ -144,7 +144,7 @@ export default function HojaDeVidaEquipoPage({ params }: { params: Promise<{ id:
       </div>
 
       {/* Maintenance Timeline */}
-      <div className="bg-[var(--surface)] rounded-xl border p-6">
+      <div className="nw-card card-pad">
         <h2 className="font-semibold mb-6 text-lg">Historial de Vida Util</h2>
         {maintenances.length === 0 ? (
           <p className="text-[var(--faint)] text-center py-8">No hay eventos registrados</p>

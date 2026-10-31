@@ -28,10 +28,10 @@ export default function UsuariosRolesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="page-head">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--ink)]">Usuarios y Roles</h1>
-          <p className="text-[var(--muted)]">Gestiona los usuarios de la Mesa de Servicio</p>
+          <h1>Usuarios y Roles</h1>
+          <p>Gestiona los usuarios de la Mesa de Servicio</p>
         </div>
       </div>
 
@@ -42,25 +42,25 @@ export default function UsuariosRolesPage() {
           { label: 'En Progreso', value: dashboard?.tickets.in_progress ?? '-' },
           { label: 'Cerrados', value: dashboard?.tickets.closed ?? '-' },
         ].map((s) => (
-          <div key={s.label} className="bg-[var(--surface)] rounded-xl border p-4">
+          <div key={s.label} className="nw-card p-4">
             <p className="text-xs text-[var(--muted)] uppercase">{s.label}</p>
             <p className="text-2xl font-bold mt-1">{s.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-[var(--surface)] rounded-xl border">
-        <div className="p-4 flex flex-wrap items-center gap-3 border-b">
+      <div className="nw-card">
+        <div className="toolbar">
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             placeholder="Buscar por nombre o email..."
-            className="flex-1 max-w-xs px-4 py-2 bg-[var(--surface)] border rounded-lg text-sm outline-none focus:shadow-[var(--focus)]"
+            className="nw-input flex-1 max-w-xs"
           />
           <select
             value={roleFilter}
             onChange={(e) => { setRoleFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 bg-[var(--surface)] border rounded-lg text-sm outline-none"
+            className="nw-input"
           >
             <option value="">Todos los roles</option>
             {Object.entries(ROLE_LABELS).map(([k, v]) => (
@@ -70,14 +70,14 @@ export default function UsuariosRolesPage() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="nw-table">
             <thead>
-              <tr className="border-b bg-[var(--surface-2)]">
-                <th className="text-left p-3 pl-6 font-semibold text-[var(--muted)] text-xs">Nombre</th>
-                <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Email</th>
-                <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Rol</th>
-                <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Sede</th>
-                <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Departamento</th>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Sede</th>
+                <th>Departamento</th>
               </tr>
             </thead>
             <tbody>
@@ -114,11 +114,11 @@ export default function UsuariosRolesPage() {
         </div>
 
         {data && data.last_page > 1 && (
-          <div className="px-6 py-3 border-t flex items-center justify-between text-xs text-[var(--muted)]">
+          <div className="pager">
             <span>Página {data.current_page} de {data.last_page} ({data.total} usuarios)</span>
-            <div className="flex gap-1">
-              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50">Anterior</button>
-              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50">Siguiente</button>
+            <div className="pages">
+              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)}>‹</button>
+              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)}>›</button>
             </div>
           </div>
         )}

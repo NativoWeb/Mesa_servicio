@@ -69,26 +69,17 @@ function AsignacionContent() {
   return (
     <div className="space-y-6">
       {/* Tab navigation */}
-      <div className="border-b">
-        <nav className="flex gap-1 -mb-px">
-          {TABS.map(({ key, label, icon: Icon }) => {
-            const isActive = activeTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => handleTabChange(key)}
-                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-                  isActive
-                    ? 'border-[var(--selva-500)] text-[var(--selva-500)]'
-                    : 'border-transparent text-[var(--muted)] hover:text-[var(--ink-2)] hover:border-[var(--line-2)]'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {label}
-              </button>
-            );
-          })}
-        </nav>
+      <div className="tabs">
+        {TABS.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => handleTabChange(key)}
+            className={activeTab === key ? 'on' : ''}
+          >
+            <Icon className="w-4 h-4" />
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* Tab content */}
@@ -131,11 +122,15 @@ function AssignmentView() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[var(--ink)]">Asignacion de Tickets</h1>
-      <p className="text-[var(--muted)] mb-6">Asigna tickets a tecnicos disponibles</p>
+      <div className="page-head">
+        <div>
+          <h1>Asignacion de Tickets</h1>
+          <p>Asigna tickets a tecnicos disponibles</p>
+        </div>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tickets sin asignar */}
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold mb-4">Tickets pendientes de asignacion ({unassigned.length})</h2>
           {loadingTickets ? (
             <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-16 bg-[var(--surface-3)] rounded-lg animate-pulse" />)}</div>
@@ -171,7 +166,7 @@ function AssignmentView() {
         </div>
 
         {/* Tecnicos */}
-        <div className="bg-[var(--surface)] rounded-xl border p-6">
+        <div className="nw-card card-pad">
           <h2 className="font-semibold mb-4">Tecnicos disponibles</h2>
           {loadingTechs ? (
             <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-16 bg-[var(--surface-3)] rounded-lg animate-pulse" />)}</div>
@@ -193,7 +188,7 @@ function AssignmentView() {
                   <button
                     disabled={!selectedTicket || updateTicket.isPending}
                     onClick={() => selectedTicket && handleAssign(selectedTicket, tech.id)}
-                    className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] disabled:cursor-not-allowed text-[var(--lima-ink)] text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
+                    className="nw-btn primary text-xs px-3 py-1.5 disabled:bg-[var(--surface-3)] disabled:cursor-not-allowed"
                   >
                     {updateTicket.isPending ? 'Asignando...' : 'Asignar'}
                   </button>
@@ -356,7 +351,7 @@ function CalendarView() {
         </div>
         <button
           onClick={() => openCreate()}
-          className="flex items-center gap-2 bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+          className="nw-btn primary flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
           Crear turno
@@ -364,7 +359,7 @@ function CalendarView() {
       </div>
 
       {/* Week selector */}
-      <div className="flex items-center justify-between bg-[var(--surface)] rounded-xl border p-3">
+      <div className="flex items-center justify-between nw-card p-3">
         <button
           onClick={() => setWeekOffset(w => w - 1)}
           className="p-1.5 rounded-lg hover:bg-[var(--surface-3)] transition-colors text-[var(--ink-2)]"
@@ -394,19 +389,19 @@ function CalendarView() {
 
       {/* Calendar grid */}
       {isLoading ? (
-        <div className="bg-[var(--surface)] rounded-xl border p-8">
+        <div className="nw-card p-8">
           <div className="flex items-center justify-center gap-2 text-[var(--faint)]">
             <Loader2 className="w-5 h-5 animate-spin" />
             <span className="text-sm">Cargando calendario...</span>
           </div>
         </div>
       ) : technicians.length === 0 ? (
-        <div className="bg-[var(--surface)] rounded-xl border p-12 text-center">
+        <div className="nw-card p-12 text-center">
           <Users className="w-10 h-10 text-[var(--faint)] mx-auto mb-2" />
           <p className="text-[var(--muted)]">No hay tecnicos registrados</p>
         </div>
       ) : (
-        <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
+        <div className="nw-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -516,7 +511,7 @@ function CalendarView() {
               <select
                 value={formTechId}
                 onChange={e => setFormTechId(e.target.value ? Number(e.target.value) : '')}
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)]"
+                className="nw-input"
               >
                 <option value="">Seleccionar tecnico...</option>
                 {technicians.map(t => (
@@ -531,7 +526,7 @@ function CalendarView() {
                 type="date"
                 value={formDate}
                 onChange={e => setFormDate(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)]"
+                className="nw-input"
               />
             </div>
 
@@ -542,7 +537,7 @@ function CalendarView() {
                   type="time"
                   value={formStartTime}
                   onChange={e => setFormStartTime(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)]"
+                  className="nw-input"
                 />
               </div>
               <div>
@@ -551,7 +546,7 @@ function CalendarView() {
                   type="time"
                   value={formEndTime}
                   onChange={e => setFormEndTime(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)]"
+                  className="nw-input"
                 />
               </div>
             </div>
@@ -561,7 +556,7 @@ function CalendarView() {
               <select
                 value={formCampus}
                 onChange={e => setFormCampus(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)]"
+                className="nw-input"
               >
                 <option value="">Sin sede especifica</option>
                 {CAMPUSES.map(c => (
@@ -577,7 +572,7 @@ function CalendarView() {
                 value={formBuilding}
                 onChange={e => setFormBuilding(e.target.value)}
                 placeholder="Ej: Bloque B, Salon 301"
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)]"
+                className="nw-input"
               />
             </div>
 
@@ -586,7 +581,7 @@ function CalendarView() {
               <select
                 value={formStatus}
                 onChange={e => setFormStatus(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:shadow-[var(--focus)]"
+                className="nw-input"
               >
                 <option value="scheduled">Programado</option>
                 <option value="active">Activo</option>
@@ -605,13 +600,13 @@ function CalendarView() {
                 Eliminar
               </button>
             )}
-            <DialogClose className="px-4 py-2 text-sm font-medium text-[var(--ink-2)] bg-[var(--surface)] border rounded-lg hover:bg-[var(--surface-2)] transition-colors">
+            <DialogClose className="nw-btn">
               Cancelar
             </DialogClose>
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[var(--lima-ink)] bg-[var(--lima-500)] hover:bg-[var(--lima-400)] rounded-lg disabled:bg-[var(--surface-3)] transition-colors"
+              className="nw-btn primary flex items-center gap-2 disabled:bg-[var(--surface-3)]"
             >
               {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingShift ? 'Guardar cambios' : 'Crear turno'}
@@ -630,13 +625,13 @@ function CalendarView() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <DialogClose className="px-4 py-2 text-sm font-medium text-[var(--ink-2)] bg-[var(--surface)] border rounded-lg hover:bg-[var(--surface-2)] transition-colors">
+            <DialogClose className="nw-btn">
               Cancelar
             </DialogClose>
             <button
               onClick={handleDelete}
               disabled={deleteShift.isPending}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[var(--crit)] hover:bg-[var(--crit)] rounded-lg disabled:bg-[var(--surface-3)] transition-colors"
+              className="nw-btn flex items-center gap-2 bg-[var(--crit)] text-white hover:bg-[var(--crit)] disabled:bg-[var(--surface-3)]"
             >
               {deleteShift.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
               Eliminar
@@ -683,15 +678,17 @@ function WorkloadView() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--ink)]">Carga por Tecnico</h1>
-        <p className="text-[var(--muted)] text-sm">Vision general de la carga operativa de cada tecnico</p>
+      <div className="page-head">
+        <div>
+          <h1>Carga por Tecnico</h1>
+          <p>Vision general de la carga operativa de cada tecnico</p>
+        </div>
       </div>
 
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-[var(--surface)] rounded-xl border p-5">
+            <div key={i} className="nw-card p-5">
               <div className="space-y-3">
                 <div className="h-5 w-48 bg-[var(--surface-3)] rounded animate-pulse" />
                 <div className="h-3 w-full bg-[var(--surface-3)] rounded animate-pulse" />
@@ -700,7 +697,7 @@ function WorkloadView() {
           ))}
         </div>
       ) : !techWorkload.length ? (
-        <div className="bg-[var(--surface)] rounded-xl border p-12 text-center">
+        <div className="nw-card p-12 text-center">
           <Users className="w-10 h-10 text-[var(--faint)] mx-auto mb-2" />
           <p className="text-[var(--muted)]">No hay tecnicos registrados</p>
         </div>
@@ -712,7 +709,7 @@ function WorkloadView() {
             else if (loadPercent >= 50) barColor = 'bg-[var(--med)]';
 
             return (
-              <div key={tech.id} className="bg-[var(--surface)] rounded-xl border p-5">
+              <div key={tech.id} className="nw-card p-5">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-[var(--low-bg)] flex items-center justify-center text-[var(--selva-500)] text-sm font-bold shrink-0">
                     {tech.name.split(' ').map(n => n[0]).join('').slice(0, 2)}

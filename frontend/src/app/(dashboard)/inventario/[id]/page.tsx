@@ -47,7 +47,7 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Header Card */}
-      <div className="bg-[var(--surface)] rounded-xl border p-6 mb-6 flex items-center justify-between">
+      <div className="nw-card card-pad mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-[var(--low-bg)] rounded-lg flex items-center justify-center">
             {asset.category === 'laptop' ? <Laptop className="w-6 h-6 text-[var(--selva-500)]" /> : asset.category === 'server' ? <Monitor className="w-6 h-6 text-[var(--selva-500)]" /> : asset.category === 'printer' ? <Printer className="w-6 h-6 text-[var(--selva-500)]" /> : <Laptop className="w-6 h-6 text-[var(--selva-500)]" />}
@@ -56,11 +56,11 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
             <h1 className="text-xl font-bold text-[var(--ink)]">{asset.name}</h1>
             <div className="flex items-center gap-2 mt-1">
               <span className="font-mono text-xs text-[var(--muted)]">{asset.asset_code}</span>
-              <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${sCfg?.color || ''}`}>{sCfg?.label || asset.status}</span>
+              <span className={`nw-badge ${sCfg?.color || ''}`}>{sCfg?.label || asset.status}</span>
             </div>
           </div>
         </div>
-        <Link href={`/inventario/mantenimiento/nuevo?asset_id=${asset.id}`} className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <Link href={`/inventario/mantenimiento/nuevo?asset_id=${asset.id}`} className="nw-btn primary">
           Registrar Mantenimiento
         </Link>
       </div>
@@ -68,7 +68,7 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Technical Info */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold mb-4 text-lg">Información Técnica</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
@@ -105,7 +105,7 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
           )}
 
           {/* Maintenance History */}
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold mb-4 text-lg">Historial de Mantenimientos</h2>
             {maintenances.length === 0 ? (
               <p className="text-[var(--faint)] text-center py-8">No hay mantenimientos registrados</p>
@@ -134,7 +134,7 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
 
         {/* Right Column */}
         <div className="space-y-6">
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold mb-4">Responsabilidad</h2>
             <div className="space-y-4">
               <div>
@@ -168,7 +168,7 @@ export default function DetalleActivoPage({ params }: { params: Promise<{ id: st
           </div>
 
           {asset.notes && (
-            <div className="bg-[var(--surface)] rounded-xl border p-6">
+            <div className="nw-card card-pad">
               <h2 className="font-semibold mb-2">Notas</h2>
               <p className="text-sm text-[var(--ink-2)]">{asset.notes}</p>
             </div>

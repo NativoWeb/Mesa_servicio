@@ -162,7 +162,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Description */}
-          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] flex items-center gap-2 mb-3">
               <FileText className="w-4 h-4 text-[var(--muted)]" /> Tu Descripción
             </h2>
@@ -170,7 +170,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
           </div>
 
           {/* Timeline */}
-          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-4">Historial de Eventos</h2>
             {events.length === 0 ? (
               <p className="text-sm text-[var(--faint)]">No hay eventos registrados aun.</p>
@@ -194,7 +194,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
           </div>
 
           {/* Conversation */}
-          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-4">Conversacion</h2>
             {comments.length === 0 ? (
               <p className="text-sm text-[var(--faint)] mb-4">No hay comentarios aun.</p>
@@ -222,12 +222,12 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
                 onChange={(e) => setComment(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
                 placeholder="Escribe un comentario o actualizacion..."
-                className="flex-1 px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)]"
+                className="nw-input flex-1"
               />
               <button
                 onClick={handleSendComment}
                 disabled={createComment.isPending || !comment.trim()}
-                className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
+                className="nw-btn primary disabled:opacity-50 whitespace-nowrap"
               >
                 {createComment.isPending ? 'Enviando...' : 'Enviar comentario'}
               </button>
@@ -238,7 +238,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
         {/* Right Column */}
         <div className="space-y-4">
           {/* Location Details */}
-          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+          <div className="nw-card card-pad">
             <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Detalles de Ubicación</h3>
             <div className="space-y-3 text-sm">
               {[
@@ -260,7 +260,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
 
           {/* Linked Asset */}
           {ticket.asset && (
-            <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+            <div className="nw-card card-pad">
               <h3 className="font-semibold text-[var(--ink)] text-sm mb-3 flex items-center gap-2">
                 <Monitor className="w-4 h-4 text-[var(--selva-500)]" />
                 Equipo Vinculado
@@ -281,7 +281,7 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
           )}
 
           {/* Attachments */}
-          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+          <div className="nw-card card-pad">
             <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Adjuntos ({attachments.length})</h3>
             {attachments.length === 0 ? (
               <p className="text-xs text-[var(--faint)]">Sin adjuntos</p>
@@ -306,16 +306,16 @@ export default function UsuarioTicketDetailPage({ params }: { params: Promise<{ 
 
           {/* Actions */}
           <div className="space-y-2">
-            <button className="w-full bg-[var(--surface)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--surface-2)] transition-colors">
+            <button className="nw-btn w-full">
               Reabrir ticket
             </button>
-            <button className="w-full bg-[var(--surface)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--surface-2)] transition-colors">
+            <button className="nw-btn w-full">
               Crear relacionado
             </button>
           </div>
 
           {/* Info banner */}
-          <div className="bg-[var(--med-bg)] border border-[var(--line)] rounded-xl p-4 text-xs text-[var(--med)] leading-relaxed">
+          <div className="banner warn text-xs leading-relaxed">
             <strong>Aviso importante:</strong> Para solicitar cambios urgentes o reportar fallos masivos, por favor contacte a la extensión 0234.
           </div>
         </div>

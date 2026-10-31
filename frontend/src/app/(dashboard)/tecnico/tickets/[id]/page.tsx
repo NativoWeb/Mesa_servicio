@@ -120,20 +120,20 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Description */}
-          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-3">Descripción del problema</h2>
             <p className="text-sm text-[var(--ink-2)] whitespace-pre-line leading-relaxed">{ticket.description}</p>
           </div>
 
           {/* Status Update */}
           {ticket.status !== 'closed' && (
-            <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+            <div className="nw-card card-pad">
               <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Cambiar Estado</h3>
               <div className="flex gap-2">
                 <select
                   value={selectedStatus || ticket.status}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="flex-1 border border-[var(--line)] rounded-lg px-3 py-2 text-sm bg-[var(--surface)] outline-none focus:shadow-[var(--focus)]"
+                  className="nw-input flex-1"
                 >
                   <option value="in_progress">En Progreso</option>
                   <option value="pending">Pendiente</option>
@@ -142,7 +142,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
                 <button
                   onClick={handleStatusUpdate}
                   disabled={updateTicket.isPending}
-                  className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  className="nw-btn primary disabled:opacity-50"
                 >
                   {updateTicket.isPending ? 'Actualizando...' : 'Actualizar'}
                 </button>
@@ -176,7 +176,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
 
           {/* Timeline */}
           {ticket.events && ticket.events.length > 0 && (
-            <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+            <div className="nw-card card-pad">
               <h2 className="font-semibold text-[var(--ink)] mb-4">Historial de Eventos</h2>
               <div className="space-y-4">
                 {ticket.events.map((e, i) => (
@@ -198,7 +198,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
           )}
 
           {/* Comments */}
-          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-6">
+          <div className="nw-card card-pad">
             <h2 className="font-semibold text-[var(--ink)] mb-4">Seguimiento</h2>
             {(() => {
               const allComments = commentsData?.data || ticket.comments || [];
@@ -251,7 +251,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
                   }
                 }}
                 placeholder={isInternal ? 'Escribe una nota tecnica interna...' : 'Escribe una respuesta visible para el usuario...'}
-                className="flex-1 px-4 py-2.5 bg-[var(--canvas)] border border-[var(--line)] rounded-xl text-sm outline-none focus:shadow-[var(--focus)]"
+                className="nw-input flex-1"
               />
               <button
                 onClick={() => {
@@ -261,7 +261,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
                     .catch(() => toast.error('Error al enviar comentario'));
                 }}
                 disabled={createComment.isPending || !comment.trim()}
-                className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-4 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
+                className="nw-btn primary disabled:opacity-50 whitespace-nowrap"
               >
                 {createComment.isPending ? 'Enviando...' : 'Enviar'}
               </button>
@@ -271,7 +271,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
 
         {/* Right Column */}
         <div className="space-y-4">
-          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+          <div className="nw-card card-pad">
             <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Detalles del Ticket</h3>
             <div className="space-y-3 text-sm">
               {[
@@ -290,7 +290,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
           </div>
 
           {ticket.assignee && (
-            <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+            <div className="nw-card card-pad">
               <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Técnico Asignado</h3>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[var(--low-bg)] flex items-center justify-center text-[var(--selva-500)] text-sm font-bold">
@@ -308,7 +308,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
           {ticket.asset ? (
             <LinkedAssetCard asset={ticket.asset} />
           ) : ticket.status !== 'closed' && (
-            <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+            <div className="nw-card card-pad">
               {showLinkAsset ? (
                 <div>
                   <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Vincular Equipo</h3>
@@ -351,7 +351,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
           )}
 
           {ticket.attachments && ticket.attachments.length > 0 && (
-            <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-5">
+            <div className="nw-card card-pad">
               <h3 className="font-semibold text-[var(--ink)] text-sm mb-3">Adjuntos ({ticket.attachments.length})</h3>
               <div className="space-y-2">
                 {ticket.attachments.map((a) => (
@@ -392,7 +392,7 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
                 onChange={(e) => setCloseNotes(e.target.value)}
                 placeholder="Describe los pasos realizados para resolver el problema..."
                 rows={4}
-                className="w-full border border-[var(--line)] rounded-xl px-4 py-3 text-sm outline-none focus:shadow-[var(--focus)] resize-none mb-4"
+                className="nw-input resize-none mb-4"
               />
               <label className="flex items-start gap-2 mb-6 cursor-pointer">
                 <input
@@ -404,13 +404,13 @@ export default function TecnicoTicketDetailPage({ params }: { params: Promise<{ 
                 <span className="text-sm text-[var(--ink-2)]">Confirmo que el servicio ha sido restablecido y el usuario fue notificado</span>
               </label>
               <div className="flex gap-3">
-                <button onClick={() => setShowCloseModal(false)} className="flex-1 px-4 py-2.5 border border-[var(--line)] rounded-xl text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--surface-2)]">
+                <button onClick={() => setShowCloseModal(false)} className="nw-btn flex-1">
                   Cancelar
                 </button>
                 <button
                   onClick={handleClose}
                   disabled={!confirmRestore || !closeNotes.trim() || updateTicket.isPending}
-                  className="flex-1 px-4 py-3 bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] disabled:cursor-not-allowed text-[var(--lima-ink)] rounded-xl text-sm font-semibold transition-colors"
+                  className="nw-btn primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {updateTicket.isPending ? 'Cerrando...' : 'Finalizar Ticket'}
                 </button>

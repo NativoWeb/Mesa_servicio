@@ -32,27 +32,31 @@ export default function CuentadanteNotificacionesPage() {
 
   return (
     <div>
-      <p className="text-xs text-[var(--muted)] uppercase tracking-wider">Centro de Alertas</p>
-      <h1 className="text-2xl font-bold text-[var(--ink)]">Notificaciones</h1>
-      <p className="text-[var(--muted)] mb-6">Alertas sobre tus equipos asignados</p>
+      <div className="page-head">
+        <div>
+          <p className="text-xs text-[var(--muted)] uppercase tracking-wider">Centro de Alertas</p>
+          <h1>Notificaciones</h1>
+          <p>Alertas sobre tus equipos asignados</p>
+        </div>
+      </div>
 
       <div className="space-y-3">
         {isLoading ? (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="bg-[var(--surface)] rounded-xl border p-5">
+            <div key={i} className="nw-card card-pad">
               <div className="h-4 bg-[var(--surface-3)] rounded animate-pulse w-3/4" />
               <div className="h-3 bg-[var(--surface-3)] rounded animate-pulse w-1/2 mt-2" />
             </div>
           ))
         ) : !data?.data.length ? (
-          <div className="bg-[var(--surface)] rounded-xl border p-6">
+          <div className="nw-card card-pad">
             <div className="text-center py-12 text-[var(--faint)]">No tienes alertas por el momento</div>
           </div>
         ) : (
           data.data.map((n: Notification) => (
             <div
               key={n.id}
-              className="bg-[var(--surface)] rounded-xl border border-l-4 border-l-green-600 p-5 flex items-start gap-4 hover:shadow-[var(--sh-1)] transition-shadow"
+              className="nw-card card-pad border-l-4 border-l-green-600 flex items-start gap-4 hover:shadow-[var(--sh-1)] transition-shadow"
             >
               {/* Icono */}
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${subjectColor(n.subject_type)}`}>
@@ -81,22 +85,20 @@ export default function CuentadanteNotificacionesPage() {
 
       {/* Paginacion */}
       {data && data.last_page > 1 && (
-        <div className="mt-4 flex items-center justify-between text-xs text-[var(--muted)]">
+        <div className="pager mt-4">
           <span>Pagina {data.current_page} de {data.last_page} ({data.total} alertas)</span>
-          <div className="flex gap-1">
+          <div className="pages">
             <button
               disabled={data.current_page <= 1}
               onClick={() => setPage(p => p - 1)}
-              className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50"
             >
-              Anterior
+              ‹
             </button>
             <button
               disabled={data.current_page >= data.last_page}
               onClick={() => setPage(p => p + 1)}
-              className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50"
             >
-              Siguiente
+              ›
             </button>
           </div>
         </div>

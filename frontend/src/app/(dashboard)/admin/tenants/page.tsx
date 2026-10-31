@@ -91,7 +91,7 @@ export default function AdminTenantsPage() {
     }
   };
 
-  const inputClass = 'w-full px-3 py-2 border rounded-lg text-sm outline-none focus:shadow-[var(--focus)]';
+  const inputClass = 'nw-input';
 
   return (
     <div>
@@ -102,7 +102,7 @@ export default function AdminTenantsPage() {
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium"
+          className="nw-btn primary"
         >
           {showCreate ? 'Cancelar' : 'Crear Tenant'}
         </button>
@@ -110,7 +110,7 @@ export default function AdminTenantsPage() {
 
       {/* Create form */}
       {showCreate && (
-        <div className="bg-[var(--surface)] rounded-xl border p-6 mb-6">
+        <div className="nw-card card-pad mb-6">
           <h2 className="font-semibold mb-4">Nuevo Tenant</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div>
@@ -157,7 +157,7 @@ export default function AdminTenantsPage() {
           <button
             onClick={handleCreate}
             disabled={createTenant.isPending}
-            className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2 rounded-lg text-sm font-medium"
+            className="nw-btn primary disabled:bg-[var(--surface-3)]"
           >
             {createTenant.isPending ? 'Creando...' : 'Crear'}
           </button>
@@ -165,16 +165,16 @@ export default function AdminTenantsPage() {
       )}
 
       {/* Table */}
-      <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="nw-card overflow-hidden">
+        <table className="nw-table">
           <thead>
-            <tr className="border-b bg-[var(--surface-2)]">
-              <th className="text-left p-3 pl-6 font-semibold text-[var(--muted)] text-xs">ID</th>
-              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Nombre</th>
-              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Dominio</th>
-              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Plan</th>
-              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Creado</th>
-              <th className="text-left p-3 pr-6 font-semibold text-[var(--muted)] text-xs">Acciones</th>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Dominio</th>
+              <th>Plan</th>
+              <th>Creado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>

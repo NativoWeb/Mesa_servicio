@@ -91,7 +91,7 @@ export default function AdminUsuariosPage() {
     }
   };
 
-  const inputClass = "w-full px-3 py-2 border rounded-lg text-sm outline-none focus:shadow-[var(--focus)]";
+  const inputClass = "nw-input";
 
   return (
     <div>
@@ -100,14 +100,14 @@ export default function AdminUsuariosPage() {
           <h1 className="text-2xl font-bold text-[var(--ink)]">Gestión de Usuarios</h1>
           <p className="text-[var(--muted)]">Administración centralizada de usuarios del sistema</p>
         </div>
-        <button onClick={handleCancel} className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] text-[var(--lima-ink)] px-4 py-2 rounded-xl text-sm font-medium">
+        <button onClick={handleCancel} className="nw-btn primary">
           {showCreate ? 'Cancelar' : 'Crear usuario'}
         </button>
       </div>
 
       {/* Create form */}
       {showCreate && (
-        <div className="bg-[var(--surface)] rounded-xl border p-6 mb-6">
+        <div className="nw-card card-pad mb-6">
           <h2 className="font-semibold mb-4">Nuevo Usuario</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div>
@@ -137,7 +137,7 @@ export default function AdminUsuariosPage() {
               <input value={newUser.department} onChange={e => setNewUser(p => ({ ...p, department: e.target.value }))} className={inputClass} />
             </div>
           </div>
-          <button onClick={handleCreate} disabled={createUser.isPending} className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2 rounded-lg text-sm font-medium">
+          <button onClick={handleCreate} disabled={createUser.isPending} className="nw-btn primary disabled:bg-[var(--surface-3)]">
             {createUser.isPending ? 'Creando...' : 'Crear'}
           </button>
         </div>
@@ -145,7 +145,7 @@ export default function AdminUsuariosPage() {
 
       {/* Edit form */}
       {editingUser && (
-        <div className="bg-[var(--surface)] rounded-xl border p-6 mb-6">
+        <div className="nw-card card-pad mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Editar Usuario</h2>
             <button onClick={() => setEditingUser(null)} className="text-[var(--faint)] hover:text-[var(--ink-2)] text-sm">Cancelar</button>
@@ -178,7 +178,7 @@ export default function AdminUsuariosPage() {
               <input value={editingUser.department} onChange={e => setEditingUser(p => p ? { ...p, department: e.target.value } : p)} className={inputClass} />
             </div>
           </div>
-          <button onClick={handleUpdate} disabled={updateUser.isPending} className="bg-[var(--lima-500)] hover:bg-[var(--lima-400)] disabled:bg-[var(--surface-3)] text-[var(--lima-ink)] px-6 py-2 rounded-lg text-sm font-medium">
+          <button onClick={handleUpdate} disabled={updateUser.isPending} className="nw-btn primary disabled:bg-[var(--surface-3)]">
             {updateUser.isPending ? 'Guardando...' : 'Guardar cambios'}
           </button>
         </div>
@@ -186,7 +186,7 @@ export default function AdminUsuariosPage() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Buscar por nombre o email..." className="flex-1 max-w-xs px-4 py-2 bg-[var(--surface)] border rounded-lg text-sm outline-none focus:shadow-[var(--focus)]" />
+        <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Buscar por nombre o email..." className="nw-input flex-1 max-w-xs" />
         <select value={roleFilter} onChange={e => { setRoleFilter(e.target.value); setPage(1); }} className="px-3 py-2 bg-[var(--surface)] border rounded-lg text-sm outline-none">
           <option value="">Todos los roles</option>
           {Object.entries(ROLE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
@@ -194,15 +194,15 @@ export default function AdminUsuariosPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="nw-card overflow-hidden">
+        <table className="nw-table">
           <thead>
-            <tr className="border-b bg-[var(--surface-2)]">
-              <th className="text-left p-3 pl-6 font-semibold text-[var(--muted)] text-xs">Nombre</th>
-              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Email</th>
-              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Rol</th>
-              <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Sede</th>
-              <th className="text-left p-3 pr-6 font-semibold text-[var(--muted)] text-xs">Acciones</th>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Sede</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -231,11 +231,11 @@ export default function AdminUsuariosPage() {
           </tbody>
         </table>
         {data && data.last_page > 1 && (
-          <div className="px-6 py-3 border-t flex items-center justify-between text-xs text-[var(--muted)]">
+          <div className="pager">
             <span>Página {data.current_page} de {data.last_page} ({data.total} usuarios)</span>
-            <div className="flex gap-1">
-              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50">Anterior</button>
-              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border hover:bg-[var(--surface-2)] disabled:opacity-50">Siguiente</button>
+            <div className="pages">
+              <button disabled={data.current_page <= 1} onClick={() => setPage(p => p - 1)}>&#8249;</button>
+              <button disabled={data.current_page >= data.last_page} onClick={() => setPage(p => p + 1)}>&#8250;</button>
             </div>
           </div>
         )}
