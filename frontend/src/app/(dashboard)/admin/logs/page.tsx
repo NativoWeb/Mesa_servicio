@@ -33,6 +33,12 @@ const DESCRIPTION_LABELS: Record<string, string> = {
   deleted: 'Eliminado',
 };
 
+const DESC_COLORS: Record<string, string> = {
+  created: 'bg-[var(--low-bg)] text-[var(--low)]',
+  updated: 'bg-[var(--info-bg)] text-[var(--info)]',
+  deleted: 'bg-[var(--crit-bg)] text-[var(--crit)]',
+};
+
 function formatDescription(desc: string): string {
   return DESCRIPTION_LABELS[desc] || desc;
 }
@@ -62,10 +68,10 @@ export default function AdminLogsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="page-head">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--ink)]">Logs de Auditoria</h1>
-          <p className="text-[var(--muted)] text-sm">Registro detallado de todas las acciones del sistema</p>
+          <h1>Logs de Auditoría</h1>
+          <p>Registro detallado de todas las acciones del sistema</p>
         </div>
       </div>
 
@@ -73,13 +79,13 @@ export default function AdminLogsPage() {
         <input
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          placeholder="Buscar en descripcion..."
-          className="flex-1 max-w-xs px-4 py-2 bg-[var(--surface)] border rounded-xl text-sm outline-none focus:shadow-[var(--focus)]"
+          placeholder="Buscar en descripción..."
+          className="nw-input flex-1 max-w-xs"
         />
         <select
           value={subjectFilter}
           onChange={(e) => { setSubjectFilter(e.target.value); setPage(1); }}
-          className="px-3 py-2 bg-[var(--surface)] border rounded-xl text-sm outline-none"
+          className="nw-input w-auto min-w-[160px]"
         >
           <option value="">Todos los tipos</option>
           <option value="User">Usuario</option>
@@ -91,84 +97,93 @@ export default function AdminLogsPage() {
           type="date"
           value={dateFrom}
           onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
-          className="px-3 py-2 bg-[var(--surface)] border rounded-xl text-sm outline-none"
+          className="nw-input w-auto"
           placeholder="Desde"
         />
         <input
           type="date"
           value={dateTo}
           onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
-          className="px-3 py-2 bg-[var(--surface)] border rounded-xl text-sm outline-none"
+          className="nw-input w-auto"
           placeholder="Hasta"
         />
-        <button onClick={handleReset} className="text-sm text-[var(--muted)] hover:text-[var(--ink-2)]">
+        <button onClick={handleReset} className="nw-btn sm">
           Resetear
         </button>
       </div>
 
-      <div className="bg-[var(--surface)] rounded-xl border overflow-hidden">
+      <div className="nw-card overflow-hidden">
         {isLoading ? (
           <div className="text-center py-12 text-[var(--faint)]">Cargando logs...</div>
         ) : isError ? (
-          <div className="text-center py-12 text-[var(--crit)]">Error al cargar los logs de auditoria</div>
+          <div className="text-center py-12 text-[var(--crit)]">Error al cargar los logs de auditoría</div>
         ) : (
           <>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-[var(--surface-2)]">
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Fecha</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Usuario</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Accion</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Tipo</th>
-                  <th className="text-left p-3 font-semibold text-[var(--muted)] text-xs">Cambios</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data?.data && data.data.length > 0 ? (
-                  data.data.map((log) => (
-                    <tr key={log.id} className="border-b hover:bg-[var(--surface-2)] transition-colors">
-                      <td className="p-3 font-mono text-xs text-[var(--muted)]">{formatDate(log.created_at)}</td>
-                      <td className="p-3 text-xs font-medium text-[var(--ink)]">{log.causer?.name || 'Sistema'}</td>
-                      <td className="p-3">
-                        <span className="text-xs bg-[var(--surface-3)] px-2 py-0.5 rounded font-medium text-[var(--ink-2)]">
-                          {formatDescription(log.description)}
-                        </span>
-                      </td>
-                      <td className="p-3 text-xs text-[var(--ink-2)]">{formatSubjectType(log.subject_type)}</td>
-                      <td className="p-3 text-xs text-[var(--muted)] max-w-xs truncate">
-                        {log.properties && Object.keys(log.properties).length > 0
-                          ? JSON.stringify(log.properties.attributes || log.properties)
-                          : '-'}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
+            <div className="overflow-x-auto">
+              <table className="nw-table w-full">
+                <thead>
                   <tr>
-                    <td colSpan={5} className="text-center py-12 text-[var(--faint)]">No se encontraron registros</td>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th>Tipo</th>
+                    <th>Cambios</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data?.data && data.data.length > 0 ? (
+                    data.data.map((log) => (
+                      <tr key={log.id}>
+                        <td className="font-mono text-xs text-[var(--muted)] whitespace-nowrap">{formatDate(log.created_at)}</td>
+                        <td className="font-medium text-[var(--ink)]">{log.causer?.name || 'Sistema'}</td>
+                        <td>
+                          <span className={`nw-badge ${DESC_COLORS[log.description] || 'bg-[var(--surface-3)] text-[var(--ink-2)]'}`}>
+                            {formatDescription(log.description)}
+                          </span>
+                        </td>
+                        <td className="text-[var(--ink-2)]">{formatSubjectType(log.subject_type)}</td>
+                        <td className="text-[var(--muted)] max-w-xs truncate text-xs">
+                          {log.properties && Object.keys(log.properties).length > 0
+                            ? JSON.stringify(log.properties.attributes || log.properties)
+                            : '-'}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="text-center py-12 text-[var(--faint)]">No se encontraron registros</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
             {data && data.last_page > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t">
-                <span className="text-xs text-[var(--muted)]">
-                  Pagina {data.current_page} de {data.last_page} ({data.total} registros)
+              <div className="pager">
+                <span>
+                  Página {data.current_page} de {data.last_page} ({data.total} registros)
                 </span>
-                <div className="flex gap-2">
+                <div className="pages">
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={data.current_page <= 1}
-                    className="px-3 py-1 border rounded text-xs disabled:opacity-50 hover:bg-[var(--surface-2)]"
                   >
-                    Anterior
+                    ‹
                   </button>
+                  {Array.from({ length: Math.min(data.last_page, 5) }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={p === data.current_page ? 'on' : ''}
+                    >
+                      {p}
+                    </button>
+                  ))}
                   <button
                     onClick={() => setPage((p) => Math.min(data.last_page, p + 1))}
                     disabled={data.current_page >= data.last_page}
-                    className="px-3 py-1 border rounded text-xs disabled:opacity-50 hover:bg-[var(--surface-2)]"
                   >
-                    Siguiente
+                    ›
                   </button>
                 </div>
               </div>
