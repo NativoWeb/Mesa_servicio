@@ -64,7 +64,11 @@ class DashboardController extends Controller
                 ],
                 'users' => [
                     'total' => User::count(),
+                    'active_technicians' => User::role('technician')->count(),
                 ],
+                'critical_unresolved' => Ticket::where('priority', 'critical')
+                    ->whereNotIn('status', ['closed'])
+                    ->count(),
             ];
         }
 
@@ -126,6 +130,9 @@ class DashboardController extends Controller
                 'operational' => Asset::where('status', 'operational')->count(),
                 'damaged' => Asset::where('status', 'damaged')->count(),
                 'decommissioned' => Asset::where('status', 'decommissioned')->count(),
+                'in_maintenance' => Maintenance::whereNotIn('status', ['completed', 'cancelled'])
+                    ->distinct('asset_id')
+                    ->count('asset_id'),
                 'pending_maintenance' => Asset::whereNotNull('next_maintenance')
                     ->where('next_maintenance', '<=', now()->addDays(7))
                     ->count(),

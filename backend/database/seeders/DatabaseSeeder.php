@@ -6,6 +6,7 @@ use App\Models\SlaConfig;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
@@ -90,6 +91,24 @@ class DatabaseSeeder extends Seeder
                 $userData
             );
             $user->assignRole($role);
+        }
+
+        // --- System Configs ---
+        $systemConfigs = [
+            ['key' => 'app_name', 'value' => 'Mesa de Servicio TI - UTS'],
+            ['key' => 'support_email', 'value' => 'soporte@uts.edu.co'],
+            ['key' => 'default_campus', 'value' => 'Bucaramanga'],
+            ['key' => 'smtp_host', 'value' => 'smtp.mailtrap.io'],
+            ['key' => 'smtp_port', 'value' => '587'],
+            ['key' => 'smtp_encryption', 'value' => 'tls'],
+            ['key' => 'smtp_from_address', 'value' => 'noreply@uts.edu.co'],
+            ['key' => 'smtp_from_name', 'value' => 'Mesa de Servicio TI'],
+        ];
+        foreach ($systemConfigs as $config) {
+            DB::table('system_configs')->updateOrInsert(
+                ['key' => $config['key']],
+                ['value' => $config['value'], 'updated_at' => now(), 'created_at' => now()]
+            );
         }
 
         // --- Tenant UTS por defecto (crear o actualizar) ---
